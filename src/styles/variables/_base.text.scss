@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'JetBrains Mono';
+  src:
+    url('https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/webfonts/JetBrainsMono-Regular.eot') format('embedded-opentype'),
+    url('https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/webfonts/JetBrainsMono-Regular.woff2') format('woff2'),
+    url('https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/webfonts/JetBrainsMono-Regular.woff') format('woff'),
+    url('https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/ttf/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$base-font-size: 1rem;
+
+:root {
+  --font-size-xs: #{$base-font-size * 0.5};
+  --font-size-s: #{$base-font-size * 0.7};
+  --font-size-m: #{$base-font-size};
+  --font-size-l: #{$base-font-size * 2};
+  --font-size-xl: #{$base-font-size * 3};
+  --font-weight-bold: bold;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 500;
+  --line-height: 1.4;
+}

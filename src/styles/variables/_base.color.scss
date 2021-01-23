@@ -1,0 +1,26 @@
+@import "src/styles/mixins/color_mixins";
+
+$color-primary: #272727;
+$color-primary-dark: #202124;
+$color-primary-light: #333;
+$color-accent-1: #3fba84;
+$color-accent-2: #263238;
+$color-text: #d6d6d6;
+$color-text-on-accent-1: #000;
+
+:root {
+  --color-primary: #{$color-primary};
+  --color-primary-rgb: #{hex-to-rgb($color-primary)};
+  --color-primary-dark: #{$color-primary-dark};
+  --color-primary-dark-rgb: #{hex-to-rgb($color-primary-dark)};
+  --color-primary-light: #{$color-primary-light};
+  --color-primary-light-rgb: #{hex-to-rgb($color-primary-light)};
+  --color-accent-1: #{$color-accent-1};
+  --color-accent-1-rgb: #{hex-to-rgb($color-accent-1)};
+  --color-accent-2: #{$color-accent-2};
+  --color-accent-2-rgb: #{hex-to-rgb($color-accent-2)};
+  --color-text: #{$color-text};
+  --color-text-rgb: #{hex-to-rgb($color-text)};
+  --color-text-on-accent-1: #{$color-text-on-accent-1};
+  --color-text-on-accent-1-rgb: #{hex-to-rgb($color-text-on-accent-1)};
+}

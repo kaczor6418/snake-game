@@ -1,0 +1,9 @@
+$default-duration: 250ms;
+
+:root {
+  --super-fast-duration: #{$default-duration * 0.25};
+  --fast-duration: #{$default-duration * 0.5};
+  --default-duration: #{$default-duration};
+  --long-duration: #{$default-duration * 2};
+  --super-long-duration: #{$default-duration * 3};
+}

@@ -1,0 +1,9 @@
+$default-spacing: 0.625rem;
+
+:root {
+  --spacing-xs: #{$default-spacing * 0.1};
+  --spacing-s: #{$default-spacing * 0.5};
+  --spacing-m: #{$default-spacing};
+  --spacing-l: #{$default-spacing * 1.5};
+  --spacing-xl: #{$default-spacing * 2};
+}
