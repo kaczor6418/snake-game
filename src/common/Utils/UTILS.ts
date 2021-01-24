@@ -6,4 +6,8 @@ export namespace UTILS {
   export function isDefined<T>(value: T | null | undefined): value is T {
     return value != null;
   }
+
+  export function shellCopy<T>(value: T): T {
+    return <T>JSON.parse(JSON.stringify(value));
+  }
 }
