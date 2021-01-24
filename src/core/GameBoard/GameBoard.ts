@@ -114,7 +114,7 @@ export class GameBoard implements IGameBoard {
     }
   }
 
-  public resetBoard(): void {
+  public reset(): void {
     this.score = 0;
     this.snakeHeadDirection = Direction.RIGHT;
     this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
@@ -122,9 +122,9 @@ export class GameBoard implements IGameBoard {
   }
 
   public updateBoard(props: Partial<GameBoardProps>): void {
-    this.resetBoard();
-    this.rowsCount = props.rowsCount ?? 4;
-    this.columnsCount = props.columnsCount ?? 4;
+    this.reset();
+    this.rowsCount = props.rowsCount ?? this.rowsCount;
+    this.columnsCount = props.columnsCount ?? this.columnsCount;
     if (UTILS.isDefined(props.foodCount)) {
       this.foodPositions = this.generateRandomFoodsPositions(props.foodCount);
       this.originalFoodsPositions = this.foodPositions;

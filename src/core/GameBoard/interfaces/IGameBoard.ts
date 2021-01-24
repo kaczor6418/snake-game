@@ -24,6 +24,6 @@ export interface IGameBoard {
   render(): void;
   removeFood(position: Position): void;
   removeSnakeBodyPart(position: Position): void;
-  resetBoard(): void;
+  reset(): void;
   updateBoard(props: Partial<GameBoardProps>): void;
 }
