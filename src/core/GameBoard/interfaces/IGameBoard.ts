@@ -1,10 +1,13 @@
 import { Position } from './Position';
-import { MoveDirection } from './MoveDirection';
+import { Direction } from './Direction';
+import { GameBoardProps } from './GameBoardProps';
 
 export interface IGameBoard {
+  score: number;
+  snakeHeadDirection: Direction;
+
   addFood(position: Position): void;
   addSnakeBodyPart(position: Position): void;
-  getGameScore(): number;
   isBottomWall(y: number): boolean;
   isFoodPosition({ x, y }: Position): boolean;
   isGameOver(): boolean;
@@ -18,8 +21,9 @@ export interface IGameBoard {
   isNotRightWall(x: number): boolean;
   isNotTopWall(y: number): boolean;
   isNotSnakeBodyPosition({ x, y }: Position): boolean;
-  moveSnake(direction: MoveDirection): void;
   render(): void;
   removeFood(position: Position): void;
   removeSnakeBodyPart(position: Position): void;
+  resetBoard(): void;
+  updateBoard(props: Partial<GameBoardProps>): void;
 }

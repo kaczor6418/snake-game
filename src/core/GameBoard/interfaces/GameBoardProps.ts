@@ -1,5 +1,5 @@
 export interface GameBoardProps {
-  width: number;
-  height: number;
+  columnsCount: number;
+  rowsCount: number;
   foodCount: number;
 }

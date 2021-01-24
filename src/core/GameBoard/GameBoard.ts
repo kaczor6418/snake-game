@@ -3,31 +3,39 @@ import { GameBoardProps } from './interfaces/GameBoardProps';
 import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
 import { IGameBoard } from './interfaces/IGameBoard';
 import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
-import { MoveDirection } from './interfaces/MoveDirection';
 import { Direction } from './interfaces/Direction';
+import { UTILS } from '../../common/Utils/UTILS';
 
 export class GameBoard implements IGameBoard {
-  private width: number;
-  private height: number;
-  private score: number;
-  private headDirection: Direction;
+  private rowsCount: number;
+  private columnsCount: number;
   private foodPositions: Position[];
+  private originalFoodsPositions: Position[];
   private snakeBodyPartsPositions: Position[];
 
-  constructor({ foodCount, height, width }: GameBoardProps) {
+  public score: number;
+  public snakeHeadDirection: Direction;
+
+  constructor({ foodCount, rowsCount, columnsCount }: GameBoardProps) {
     this.score = 0;
-    this.width = width;
-    this.height = height;
+    this.snakeHeadDirection = Direction.RIGHT;
     this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
+    this.rowsCount = rowsCount;
+    this.columnsCount = columnsCount;
     this.foodPositions = this.generateRandomFoodsPositions(foodCount);
+    this.originalFoodsPositions = ARRAY_UTILS.deepCopy(this.foodPositions);
   }
 
-  public getGameScore(): number {
-    return this.score;
+  public addFood(position: Position): void {
+    this.foodPositions.push(position);
+  }
+
+  public addSnakeBodyPart(position: Position): void {
+    this.snakeBodyPartsPositions.push(position);
   }
 
   public isBottomWall(y: number): boolean {
-    return y === this.height;
+    return y === this.rowsCount;
   }
 
   public isFoodPosition({ x, y }: Position): boolean {
@@ -43,7 +51,7 @@ export class GameBoard implements IGameBoard {
   }
 
   public isNotBottomWall(y: number): boolean {
-    return y !== this.height;
+    return y !== this.rowsCount;
   }
 
   public isNotFoodPosition({ x, y }: Position): boolean {
@@ -55,7 +63,7 @@ export class GameBoard implements IGameBoard {
   }
 
   public isNotRightWall(x: number): boolean {
-    return x < this.width;
+    return x < this.columnsCount;
   }
 
   public isNotSnakeBodyPosition({ x, y }: Position): boolean {
@@ -67,7 +75,7 @@ export class GameBoard implements IGameBoard {
   }
 
   public isRightWall(x: number): boolean {
-    return x === this.width;
+    return x === this.columnsCount;
   }
 
   public isSnakeBodyPartPosition({ x, y }: Position): boolean {
@@ -78,9 +86,23 @@ export class GameBoard implements IGameBoard {
     return y === 0;
   }
 
+  public removeFood({ x, y }: Position): void {
+    ARRAY_UTILS.removeElement(
+      this.foodPositions,
+      this.foodPositions.findIndex(({ x: foodXPosition, y: foodYPosition }) => x === foodXPosition && y === foodYPosition)
+    );
+  }
+
+  public removeSnakeBodyPart({ x, y }: Position): void {
+    ARRAY_UTILS.removeElement(
+      this.snakeBodyPartsPositions,
+      this.foodPositions.findIndex(({ x: snakeXPosition, y: snakeYPosition }) => x === snakeXPosition && y === snakeYPosition)
+    );
+  }
+
   public render(): void {
-    for (let x = 0; x < this.width; x++) {
-      for (let y = 0; y < this.height; y++) {
+    for (let x = 0; x < this.columnsCount; x++) {
+      for (let y = 0; y < this.rowsCount; y++) {
         if (this.isFoodPosition({ x, y })) {
           // code responsible to render food
         } else if (this.isSnakeBodyPartPosition({ x, y })) {
@@ -92,85 +114,29 @@ export class GameBoard implements IGameBoard {
     }
   }
 
-  addFood(position: Position): void {}
+  public resetBoard(): void {
+    this.score = 0;
+    this.snakeHeadDirection = Direction.RIGHT;
+    this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
+    this.foodPositions = this.originalFoodsPositions;
+  }
 
-  addSnakeBodyPart(position: Position): void {}
-
-  moveSnake(direction: MoveDirection): void {}
-
-  removeFood(position: Position): void {}
-
-  removeSnakeBodyPart(position: Position): void {}
-
-  private calculateNewLastPartPosition(direction: MoveDirection): Position {
-    let newPosition: Position = ARRAY_UTILS.getLastElementCopy(this.snakeBodyPartsPositions);
-    switch (direction) {
-      case MoveDirection.LEFT:
-        switch (this.headDirection) {
-          case Direction.BOTTOM:
-            ++newPosition.x;
-            break;
-          case Direction.LEFT:
-            ++newPosition.y;
-            break;
-          case Direction.RIGHT:
-            --newPosition.y;
-            break;
-          case Direction.TOP:
-            --newPosition.x;
-            break;
-          default:
-            console.log('This should have had never happen');
-        }
-        break;
-      case MoveDirection.RIGHT:
-        switch (this.headDirection) {
-          case Direction.BOTTOM:
-            --newPosition.x;
-            break;
-          case Direction.LEFT:
-            --newPosition.y;
-            break;
-          case Direction.RIGHT:
-            ++newPosition.y;
-            break;
-          case Direction.TOP:
-            ++newPosition.x;
-            break;
-          default:
-            console.log('This should have had never happen');
-        }
-        break;
-      case MoveDirection.STRAIGHT:
-        switch (this.headDirection) {
-          case Direction.BOTTOM:
-            ++newPosition.y;
-            break;
-          case Direction.LEFT:
-            --newPosition.x;
-            break;
-          case Direction.RIGHT:
-            ++newPosition.x;
-            break;
-          case Direction.TOP:
-            --newPosition.y;
-            break;
-          default:
-            console.log('This should have had never happen');
-        }
-        break;
-      default:
-        console.log('This should have had never happen');
+  public updateBoard(props: Partial<GameBoardProps>): void {
+    this.resetBoard();
+    this.rowsCount = props.rowsCount ?? 4;
+    this.columnsCount = props.columnsCount ?? 4;
+    if (UTILS.isDefined(props.foodCount)) {
+      this.foodPositions = this.generateRandomFoodsPositions(props.foodCount);
+      this.originalFoodsPositions = this.foodPositions;
     }
-    return newPosition;
   }
 
   private generateRandomFoodsPositions(foodCount: number): Position[] {
     const foodPositions: Position[] = [];
     for (let i = 0; i < foodCount; i++) {
       foodPositions.push({
-        x: MATH_UTILS.generateRandomInteger(1, this.width - 1),
-        y: MATH_UTILS.generateRandomInteger(1, this.height - 1)
+        x: MATH_UTILS.generateRandomInteger(1, this.columnsCount - 1),
+        y: MATH_UTILS.generateRandomInteger(1, this.rowsCount - 1)
       });
     }
     return foodPositions;
