@@ -5,6 +5,7 @@ import { IGameBoard } from './interfaces/IGameBoard';
 import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
 import { Direction } from './interfaces/Direction';
 import { UTILS } from '../../common/Utils/UTILS';
+import { isNumber } from '../../common/TYPEGUARDS';
 
 export class GameBoard implements IGameBoard {
   private rowsCount: number;
@@ -26,12 +27,24 @@ export class GameBoard implements IGameBoard {
     this.originalFoodsPositions = ARRAY_UTILS.deepCopy(this.foodPositions);
   }
 
+  get snakeHeadPosition(): Position {
+    return this.snakeBodyPartsPositions[0];
+  }
+
+  get snakeBodyPartsCount(): number {
+    return this.snakeBodyPartsPositions.length;
+  }
+
   public addFood(position: Position): void {
     this.foodPositions.push(position);
   }
 
   public addSnakeBodyPart(position: Position): void {
     this.snakeBodyPartsPositions.push(position);
+  }
+
+  public insertSnakeBodyPartBeforeHead(position: Position): void {
+    this.snakeBodyPartsPositions.unshift(position);
   }
 
   public isBottomWall(y: number): boolean {
@@ -86,18 +99,22 @@ export class GameBoard implements IGameBoard {
     return y === 0;
   }
 
-  public removeFood({ x, y }: Position): void {
-    ARRAY_UTILS.removeElement(
+  public removeFood({ x, y }: Position): Position {
+    return ARRAY_UTILS.removeElement(
       this.foodPositions,
       this.foodPositions.findIndex(({ x: foodXPosition, y: foodYPosition }) => x === foodXPosition && y === foodYPosition)
     );
   }
 
-  public removeSnakeBodyPart({ x, y }: Position): void {
-    ARRAY_UTILS.removeElement(
-      this.snakeBodyPartsPositions,
-      this.foodPositions.findIndex(({ x: snakeXPosition, y: snakeYPosition }) => x === snakeXPosition && y === snakeYPosition)
-    );
+  public removeSnakeBodyPart(position: number): Position;
+  public removeSnakeBodyPart(position: Position): Position;
+  public removeSnakeBodyPart(position: number | Position): Position {
+    const indexOfPartToRemove: number = isNumber(position)
+      ? position
+      : this.foodPositions.findIndex(
+          ({ x: snakeXPosition, y: snakeYPosition }) => position.x === snakeXPosition && position.y === snakeYPosition
+        );
+    return ARRAY_UTILS.removeElement(this.snakeBodyPartsPositions, indexOfPartToRemove);
   }
 
   public render(): void {

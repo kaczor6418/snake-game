@@ -5,9 +5,12 @@ import { GameBoardProps } from './GameBoardProps';
 export interface IGameBoard {
   score: number;
   snakeHeadDirection: Direction;
+  readonly snakeHeadPosition: Position;
+  readonly snakeBodyPartsCount: number;
 
   addFood(position: Position): void;
   addSnakeBodyPart(position: Position): void;
+  insertSnakeBodyPartBeforeHead(position: Position): void;
   isBottomWall(y: number): boolean;
   isFoodPosition({ x, y }: Position): boolean;
   isGameOver(): boolean;
@@ -22,8 +25,9 @@ export interface IGameBoard {
   isNotTopWall(y: number): boolean;
   isNotSnakeBodyPosition({ x, y }: Position): boolean;
   render(): void;
-  removeFood(position: Position): void;
-  removeSnakeBodyPart(position: Position): void;
+  removeFood(position: Position): Position;
+  removeSnakeBodyPart(position: number): Position;
+  removeSnakeBodyPart(position: Position): Position;
   reset(): void;
   updateBoard(props: Partial<GameBoardProps>): void;
 }
