@@ -1,8 +1,8 @@
 import { Position } from './Position';
 import { Direction } from './Direction';
-import { GameBoardProps } from './GameBoardProps';
+import { GameModelProps } from './GameModelProps';
 
-export interface IGameBoard {
+export interface IGameModel {
   score: number;
   snakeHeadDirection: Direction;
   readonly snakeHeadPosition: Position;
@@ -29,5 +29,5 @@ export interface IGameBoard {
   removeSnakeBodyPart(position: number): Position;
   removeSnakeBodyPart(position: Position): Position;
   reset(): void;
-  updateBoard(props: Partial<GameBoardProps>): void;
+  updateBoard(props: Partial<GameModelProps>): void;
 }

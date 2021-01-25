@@ -1,13 +1,13 @@
 import { Position } from './interfaces/Position';
-import { GameBoardProps } from './interfaces/GameBoardProps';
+import { GameModelProps } from './interfaces/GameModelProps';
 import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
-import { IGameBoard } from './interfaces/IGameBoard';
+import { IGameModel } from './interfaces/IGameModel';
 import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
 import { Direction } from './interfaces/Direction';
 import { UTILS } from '../../common/Utils/UTILS';
 import { isNumber } from '../../common/TYPEGUARDS';
 
-export class GameBoard implements IGameBoard {
+export class GameModel implements IGameModel {
   private rowsCount: number;
   private columnsCount: number;
   private foodPositions: Position[];
@@ -17,7 +17,7 @@ export class GameBoard implements IGameBoard {
   public score: number;
   public snakeHeadDirection: Direction;
 
-  constructor({ foodCount, rowsCount, columnsCount }: GameBoardProps) {
+  constructor({ foodCount, rowsCount, columnsCount }: GameModelProps) {
     this.score = 0;
     this.snakeHeadDirection = Direction.RIGHT;
     this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
@@ -138,7 +138,7 @@ export class GameBoard implements IGameBoard {
     this.foodPositions = this.originalFoodsPositions;
   }
 
-  public updateBoard(props: Partial<GameBoardProps>): void {
+  public updateBoard(props: Partial<GameModelProps>): void {
     this.reset();
     this.rowsCount = props.rowsCount ?? this.rowsCount;
     this.columnsCount = props.columnsCount ?? this.columnsCount;

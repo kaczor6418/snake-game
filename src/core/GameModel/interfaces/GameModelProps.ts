@@ -1,4 +1,4 @@
-export interface GameBoardProps {
+export interface GameModelProps {
   columnsCount: number;
   rowsCount: number;
   foodCount: number;

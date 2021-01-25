@@ -1,14 +1,14 @@
-import { IGameBoard } from '../GameBoard/interfaces/IGameBoard';
+import { IGameModel } from '../GameModel/interfaces/IGameModel';
 import { IGameController } from './interfaces/IGameController';
 import { MoveDirection } from './interfaces/MoveDirection';
 import { UTILS } from '../../common/Utils/UTILS';
-import { Position } from '../GameBoard/interfaces/Position';
-import { Direction } from '../GameBoard/interfaces/Direction';
+import { Position } from '../GameModel/interfaces/Position';
+import { Direction } from '../GameModel/interfaces/Direction';
 
 export class GameController implements IGameController {
-  private readonly gameModel: IGameBoard;
+  private readonly gameModel: IGameModel;
 
-  constructor(gameModel: IGameBoard) {
+  constructor(gameModel: IGameModel) {
     this.gameModel = gameModel;
   }
 
