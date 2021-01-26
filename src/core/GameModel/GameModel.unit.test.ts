@@ -15,12 +15,18 @@ describe(GameModel.name, () => {
       expect(gameModel['foodPositions'].length).toEqual(foodsCountBeforeAdd + 1);
     });
   });
-  describe(GameModel.prototype.addSnakeBodyPart.name, () => {
-    test('should add snake body part to snake body parts', () => {
-      const foodsCountBeforeAdd: number = gameModel['snakeBodyPartsPositions'].length;
-      const newPart: Position = { x: 1, y: 2 };
-      gameModel.addSnakeBodyPart(newPart);
-      expect(gameModel['snakeBodyPartsPositions'].length).toEqual(foodsCountBeforeAdd + 1);
+  describe(GameModel.prototype.addNewSnakeTailPart.name, () => {
+    test('should add snake tail part to snake body parts', () => {
+      const snakeBodyPartsCount: number = gameModel.snakeBodyPartsCount;
+      const snakeHeadPositionBeforeAddingTailPart: Position = gameModel['snakeBodyPartsPositions'][0];
+      gameModel.setNewSnakeHead({ x: 0, y: 1 });
+      gameModel.addNewSnakeTailPart();
+      expect(gameModel.snakeBodyPartsCount).toEqual(snakeBodyPartsCount + 1);
+      expect(snakeHeadPositionBeforeAddingTailPart.x).toEqual(gameModel['snakeBodyPartsPositions'][0].x);
+      expect(snakeHeadPositionBeforeAddingTailPart.y).toEqual(gameModel['snakeBodyPartsPositions'][0].y);
+    });
+    test('should throw an error if tried to add tail part before changing head position', () => {
+      expect(() => gameModel.addNewSnakeTailPart()).toThrowError(Error);
     });
   });
   describe(GameModel.prototype.isBottomWall.name, () => {
@@ -52,7 +58,7 @@ describe(GameModel.name, () => {
   });
   describe(GameModel.prototype.isLeftWall.name, () => {
     test('should return true if position is a left wall', () => {
-      expect(gameModel.isLeftWall(0)).toBeTruthy();
+      expect(gameModel.isLeftWall(-1)).toBeTruthy();
     });
     test('should return false if position is not a left wall', () => {
       expect(gameModel.isLeftWall(1)).toBeFalsy();
@@ -79,7 +85,7 @@ describe(GameModel.name, () => {
       expect(gameModel.isNotLeftWall(1)).toBeTruthy();
     });
     test('should return false if position is a left wall', () => {
-      expect(gameModel.isNotLeftWall(0)).toBeFalsy();
+      expect(gameModel.isNotLeftWall(-1)).toBeFalsy();
     });
   });
   describe(GameModel.prototype.isNotRightWall.name, () => {
@@ -103,7 +109,24 @@ describe(GameModel.name, () => {
       expect(gameModel.isNotTopWall(1)).toBeTruthy();
     });
     test('should return false if position is not a top wall', () => {
-      expect(gameModel.isNotTopWall(0)).toBeFalsy();
+      expect(gameModel.isNotTopWall(-1)).toBeFalsy();
+    });
+  });
+  describe(GameModel.prototype.isNotWall.name, () => {
+    test('should return false if position is not a bottom wall', () => {
+      expect(gameModel.isNotWall({ x: 0, y: gameModel['rowsCount'] })).toBeFalsy();
+    });
+    test('should return false if position is not a left wall', () => {
+      expect(gameModel.isNotWall({ x: -1, y: 0 })).toBeFalsy();
+    });
+    test('should return false if position is not a right wall', () => {
+      expect(gameModel.isNotWall({ x: gameModel['columnsCount'], y: 0 })).toBeFalsy();
+    });
+    test('should return false if position is not a top wall', () => {
+      expect(gameModel.isNotWall({ x: 0, y: -1 })).toBeFalsy();
+    });
+    test('should return true if position is not a wall', () => {
+      expect(gameModel.isNotWall({ x: 0, y: 0 })).toBeTruthy();
     });
   });
   describe(GameModel.prototype.isRightWall.name, () => {
@@ -124,10 +147,27 @@ describe(GameModel.name, () => {
   });
   describe(GameModel.prototype.isTopWall.name, () => {
     test('should return true if position is a top wall', () => {
-      expect(gameModel.isTopWall(0)).toBeTruthy();
+      expect(gameModel.isTopWall(-1)).toBeTruthy();
     });
     test('should return false if position is not a top wall', () => {
       expect(gameModel.isTopWall(1)).toBeFalsy();
+    });
+  });
+  describe(GameModel.prototype.isWall.name, () => {
+    test('should return true if position is not a bottom wall', () => {
+      expect(gameModel.isWall({ x: 0, y: gameModel['rowsCount'] })).toBeTruthy();
+    });
+    test('should return true if position is not a left wall', () => {
+      expect(gameModel.isWall({ x: -1, y: 0 })).toBeTruthy();
+    });
+    test('should return true if position is not a right wall', () => {
+      expect(gameModel.isWall({ x: gameModel['columnsCount'], y: 0 })).toBeTruthy();
+    });
+    test('should return true if position is not a top wall', () => {
+      expect(gameModel.isWall({ x: 0, y: -1 })).toBeTruthy();
+    });
+    test('should return false if position is not a wall', () => {
+      expect(gameModel.isWall({ x: 0, y: 0 })).toBeFalsy();
     });
   });
   describe(GameModel.prototype.removeFood.name, () => {
@@ -140,21 +180,32 @@ describe(GameModel.name, () => {
   });
   describe(GameModel.prototype.removeSnakeBodyPart.name, () => {
     test('should remove one snake body part from snake body parts list', () => {
-      const snakeBodyPartsCountBeforeRemove: number = gameModel['snakeBodyPartsPositions'].length;
+      const snakeBodyPartsCountBeforeRemove: number = gameModel.snakeBodyPartsCount;
       const bodyPart: Position = gameModel['snakeBodyPartsPositions'][0];
       gameModel.removeSnakeBodyPart(bodyPart);
-      expect(gameModel['snakeBodyPartsPositions'].length).toEqual(snakeBodyPartsCountBeforeRemove - 1);
+      expect(gameModel.snakeBodyPartsCount).toEqual(snakeBodyPartsCountBeforeRemove - 1);
     });
   });
   describe(GameModel.prototype.reset.name, () => {
     test('should rest game board to initial state', () => {
       gameModel.score = 12;
       gameModel.removeFood(gameModel['foodPositions'][0]);
-      gameModel.addSnakeBodyPart({ x: 0, y: 1 });
+      gameModel.setNewSnakeHead({ x: 0, y: 1 });
+      gameModel.addNewSnakeTailPart();
       gameModel.reset();
       expect(gameModel.score).toBe(0);
-      expect(gameModel['snakeBodyPartsPositions'].length).toBe(1);
+      expect(gameModel.snakeBodyPartsCount).toBe(1);
       expect(gameModel['foodPositions'].length).toBe(gameModel['originalFoodsPositions'].length);
+    });
+  });
+  describe(GameModel.prototype.setNewSnakeHead.name, () => {
+    test('should set new head position', () => {
+      const snakeBodyPartsCount: number = gameModel.snakeBodyPartsCount;
+      const newHeadPosition: Position = { x: 1, y: 2 };
+      gameModel.setNewSnakeHead(newHeadPosition);
+      expect(gameModel.snakeBodyPartsCount).toEqual(snakeBodyPartsCount);
+      expect(newHeadPosition.x).toEqual(gameModel['snakeBodyPartsPositions'][snakeBodyPartsCount - 1].x);
+      expect(newHeadPosition.y).toEqual(gameModel['snakeBodyPartsPositions'][snakeBodyPartsCount - 1].y);
     });
   });
   describe(GameModel.prototype.updateBoard.name, () => {

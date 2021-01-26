@@ -10,19 +10,23 @@ import { isNumber } from '../../common/TYPEGUARDS';
 export class GameModel implements IGameModel {
   private rowsCount: number;
   private columnsCount: number;
+  private lastSnakeTailPart: Position | null;
   private foodPositions: Position[];
   private originalFoodsPositions: Position[];
   private snakeBodyPartsPositions: Position[];
 
   public score: number;
+  public shouldFinish: boolean;
   public snakeHeadDirection: Direction;
 
   constructor({ foodCount, rowsCount, columnsCount }: GameModelProps) {
     this.score = 0;
+    this.shouldFinish = false;
     this.snakeHeadDirection = Direction.RIGHT;
     this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
     this.rowsCount = rowsCount;
     this.columnsCount = columnsCount;
+    this.lastSnakeTailPart = null;
     this.foodPositions = this.generateRandomFoodsPositions(foodCount);
     this.originalFoodsPositions = ARRAY_UTILS.deepCopy(this.foodPositions);
   }
@@ -39,12 +43,17 @@ export class GameModel implements IGameModel {
     this.foodPositions.push(position);
   }
 
-  public addSnakeBodyPart(position: Position): void {
-    this.snakeBodyPartsPositions.push(position);
+  public addNewSnakeTailPart(): void {
+    if (UTILS.isDefined(this.lastSnakeTailPart)) {
+      this.snakeBodyPartsPositions.unshift(this.lastSnakeTailPart);
+    } else {
+      throw new Error('Can not add snake tail part before moving head!');
+    }
   }
 
-  public insertSnakeBodyPartBeforeHead(position: Position): void {
-    this.snakeBodyPartsPositions.unshift(position);
+  public setNewSnakeHead(position: Position): void {
+    this.lastSnakeTailPart = this.removeSnakeBodyPart(0);
+    this.snakeBodyPartsPositions.push(position);
   }
 
   public isBottomWall(y: number): boolean {
@@ -56,11 +65,11 @@ export class GameModel implements IGameModel {
   }
 
   public isGameOver(): boolean {
-    return ARRAY_UTILS.isEmpty(this.foodPositions);
+    return this.shouldFinish || ARRAY_UTILS.isEmpty(this.foodPositions);
   }
 
   public isLeftWall(x: number): boolean {
-    return x === 0;
+    return x < 0;
   }
 
   public isNotBottomWall(y: number): boolean {
@@ -72,7 +81,7 @@ export class GameModel implements IGameModel {
   }
 
   public isNotLeftWall(x: number): boolean {
-    return x > 0;
+    return x >= 0;
   }
 
   public isNotRightWall(x: number): boolean {
@@ -84,7 +93,7 @@ export class GameModel implements IGameModel {
   }
 
   public isNotTopWall(y: number): boolean {
-    return y > 0;
+    return y >= 0;
   }
 
   public isRightWall(x: number): boolean {
@@ -96,7 +105,15 @@ export class GameModel implements IGameModel {
   }
 
   public isTopWall(y: number): boolean {
-    return y === 0;
+    return y < 0;
+  }
+
+  public isNotWall({ x, y }: Position): boolean {
+    return this.isNotBottomWall(y) && this.isNotLeftWall(x) && this.isNotRightWall(x) && this.isNotTopWall(y);
+  }
+
+  public isWall({ x, y }: Position): boolean {
+    return this.isBottomWall(y) || this.isLeftWall(x) || this.isRightWall(x) || this.isTopWall(y);
   }
 
   public removeFood({ x, y }: Position): Position {
