@@ -28,8 +28,7 @@ export interface IGameModel {
   isWall(position: Position): boolean;
   render(): void;
   removeFood(position: Position): Position;
-  removeSnakeBodyPart(position: number): Position;
-  removeSnakeBodyPart(position: Position): Position;
+  removeSnakeBodyPart(position: number | Position): Position;
   reset(): void;
   setNewSnakeHead(position: Position): void;
   updateBoard(props: Partial<GameModelProps>): void;

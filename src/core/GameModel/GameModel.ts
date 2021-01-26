@@ -8,16 +8,16 @@ import { UTILS } from '../../common/Utils/UTILS';
 import { isNumber } from '../../common/TYPEGUARDS';
 
 export class GameModel implements IGameModel {
+  public score: number;
+  public shouldFinish: boolean;
+  public snakeHeadDirection: Direction;
+
   private rowsCount: number;
   private columnsCount: number;
   private lastSnakeTailPart: Position | null;
   private foodPositions: Position[];
   private originalFoodsPositions: Position[];
   private snakeBodyPartsPositions: Position[];
-
-  public score: number;
-  public shouldFinish: boolean;
-  public snakeHeadDirection: Direction;
 
   constructor({ foodCount, rowsCount, columnsCount }: GameModelProps) {
     this.score = 0;
@@ -123,8 +123,6 @@ export class GameModel implements IGameModel {
     );
   }
 
-  public removeSnakeBodyPart(position: number): Position;
-  public removeSnakeBodyPart(position: Position): Position;
   public removeSnakeBodyPart(position: number | Position): Position {
     const indexOfPartToRemove: number = isNumber(position)
       ? position
