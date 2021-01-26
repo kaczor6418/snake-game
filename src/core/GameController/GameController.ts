@@ -4,6 +4,7 @@ import { MoveDirection } from './interfaces/MoveDirection';
 import { UTILS } from '../../common/Utils/UTILS';
 import { Position } from '../GameModel/interfaces/Position';
 import { Direction } from '../GameModel/interfaces/Direction';
+import { FieldPoints } from './interfaces/FieldPoints';
 
 export class GameController implements IGameController {
   private readonly gameModel: IGameModel;
@@ -14,7 +15,6 @@ export class GameController implements IGameController {
 
   public move(direction: MoveDirection): void {
     const snakeHead: Position = UTILS.shellCopy(this.gameModel.snakeHeadPosition);
-    this.gameModel.removeSnakeBodyPart(this.gameModel.snakeBodyPartsCount - 1);
     if (
       (direction === MoveDirection.LEFT && this.gameModel.snakeHeadDirection === Direction.LEFT) ||
       (direction === MoveDirection.RIGHT && this.gameModel.snakeHeadDirection === Direction.RIGHT) ||
@@ -40,22 +40,43 @@ export class GameController implements IGameController {
     ) {
       this.moveTop(snakeHead);
     }
-    this.gameModel.insertSnakeBodyPartBeforeHead(snakeHead);
+    this.gameModel.setNewSnakeHead(snakeHead);
+    this.changeScore(snakeHead);
+  }
+
+  private changeScore(position: Position): void {
+    if (this.gameModel.isWall(position)) {
+      this.gameModel.score += FieldPoints.WALL;
+      this.gameModel.shouldFinish = true;
+    } else if (this.gameModel.isSnakeBodyPartPosition(position)) {
+      this.gameModel.score += FieldPoints.TAIL;
+      this.gameModel.shouldFinish = true;
+    } else if (this.gameModel.isFoodPosition(position)) {
+      this.gameModel.score += FieldPoints.FOOD;
+      this.gameModel.removeFood(position);
+      this.gameModel.addNewSnakeTailPart();
+    } else {
+      this.gameModel.score += FieldPoints.BLANK;
+    }
   }
 
   private moveBottom(position: Position): void {
     ++position.y;
+    this.gameModel.snakeHeadDirection = Direction.BOTTOM;
   }
 
   private moveLeft(position: Position): void {
     --position.x;
+    this.gameModel.snakeHeadDirection = Direction.LEFT;
   }
 
   private moveRight(position: Position): void {
     ++position.x;
+    this.gameModel.snakeHeadDirection = Direction.RIGHT;
   }
 
   private moveTop(position: Position): void {
     --position.y;
+    this.gameModel.snakeHeadDirection = Direction.TOP;
   }
 }
