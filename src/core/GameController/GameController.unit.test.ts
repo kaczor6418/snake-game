@@ -5,6 +5,7 @@ import { IGameModel } from '../GameModel/interfaces/IGameModel';
 import { GameModel } from '../GameModel/GameModel';
 import { Direction } from '../GameModel/interfaces/Direction';
 import { MoveDirection } from './interfaces/MoveDirection';
+import { Position } from '../GameModel/interfaces/Position';
 
 describe(GameController.name, () => {
   let gameController: GameController;
@@ -19,19 +20,25 @@ describe(GameController.name, () => {
         gameModel['snakeHeadDirection'] = Direction.BOTTOM;
       });
       test('should move right for move direction LEFT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.LEFT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x + 1);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x + 1);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.RIGHT);
       });
       test('should move left for move direction RIGHT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.RIGHT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x - 1);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x - 1);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.LEFT);
       });
       test('should move bottom for move direction STRAIGHT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.STRAIGHT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y + 1);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y + 1);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.BOTTOM);
       });
     });
     describe('For snake head direction LEFT', () => {
@@ -39,19 +46,25 @@ describe(GameController.name, () => {
         gameModel['snakeHeadDirection'] = Direction.LEFT;
       });
       test('should move bottom for move direction LEFT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.LEFT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y + 1);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y + 1);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.BOTTOM);
       });
       test('should move top for move direction RIGHT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.RIGHT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y - 1);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y - 1);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.TOP);
       });
       test('should move left for move direction STRAIGHT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.STRAIGHT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x - 1);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x - 1);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.LEFT);
       });
     });
     describe('For snake head direction RIGHT', () => {
@@ -59,19 +72,25 @@ describe(GameController.name, () => {
         gameModel['snakeHeadDirection'] = Direction.RIGHT;
       });
       test('should move top for move direction LEFT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.LEFT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y - 1);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y - 1);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.TOP);
       });
       test('should move bottom for move direction RIGHT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.RIGHT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y + 1);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y + 1);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.BOTTOM);
       });
       test('should move right for move direction STRAIGHT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.STRAIGHT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x + 1);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x + 1);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.RIGHT);
       });
     });
     describe('For snake head direction TOP', () => {
@@ -79,19 +98,25 @@ describe(GameController.name, () => {
         gameModel['snakeHeadDirection'] = Direction.TOP;
       });
       test('should move left for move direction LEFT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.LEFT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x - 1);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x - 1);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.LEFT);
       });
       test('should move right for move direction RIGHT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.RIGHT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x + 1);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x + 1);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.RIGHT);
       });
       test('should move top for move direction STRAIGHT', () => {
+        const snakeHeadPositionBeforeMove: Position = gameModel.snakeHeadPosition;
         gameController.move(MoveDirection.STRAIGHT);
-        expect(gameModel['snakeBodyPartsPositions'][0].x).toBe(gameModel['snakeBodyPartsPositions'][1].x);
-        expect(gameModel['snakeBodyPartsPositions'][0].y).toBe(gameModel['snakeBodyPartsPositions'][1].y - 1);
+        expect(gameModel.snakeHeadPosition.x).toBe(snakeHeadPositionBeforeMove.x);
+        expect(gameModel.snakeHeadPosition.y).toBe(snakeHeadPositionBeforeMove.y - 1);
+        expect(gameModel.snakeHeadDirection).toBe(Direction.TOP);
       });
     });
   });
