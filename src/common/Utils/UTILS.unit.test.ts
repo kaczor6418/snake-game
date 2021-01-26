@@ -29,3 +29,16 @@ describe(UTILS.isNullOrUndefined.name, () => {
     expect(UTILS.isNullOrUndefined(value)).toBeTruthy();
   });
 });
+
+describe(UTILS.shellCopy.name, () => {
+  test('should not modify copied elements', () => {
+    const obj = { x: 0, y: 0 };
+    const objCopy = UTILS.shellCopy(obj);
+    ++objCopy.x;
+    ++objCopy.y;
+    expect(obj.x).toBe(0);
+    expect(obj.y).toBe(0);
+    expect(objCopy.x).toBe(1);
+    expect(objCopy.y).toBe(1);
+  });
+});

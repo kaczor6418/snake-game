@@ -28,7 +28,7 @@ export class GameModel implements IGameModel {
     this.columnsCount = columnsCount;
     this.lastSnakeTailPart = null;
     this.foodPositions = this.generateRandomFoodsPositions(foodCount);
-    this.originalFoodsPositions = ARRAY_UTILS.deepCopy(this.foodPositions);
+    this.originalFoodsPositions = ARRAY_UTILS.shellCopy(this.foodPositions);
   }
 
   get snakeHeadPosition(): Position {

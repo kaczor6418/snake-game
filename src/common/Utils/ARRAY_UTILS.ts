@@ -1,7 +1,7 @@
 import { UTILS } from './UTILS';
 
 export namespace ARRAY_UTILS {
-  export function deepCopy<T>(array: T[]): T[] {
+  export function shellCopy<T>(array: T[]): T[] {
     return array.map((element) => UTILS.shellCopy(element));
   }
 
