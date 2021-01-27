@@ -10,4 +10,8 @@ export namespace UTILS {
   export function shellCopy<T>(value: T): T {
     return <T>JSON.parse(JSON.stringify(value));
   }
+
+  export function isTruthy(value: unknown): boolean {
+    return value == true;
+  }
 }
