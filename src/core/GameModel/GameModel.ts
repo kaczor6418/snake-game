@@ -166,10 +166,17 @@ export class GameModel implements IGameModel {
   private generateRandomFoodsPositions(foodCount: number): Position[] {
     const foodPositions: Position[] = [];
     for (let i = 0; i < foodCount; i++) {
-      foodPositions.push({
+      let uniqueFoodPosition = {
         x: MATH_UTILS.generateRandomInteger(1, this.columnsCount - 1),
         y: MATH_UTILS.generateRandomInteger(1, this.rowsCount - 1)
-      });
+      };
+      while (ARRAY_UTILS.hasObjectWithSameShape(foodPositions, uniqueFoodPosition)) {
+        uniqueFoodPosition = {
+          x: MATH_UTILS.generateRandomInteger(1, this.columnsCount - 1),
+          y: MATH_UTILS.generateRandomInteger(1, this.rowsCount - 1)
+        };
+      }
+      foodPositions.push(uniqueFoodPosition);
     }
     return foodPositions;
   }

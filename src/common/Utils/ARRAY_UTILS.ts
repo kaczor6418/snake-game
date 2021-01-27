@@ -24,4 +24,16 @@ export namespace ARRAY_UTILS {
   export function removeElement<T>(array: T[], index: number): T {
     return array.splice(index, 1)[0];
   }
+
+  export function hasObjectWithSameShape<T extends Record<string, unknown>>(arr: T[], value: T): boolean {
+    return arr.some((element) => {
+      let hasSameShape = true;
+      for (const key of Object.keys(element)) {
+        if (element[key] !== value[key]) {
+          hasSameShape = false;
+        }
+      }
+      return hasSameShape;
+    });
+  }
 }

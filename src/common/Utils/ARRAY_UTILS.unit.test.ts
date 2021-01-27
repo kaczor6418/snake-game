@@ -67,3 +67,14 @@ describe(ARRAY_UTILS.removeElement.name, () => {
     expect(removed).toBe(2);
   });
 });
+
+describe(ARRAY_UTILS.hasObjectWithSameShape.name, () => {
+  test('should return true for element with same shape', () => {
+    const arr = [{ x: 0, y: 0 }];
+    expect(ARRAY_UTILS.hasObjectWithSameShape(arr, { x: 0, y: 0 })).toBeTruthy();
+  });
+  test('should return false for element with different shape', () => {
+    const arr = [{ x: 0, y: 0 }];
+    expect(ARRAY_UTILS.hasObjectWithSameShape(arr, { x: 1, y: 0 })).toBeFalsy();
+  });
+});
