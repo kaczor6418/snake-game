@@ -7,6 +7,8 @@ export class WebGLService {
   private fragmentShader: WebGLShader;
   private program: WebGLProgram;
   private positionAttributeLocation: number;
+  private colorUniformLocation: WebGLUniformLocation;
+  private resolutionUniformLocation: WebGLUniformLocation;
   private positionBuffer: WebGLBuffer;
   private vao: WebGLVertexArrayObject;
 
@@ -16,45 +18,42 @@ export class WebGLService {
     this.fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
     this.program = this.createProgram(this.vertexShader, this.fragmentShader);
     this.positionAttributeLocation = this.gl.getAttribLocation(this.program, 'a_position');
-    const colorAttributeLocation = this.gl.getAttribLocation(this.program, 'a_color');
-    const resolutionUniformLocation = <WebGLUniformLocation>this.gl.getUniformLocation(this.program, 'u_resolution');
-    const colorLocation = <WebGLUniformLocation>this.gl.getUniformLocation(this.program, 'u_color');
+    this.resolutionUniformLocation = <WebGLUniformLocation>this.gl.getUniformLocation(this.program, 'u_resolution');
+    this.colorUniformLocation = <WebGLUniformLocation>this.gl.getUniformLocation(this.program, 'u_color');
 
     this.vao = <WebGLVertexArrayObject>this.gl.createVertexArray();
-    this.gl.bindVertexArray(this.vao);
-
     this.positionBuffer = <WebGLBuffer>this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer); // 0 → default no buffer / unbind
-    const pointA = [10, 20];
-    const pointB = [80, 20];
-    const pointC = [10, 30];
-    const pointD = [10, 30];
-    const pointE = [80, 20];
-    const pointF = [80, 30];
-    const positions = [...pointA, ...pointB, ...pointC, ...pointD, ...pointE, ...pointF];
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(positions), this.gl.STATIC_DRAW);
+    this.gl.bindVertexArray(this.vao);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
     this.gl.enableVertexAttribArray(this.positionAttributeLocation);
-    this.gl.enableVertexAttribArray(colorAttributeLocation);
-    this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0); // size → how many parameters of each set should take 2 (means x and y) 3 (x y and z)
-
-    const colors = [1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1];
-    const colorBuffer = <WebGLBuffer>this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, colorBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colors), this.gl.STATIC_DRAW);
-    this.gl.enableVertexAttribArray(colorAttributeLocation);
-    this.gl.vertexAttribPointer(colorAttributeLocation, 4, this.gl.FLOAT, false, 0, 0);
-
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
-    this.gl.bindVertexArray(null);
+    this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0); // size → how many parameters of each set should take 2 (means x and y) 3 (x y and z)
 
     this.resizeCanvasToDisplaySize(canvas);
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-    this.clearCanvas();
     this.gl.useProgram(this.program);
+    this.gl.uniform2f(this.resolutionUniformLocation, this.gl.canvas.width, this.gl.canvas.height);
+    this.clearCanvas();
+
+    this.drawRectangle([0, 0], 10, 30, [1, 0, 0, 1]);
+    this.drawRectangle([20, 0], 60, 40, [0, 1, 0, 1]);
+    this.drawRectangle([100, 0], 10, 50, [0, 0, 1, 1]);
+  }
+
+  public drawRectangle([x, y]: [number, number], width: number, height: number, [r, g, b, a]: [number, number, number, number]): void {
     this.gl.bindVertexArray(this.vao);
-    this.gl.uniform2f(resolutionUniformLocation, this.gl.canvas.width, this.gl.canvas.height);
-    this.gl.uniform4f(colorLocation, 1, 0.5, 0.5, 1);
-    this.gl.drawArrays(this.gl.TRIANGLES, 0, 6); // count → how many points should draw
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+    const topLeft = [x, y, 0];
+    const topRightA = [x + width, y, 0];
+    const leftBottomA = [x, y + height, 0];
+    const leftBottomB = [x, y + height, 0];
+    const rightTopB = [x + width, y, 0];
+    const bottomRight = [x + width, y + height, 0];
+    const positions = new Float32Array([...topLeft, ...topRightA, ...leftBottomA, ...leftBottomB, ...rightTopB, ...bottomRight]);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
+    this.gl.uniform4f(this.colorUniformLocation, r, g, b, a);
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, 6); // count → rectangle points numbers 6 because of 2 triangles
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null); // null → unbind buffer
+    this.gl.bindVertexArray(null);
   }
 
   private clearCanvas(): void {

@@ -1,7 +1,7 @@
 import { KKWebComponent } from './components/KKWebComponent/KKWebComponent';
 import { CONSTANTS } from './common/CONSTANTS';
-import VertexShaderSource from './VertextShaderSource.vert';
-import FragmentShaderSource from './FragmentShaderSource.frag';
+import VertexShaderSource from './services/WebGLService/Shaders/VertextShaderSource.vert';
+import FragmentShaderSource from './services/WebGLService/Shaders/FragmentShaderSource.frag';
 import { WebGLService } from './services/WebGLService/WebGLService';
 
 const template = `
