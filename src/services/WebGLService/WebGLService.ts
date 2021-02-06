@@ -1,4 +1,6 @@
 import { UTILS } from '../../common/Utils/UTILS';
+import DefaultVertexShaderSource from './Shaders/VertextShaderSource.vert';
+import DefaultFragmentShaderSource from './Shaders/FragmentShaderSource.frag';
 
 export class WebGLService {
   private readonly gl: WebGL2RenderingContext;
@@ -12,7 +14,11 @@ export class WebGLService {
   private positionBuffer: WebGLBuffer;
   private vao: WebGLVertexArrayObject;
 
-  constructor(canvas: HTMLCanvasElement, vertexShaderSource: string, fragmentShaderSource: string) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    vertexShaderSource: string = DefaultVertexShaderSource,
+    fragmentShaderSource: string = DefaultFragmentShaderSource
+  ) {
     this.gl = this.getWebGLContext(canvas);
     this.vertexShader = this.createShader(this.gl.VERTEX_SHADER, vertexShaderSource);
     this.fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
@@ -33,10 +39,6 @@ export class WebGLService {
     this.gl.useProgram(this.program);
     this.gl.uniform2f(this.resolutionUniformLocation, this.gl.canvas.width, this.gl.canvas.height);
     this.clearCanvas();
-
-    this.drawRectangle([0, 0], 10, 30, [1, 0, 0, 1]);
-    this.drawRectangle([20, 0], 60, 40, [0, 1, 0, 1]);
-    this.drawRectangle([100, 0], 10, 50, [0, 0, 1, 1]);
   }
 
   public drawRectangle([x, y]: [number, number], width: number, height: number, [r, g, b, a]: [number, number, number, number]): void {
@@ -53,6 +55,22 @@ export class WebGLService {
     this.gl.uniform4f(this.colorUniformLocation, r, g, b, a);
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 6); // count → rectangle points numbers 6 because of 2 triangles
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null); // null → unbind buffer
+    this.gl.bindVertexArray(null);
+  }
+
+  public drawTriangle(
+    left: [x: number, y: number],
+    right: [x: number, y: number],
+    top: [x: number, y: number],
+    [r, g, b, a]: [number, number, number, number]
+  ): void {
+    this.gl.bindVertexArray(this.vao);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+    const positions = new Float32Array([...left, 0, ...top, 0, ...right, 0]);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
+    this.gl.uniform4f(this.colorUniformLocation, r, g, b, a);
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     this.gl.bindVertexArray(null);
   }
 
