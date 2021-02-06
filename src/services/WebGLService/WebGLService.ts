@@ -1,8 +1,9 @@
 import { UTILS } from '../../common/Utils/UTILS';
 import DefaultVertexShaderSource from './Shaders/VertextShaderSource.vert';
 import DefaultFragmentShaderSource from './Shaders/FragmentShaderSource.frag';
+import { IWebGLService } from './interfaces/IWebGLService';
 
-export class WebGLService {
+export class WebGLService implements IWebGLService {
   private readonly gl: WebGL2RenderingContext;
 
   private vertexShader: WebGLShader;
@@ -41,6 +42,11 @@ export class WebGLService {
     this.clearCanvas();
   }
 
+  public clearCanvas(): void {
+    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+  }
+
   public drawRectangle([x, y]: [number, number], width: number, height: number, [r, g, b, a]: [number, number, number, number]): void {
     this.gl.bindVertexArray(this.vao);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
@@ -72,11 +78,6 @@ export class WebGLService {
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     this.gl.bindVertexArray(null);
-  }
-
-  private clearCanvas(): void {
-    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
   }
 
   private createShader(type: GLenum, source: string): WebGLShader {
