@@ -14,4 +14,8 @@ export namespace UTILS {
   export function isTruthy(value: unknown): boolean {
     return value == true;
   }
+
+  export function isFalsy(value: unknown): boolean {
+    return value == false;
+  }
 }
