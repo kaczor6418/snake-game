@@ -1,12 +1,17 @@
 import { GameView } from './GameView';
 import { webGLServiceMock } from '../../services/WebGLService/__mocks__/web-gl-service';
+import { createGameModelMock } from '../GameModel/GameModel.unit.test';
 
 describe(GameView.name, () => {
   let gameView: GameView;
   const fieldWidth = 10;
   const fieldHeight = 10;
   beforeEach(() => {
-    gameView = new GameView(webGLServiceMock, fieldWidth, fieldHeight);
+    gameView = new GameView({
+      gameModel: createGameModelMock(),
+      webGLService: webGLServiceMock,
+      fieldSize: { width: fieldWidth, height: fieldHeight }
+    });
   });
   describe(GameView.prototype['convertToPositionOnCanvas'].name, () => {
     test('should convert row and column index to canvas position', () => {
