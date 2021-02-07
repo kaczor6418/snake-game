@@ -14,5 +14,8 @@ export const webGLServiceMock: IWebGLService = {
   },
   clearCanvas(): void {
     return void 0;
+  },
+  fullScreen() {
+    return void 0;
   }
 };

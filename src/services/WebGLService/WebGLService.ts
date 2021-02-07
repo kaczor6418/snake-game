@@ -5,6 +5,7 @@ import { IWebGLService } from './interfaces/IWebGLService';
 
 export class WebGLService implements IWebGLService {
   private readonly gl: WebGL2RenderingContext;
+  private readonly canvas: HTMLCanvasElement;
 
   private vertexShader: WebGLShader;
   private fragmentShader: WebGLShader;
@@ -21,6 +22,7 @@ export class WebGLService implements IWebGLService {
     fragmentShaderSource: string = DefaultFragmentShaderSource
   ) {
     this.gl = this.getWebGLContext(canvas);
+    this.canvas = canvas;
     this.vertexShader = this.createShader(this.gl.VERTEX_SHADER, vertexShaderSource);
     this.fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
     this.program = this.createProgram(this.vertexShader, this.fragmentShader);
@@ -78,6 +80,14 @@ export class WebGLService implements IWebGLService {
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     this.gl.bindVertexArray(null);
+  }
+
+  public fullScreen(): void {
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.top = '0';
+    this.canvas.style.left = '0';
+    this.canvas.style.width = '100vw';
+    this.canvas.style.height = '100vh';
   }
 
   private createShader(type: GLenum, source: string): WebGLShader {

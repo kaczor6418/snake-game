@@ -7,4 +7,5 @@ export interface IWebGLService {
     top: [x: number, y: number],
     [r, g, b, a]: [number, number, number, number]
   ): void;
+  fullScreen(): void;
 }
