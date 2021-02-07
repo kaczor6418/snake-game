@@ -40,8 +40,8 @@ export class GameController implements IGameController {
     ) {
       this.moveTop(snakeHead);
     }
-    this.gameModel.setNewSnakeHead(snakeHead);
     this.changeScore(snakeHead);
+    this.gameModel.setNewSnakeHead(snakeHead);
   }
 
   private changeScore(position: Position): void {
