@@ -31,8 +31,16 @@ export class GameModel implements IGameModel {
     this.originalFoodsPositions = ARRAY_UTILS.shellCopy(this.foodPositions);
   }
 
+  get allFoods() {
+    return this.foodPositions;
+  }
+
+  get allSnakeBodyParts() {
+    return this.snakeBodyPartsPositions;
+  }
+
   get snakeHeadPosition(): Position {
-    return this.snakeBodyPartsPositions[0];
+    return this.snakeBodyPartsPositions[this.snakeBodyPartsCount - 1];
   }
 
   get snakeBodyPartsCount(): number {

@@ -6,6 +6,9 @@ export interface IGameModel {
   score: number;
   shouldFinish: boolean;
   snakeHeadDirection: Direction;
+
+  readonly allFoods: Position[];
+  readonly allSnakeBodyParts: Position[];
   readonly snakeHeadPosition: Position;
   readonly snakeBodyPartsCount: number;
 
