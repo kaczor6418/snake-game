@@ -7,3 +7,11 @@ describe(MATH_UTILS.generateRandomInteger.name, () => {
     expect(expectedValues.includes(MATH_UTILS.generateRandomInteger(0, 3))).toBeTruthy();
   });
 });
+
+describe(MATH_UTILS.generateRandomNumber.name, () => {
+  test('should generate value in range 0.0 - 1.0', () => {
+    const generatedValue = MATH_UTILS.generateRandomNumber(0, 1);
+    expect(generatedValue).toBeLessThan(1);
+    expect(generatedValue).toBeGreaterThan(0);
+  });
+});

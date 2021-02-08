@@ -1,4 +1,5 @@
 import { UTILS } from './UTILS';
+import { CouldNotFindValueError } from '../../errors/CouldNotFindValueError';
 
 export namespace ARRAY_UTILS {
   export function shellCopy<T>(array: T[]): T[] {
@@ -30,10 +31,11 @@ export namespace ARRAY_UTILS {
   }
 
   export function removePrimitiveValue<T>(array: T[], value: T): T {
-    return array.splice(
-      array.findIndex((v) => v === value),
-      1
-    )[0];
+    const indexOfValueToRemove = array.findIndex((v) => v === value);
+    if (indexOfValueToRemove < 0) {
+      throw new CouldNotFindValueError('Could not find value in array');
+    }
+    return array.splice(array.findIndex((v) => v === value) ?? array.length, 1)[0];
   }
 
   export function hasObjectWithSameShape<T extends Record<string, unknown>>(arr: T[], value: T): boolean {
