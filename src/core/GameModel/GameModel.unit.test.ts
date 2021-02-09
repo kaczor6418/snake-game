@@ -29,6 +29,31 @@ describe(GameModel.name, () => {
       expect(() => gameModel.addNewSnakeTailPart()).toThrowError(Error);
     });
   });
+  describe(GameModel.prototype.copy.name, () => {
+    test('should create copy of class instance', () => {
+      const gameModelCopy = <GameModel>gameModel.copy();
+      expect(gameModelCopy).not.toBe(gameModel);
+      expect(gameModelCopy.hash()).toBe(gameModel.hash());
+      expect(gameModelCopy['foodPositions']).not.toBe(gameModel['foodPositions']);
+      expect(gameModelCopy['originalFoodsPositions']).not.toBe(gameModel['originalFoodsPositions']);
+      expect(gameModelCopy['snakeBodyPartsPositions']).not.toBe(gameModel['snakeBodyPartsPositions']);
+    });
+  });
+  describe(GameModel.prototype.hash.name, () => {
+    test('should create original hash of class instance', () => {
+      const expectedHash = `${gameModel.snakeHeadDirection}${gameModel.score}${Number(gameModel.shouldFinish)}${gameModel['foodPositions']
+        .map(({ x, y }) => x.toString() + y.toString())
+        .toString()
+        .replace(/,/g, '')}${gameModel['originalFoodsPositions']
+        .map(({ x, y }) => x.toString() + y.toString())
+        .toString()
+        .replace(/,/g, '')}${gameModel['snakeBodyPartsPositions']
+        .map(({ x, y }) => x.toString() + y.toString())
+        .toString()
+        .replace(/,/g, '')}`;
+      expect(gameModel.hash()).toBe(expectedHash);
+    });
+  });
   describe(GameModel.prototype.isBottomWall.name, () => {
     test('should return true if position is a bottom wall', () => {
       expect(gameModel.isBottomWall(gameModel['rowsCount'])).toBeTruthy();
