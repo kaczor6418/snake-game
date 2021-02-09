@@ -6,8 +6,9 @@ import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
 import { Direction } from './interfaces/Direction';
 import { UTILS } from '../../common/Utils/UTILS';
 import { isNumber } from '../../common/TYPEGUARDS';
+import { ReinforcementModel } from '../../services/ReinforcementAgents/interfaces/ReinforcementModel';
 
-export class GameModel implements IGameModel {
+export class GameModel implements IGameModel, ReinforcementModel {
   public score: number;
   public shouldFinish: boolean;
   public snakeHeadDirection: Direction;
@@ -59,9 +60,35 @@ export class GameModel implements IGameModel {
     }
   }
 
-  public setNewSnakeHead(position: Position): void {
-    this.lastSnakeTailPart = this.removeSnakeBodyPart(0);
-    this.snakeBodyPartsPositions.push(position);
+  public copy(): ReinforcementModel {
+    const gameModelCopy = new GameModel({ columnsCount: this.columnsCount, rowsCount: this.rowsCount, foodCount: 0 });
+    gameModelCopy.score = this.score;
+    gameModelCopy.shouldFinish = this.shouldFinish;
+    gameModelCopy.snakeHeadDirection = this.snakeHeadDirection;
+    gameModelCopy.setFoodsOriginalPositions(UTILS.shellCopy(this.originalFoodsPositions));
+    gameModelCopy.setFoodsPositions(UTILS.shellCopy(this.foodPositions));
+    gameModelCopy.setSnakeBodyPartsPositions(UTILS.shellCopy(this.snakeBodyPartsPositions));
+    return gameModelCopy;
+  }
+
+  public hash(): string {
+    return (
+      this.snakeHeadDirection.toString() +
+      this.score.toString() +
+      Number(this.shouldFinish).toString() +
+      this.foodPositions
+        .map(({ x, y }) => x.toString() + y.toString())
+        .toString()
+        .replace(/,/g, '') +
+      this.originalFoodsPositions
+        .map(({ x, y }) => x.toString() + y.toString())
+        .toString()
+        .replace(/,/g, '') +
+      this.snakeBodyPartsPositions
+        .map(({ x, y }) => x.toString() + y.toString())
+        .toString()
+        .replace(/,/g, '')
+    );
   }
 
   public isBottomWall(y: number): boolean {
@@ -140,25 +167,16 @@ export class GameModel implements IGameModel {
     return ARRAY_UTILS.removeElement(this.snakeBodyPartsPositions, indexOfPartToRemove);
   }
 
-  public render(): void {
-    for (let x = 0; x < this.columnsCount; x++) {
-      for (let y = 0; y < this.rowsCount; y++) {
-        if (this.isFoodPosition({ x, y })) {
-          // code responsible to render food
-        } else if (this.isSnakeBodyPartPosition({ x, y })) {
-          // code responsible to render snake body part
-        } else {
-          // code responsible to render grid tile
-        }
-      }
-    }
-  }
-
   public reset(): void {
     this.score = 0;
     this.snakeHeadDirection = Direction.RIGHT;
     this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
     this.foodPositions = this.originalFoodsPositions;
+  }
+
+  public setNewSnakeHead(position: Position): void {
+    this.lastSnakeTailPart = this.removeSnakeBodyPart(0);
+    this.snakeBodyPartsPositions.push(position);
   }
 
   public updateBoard(props: Partial<GameModelProps>): void {
@@ -169,6 +187,18 @@ export class GameModel implements IGameModel {
       this.foodPositions = this.generateRandomFoodsPositions(props.foodCount);
       this.originalFoodsPositions = this.foodPositions;
     }
+  }
+
+  protected setSnakeBodyPartsPositions(snakeBodyPartsPositions: Position[]): void {
+    this.snakeBodyPartsPositions = snakeBodyPartsPositions;
+  }
+
+  protected setFoodsPositions(foodsPositions: Position[]): void {
+    this.foodPositions = foodsPositions;
+  }
+
+  protected setFoodsOriginalPositions(originalFoodsPositions: Position[]): void {
+    this.originalFoodsPositions = originalFoodsPositions;
   }
 
   private generateRandomFoodsPositions(foodCount: number): Position[] {

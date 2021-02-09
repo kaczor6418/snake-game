@@ -29,7 +29,6 @@ export interface IGameModel {
   isNotSnakeBodyPosition(position: Position): boolean;
   isNotWall(position: Position): boolean;
   isWall(position: Position): boolean;
-  render(): void;
   removeFood(position: Position): Position;
   removeSnakeBodyPart(position: number | Position): Position;
   reset(): void;
