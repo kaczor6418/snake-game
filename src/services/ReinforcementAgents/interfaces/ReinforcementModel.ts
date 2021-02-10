@@ -1,5 +1,5 @@
 export interface ReinforcementModel {
-  readonly score: number;
+  score: number;
 
   copy(): ReinforcementModel;
   hash(): string;

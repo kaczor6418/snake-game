@@ -21,7 +21,28 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
     this.getPossibleActions = getPossibleActions;
   }
 
-  public async train(player: ReinforcementPlayer<T>): Promise<number> {
+  public async fit(player: ReinforcementPlayer<T>, callback?: (action: T) => void, callbackDellyInMs = 500): Promise<void> {
+    player.getModel().reset();
+    while (UTILS.isFalsy(player.getModel().isGameOver())) {
+      const action = this.getAction(player.getModel());
+      if (UTILS.isDefined(callback)) {
+        callback(action);
+        await UTILS.wait(callbackDellyInMs);
+      } else {
+        player.move(action);
+        console.info(`YOU FINISHED GAME WITH SCORE:${player.getModel().score}`);
+      }
+    }
+  }
+
+  public learn(player: ReinforcementPlayer<T>, epochs: number): void {
+    for (let i = 0; i < epochs; i++) {
+      this.runSingleEpoch(player);
+    }
+    this.turnOfLearning();
+  }
+
+  private runSingleEpoch(player: ReinforcementPlayer<T>): void {
     player.getModel().reset();
     let state = player.getModel().copy();
     while (UTILS.isFalsy(state.isGameOver())) {
@@ -30,16 +51,6 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
       this.updateQValue(state, action, nextState.score, nextState);
       state = nextState.copy();
     }
-    this.turnOfLearning();
-    return Promise.resolve(state.score);
-  }
-
-  public test(player: ReinforcementPlayer<T>): void {
-    player.getModel().reset();
-    while (UTILS.isFalsy(player.getModel().isGameOver())) {
-      player.move(this.getAction(player.getModel()));
-    }
-    console.info(`Finished with score: ${player.getModel().score}`);
   }
 
   private calculateQValue(state: ReinforcementModel, action: T, reward: number, nextState: ReinforcementModel): number {
@@ -85,17 +96,8 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
     }, -Infinity);
   }
 
-  /**
-   * This method will return a value for specified state and action
-   * I used eslint ignore here because it is performance critical place
-   * If this method will return `undefined` it means that sth went wrong before this method call
-   * @param state → state of q values table
-   * @param action → action executed on given `state`
-   * @private
-   */
   private getQValue(state: ReinforcementModel, action: T): number {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.qValues.get(state.hash())!.get(action)!;
+    return this.qValues.get(state.hash())?.get(action) ?? 0;
   }
 
   private setQValue(state: ReinforcementModel, action: T, value: number): void {
@@ -105,7 +107,7 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
     );
   }
 
-  private turnOfLearning() {
+  public turnOfLearning() {
     this.learningRate = 0;
     this.exploreChance = 0;
   }

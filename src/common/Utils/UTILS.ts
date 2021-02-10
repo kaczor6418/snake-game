@@ -8,7 +8,7 @@ export namespace UTILS {
   }
 
   export function shellCopy<T>(value: T): T {
-    return <T>JSON.parse(JSON.stringify(value));
+    return Object.assign({}, value);
   }
 
   export function isTruthy(value: unknown): boolean {
@@ -17,5 +17,9 @@ export namespace UTILS {
 
   export function isFalsy(value: unknown): boolean {
     return value == false;
+  }
+
+  export function wait(ms: number): Promise<void> {
+    return new Promise<void>((resolve) => window.setTimeout(resolve, ms));
   }
 }

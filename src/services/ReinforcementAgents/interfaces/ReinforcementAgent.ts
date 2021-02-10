@@ -1,6 +1,6 @@
 import { ReinforcementPlayer } from './ReinforcementPlayer';
 
 export interface ReinforcementAgent<T extends string> {
-  train(player: ReinforcementPlayer<T>): Promise<number>;
-  test(player: ReinforcementPlayer<T>): void;
+  learn(player: ReinforcementPlayer<T>, epochs: number): void;
+  fit(player: ReinforcementPlayer<T>, callback?: (action: T) => void, callbackDellyInMs?: number): Promise<void>;
 }
