@@ -11,11 +11,15 @@ import { GameView } from '../GameView/GameView';
 import { KeyName } from '../../common/Enums/KeyName';
 import { MoveDirection } from '../GameController/interfaces/MoveDirection';
 import { UTILS } from '../../common/Utils/UTILS';
+import { ReinforcementPlayer } from '../../services/ReinforcementAgents/interfaces/ReinforcementPlayer';
+import { ReinforcementAgent } from '../../services/ReinforcementAgents/interfaces/ReinforcementAgent';
+import { EnumValueEnumConverter } from '../../converters/EnumValueEnumConverter';
 
-export class SnakeGame implements ISnakeGame {
+export class SnakeGame implements ISnakeGame<keyof typeof MoveDirection>, ReinforcementPlayer<MoveDirection> {
+  public readonly model: IGameModel;
+  public readonly controller: IGameController;
+
   private readonly webGLService: IWebGLService;
-  private readonly gameModel: IGameModel;
-  private readonly gameController: IGameController;
   private readonly gameView: IGameView;
 
   private pause: boolean;
@@ -25,17 +29,28 @@ export class SnakeGame implements ISnakeGame {
     this.pause = false;
     this.chosenMove = MoveDirection.STRAIGHT;
     this.webGLService = new WebGLService(canvas);
-    this.gameModel = new GameModel(boardConfiguration);
-    this.gameController = new GameController(this.gameModel);
+    this.model = new GameModel(boardConfiguration);
+    this.controller = new GameController(this.model);
     this.gameView = new GameView({
       fieldSize: { width: canvas.width / boardConfiguration.columnsCount, height: canvas.height / boardConfiguration.rowsCount },
       webGLService: this.webGLService,
-      gameModel: this.gameModel
+      gameModel: this.model
     });
   }
 
   public fullScreen(): void {
     this.webGLService.fullScreen();
+  }
+
+  public runSnakeWithAgent(agent: ReinforcementAgent<keyof typeof MoveDirection>): void {
+    void agent.fit(
+      this,
+      (action) => {
+        this.controller.move(EnumValueEnumConverter.toEnumFromValue(action, MoveDirection));
+        this.gameView.render();
+      },
+      1000
+    );
   }
 
   public start(): void {
@@ -49,14 +64,14 @@ export class SnakeGame implements ISnakeGame {
   }
 
   private runSnake: () => void = (): void => {
-    if (this.gameModel.isGameOver()) {
-      console.log(`GAME OVER! YOUR SCORE: ${this.gameModel.score}`);
+    if (this.model.isGameOver()) {
+      console.log(`GAME OVER! YOUR SCORE: ${this.model.score}`);
       return void 0;
     } else if (UTILS.isTruthy(this.pause)) {
       console.log('PAUSE');
       return void 0;
     }
-    this.gameController.move(this.chosenMove);
+    this.controller.move(this.chosenMove);
     this.gameView.render();
     this.chosenMove = MoveDirection.STRAIGHT;
     window.setTimeout(() => window.requestAnimationFrame(this.runSnake), 500);
