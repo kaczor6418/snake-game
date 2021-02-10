@@ -1,8 +1,9 @@
 import { Position } from './Position';
 import { Direction } from './Direction';
 import { GameModelProps } from './GameModelProps';
+import { ReinforcementModel } from '../../../services/ReinforcementAgents/interfaces/ReinforcementModel';
 
-export interface IGameModel {
+export type IGameModel = ReinforcementModel & {
   score: number;
   shouldFinish: boolean;
   snakeHeadDirection: Direction;
@@ -34,4 +35,4 @@ export interface IGameModel {
   reset(): void;
   setNewSnakeHead(position: Position): void;
   updateBoard(props: Partial<GameModelProps>): void;
-}
+};

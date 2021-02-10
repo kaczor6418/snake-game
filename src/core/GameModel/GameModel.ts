@@ -8,7 +8,7 @@ import { UTILS } from '../../common/Utils/UTILS';
 import { isNumber } from '../../common/TYPEGUARDS';
 import { ReinforcementModel } from '../../services/ReinforcementAgents/interfaces/ReinforcementModel';
 
-export class GameModel implements IGameModel, ReinforcementModel {
+export class GameModel implements IGameModel {
   public score: number;
   public shouldFinish: boolean;
   public snakeHeadDirection: Direction;
@@ -27,7 +27,7 @@ export class GameModel implements IGameModel, ReinforcementModel {
     this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
     this.rowsCount = rowsCount;
     this.columnsCount = columnsCount;
-    this.lastSnakeTailPart = null;
+    this.lastSnakeTailPart = { x: 0, y: 0 };
     this.foodPositions = this.generateRandomFoodsPositions(foodCount);
     this.originalFoodsPositions = ARRAY_UTILS.shellCopy(this.foodPositions);
   }
@@ -65,9 +65,9 @@ export class GameModel implements IGameModel, ReinforcementModel {
     gameModelCopy.score = this.score;
     gameModelCopy.shouldFinish = this.shouldFinish;
     gameModelCopy.snakeHeadDirection = this.snakeHeadDirection;
-    gameModelCopy.setFoodsOriginalPositions(UTILS.shellCopy(this.originalFoodsPositions));
-    gameModelCopy.setFoodsPositions(UTILS.shellCopy(this.foodPositions));
-    gameModelCopy.setSnakeBodyPartsPositions(UTILS.shellCopy(this.snakeBodyPartsPositions));
+    gameModelCopy.setFoodsOriginalPositions(ARRAY_UTILS.shellCopy(this.originalFoodsPositions));
+    gameModelCopy.setFoodsPositions(ARRAY_UTILS.shellCopy(this.foodPositions));
+    gameModelCopy.setSnakeBodyPartsPositions(ARRAY_UTILS.shellCopy(this.snakeBodyPartsPositions));
     return gameModelCopy;
   }
 
@@ -169,9 +169,11 @@ export class GameModel implements IGameModel, ReinforcementModel {
 
   public reset(): void {
     this.score = 0;
+    this.shouldFinish = false;
     this.snakeHeadDirection = Direction.RIGHT;
     this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
-    this.foodPositions = this.originalFoodsPositions;
+    this.lastSnakeTailPart = { x: 0, y: 0 };
+    this.foodPositions = ARRAY_UTILS.shellCopy(this.originalFoodsPositions);
   }
 
   public setNewSnakeHead(position: Position): void {
@@ -205,13 +207,16 @@ export class GameModel implements IGameModel, ReinforcementModel {
     const foodPositions: Position[] = [];
     for (let i = 0; i < foodCount; i++) {
       let uniqueFoodPosition = {
-        x: MATH_UTILS.generateRandomInteger(1, this.columnsCount - 1),
-        y: MATH_UTILS.generateRandomInteger(1, this.rowsCount - 1)
+        x: MATH_UTILS.generateRandomInteger(0, this.columnsCount),
+        y: MATH_UTILS.generateRandomInteger(0, this.rowsCount)
       };
-      while (ARRAY_UTILS.hasObjectWithSameShape(foodPositions, uniqueFoodPosition)) {
+      while (
+        ARRAY_UTILS.hasObjectWithSameShape(foodPositions, uniqueFoodPosition) ||
+        (uniqueFoodPosition.x === 0 && uniqueFoodPosition.y === 0)
+      ) {
         uniqueFoodPosition = {
-          x: MATH_UTILS.generateRandomInteger(1, this.columnsCount - 1),
-          y: MATH_UTILS.generateRandomInteger(1, this.rowsCount - 1)
+          x: MATH_UTILS.generateRandomInteger(0, this.columnsCount),
+          y: MATH_UTILS.generateRandomInteger(0, this.rowsCount)
         };
       }
       foodPositions.push(uniqueFoodPosition);
