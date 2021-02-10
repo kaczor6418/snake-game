@@ -3,7 +3,7 @@ import { Direction } from './Direction';
 import { GameModelProps } from './GameModelProps';
 import { ReinforcementModel } from '../../../services/ReinforcementAgents/interfaces/ReinforcementModel';
 
-export type IGameModel = ReinforcementModel & {
+export interface IGameModel extends ReinforcementModel {
   score: number;
   shouldFinish: boolean;
   snakeHeadDirection: Direction;
@@ -17,7 +17,6 @@ export type IGameModel = ReinforcementModel & {
   addNewSnakeTailPart(): void;
   isBottomWall(y: number): boolean;
   isFoodPosition(position: Position): boolean;
-  isGameOver(): boolean;
   isLeftWall(x: number): boolean;
   isRightWall(x: number): boolean;
   isTopWall(y: number): boolean;
@@ -32,7 +31,6 @@ export type IGameModel = ReinforcementModel & {
   isWall(position: Position): boolean;
   removeFood(position: Position): Position;
   removeSnakeBodyPart(position: number | Position): Position;
-  reset(): void;
   setNewSnakeHead(position: Position): void;
   updateBoard(props: Partial<GameModelProps>): void;
-};
+}

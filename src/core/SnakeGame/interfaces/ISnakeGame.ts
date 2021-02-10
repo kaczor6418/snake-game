@@ -1,8 +1,7 @@
-import { ReinforcementAgent } from '../../../services/ReinforcementAgents/interfaces/ReinforcementAgent';
+import { ReinforcementPlayer } from '../../../services/ReinforcementAgents/interfaces/ReinforcementPlayer';
 
-export interface ISnakeGame<T extends string> {
+export interface ISnakeGame<T extends string> extends ReinforcementPlayer<T> {
   fullScreen(): void;
   start(): void;
   stop(): void;
-  runSnakeWithAgent(agent: ReinforcementAgent<T>): void;
 }

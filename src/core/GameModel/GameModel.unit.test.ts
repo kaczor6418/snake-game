@@ -26,7 +26,10 @@ describe(GameModel.name, () => {
       expect(snakeHeadPositionBeforeAddingTailPart.y).toEqual(gameModel['snakeBodyPartsPositions'][0].y);
     });
     test('should throw an error if tried to add tail part before changing head position', () => {
-      expect(() => gameModel.addNewSnakeTailPart()).toThrowError(Error);
+      expect(() => {
+        gameModel['lastSnakeTailPart'] = null;
+        gameModel.addNewSnakeTailPart();
+      }).toThrowError(Error);
     });
   });
   describe(GameModel.prototype.copy.name, () => {
