@@ -1,0 +1,6 @@
+export class EnumKeyOrValueNotFound extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = EnumKeyOrValueNotFound.name;
+  }
+}
