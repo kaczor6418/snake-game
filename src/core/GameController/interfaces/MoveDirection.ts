@@ -1,5 +1,5 @@
 export enum MoveDirection {
-  LEFT,
-  RIGHT,
-  STRAIGHT
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
+  STRAIGHT = 'STRAIGHT'
 }

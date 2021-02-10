@@ -13,7 +13,7 @@ export class GameController implements IGameController {
     this.gameModel = gameModel;
   }
 
-  public move(direction: MoveDirection): void {
+  public move(direction: MoveDirection): IGameModel {
     const snakeHead: Position = UTILS.shellCopy(this.gameModel.snakeHeadPosition);
     if (
       (direction === MoveDirection.LEFT && this.gameModel.snakeHeadDirection === Direction.LEFT) ||
@@ -42,6 +42,7 @@ export class GameController implements IGameController {
     }
     this.changeScore(snakeHead);
     this.gameModel.setNewSnakeHead(snakeHead);
+    return this.gameModel;
   }
 
   private changeScore(position: Position): void {

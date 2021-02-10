@@ -22,16 +22,18 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
   }
 
   public async fit(player: ReinforcementPlayer<T>, callback?: (action: T) => void, callbackDellyInMs = 500): Promise<void> {
-    player.getModel().reset();
-    while (UTILS.isFalsy(player.getModel().isGameOver())) {
-      const action = this.getAction(player.getModel());
+    player.model.reset();
+    while (UTILS.isFalsy(player.model.isGameOver())) {
+      const action = this.getAction(player.model);
       if (UTILS.isDefined(callback)) {
         callback(action);
         await UTILS.wait(callbackDellyInMs);
       } else {
-        player.move(action);
-        console.info(`YOU FINISHED GAME WITH SCORE:${player.getModel().score}`);
+        player.controller.move(action);
       }
+    }
+    if (UTILS.isNullOrUndefined(callback)) {
+      console.info(`YOU FINISHED GAME WITH SCORE:${player.model.score}`);
     }
   }
 
@@ -43,11 +45,11 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
   }
 
   private runSingleEpoch(player: ReinforcementPlayer<T>): void {
-    player.getModel().reset();
-    let state = player.getModel().copy();
+    player.model.reset();
+    let state = player.model.copy();
     while (UTILS.isFalsy(state.isGameOver())) {
       const action = this.getAction(state);
-      const nextState = player.move(action);
+      const nextState = player.controller.move(action);
       this.updateQValue(state, action, nextState.score, nextState);
       state = nextState.copy();
     }
