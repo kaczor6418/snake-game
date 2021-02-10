@@ -13,11 +13,11 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
   private readonly adaptation: number;
   private readonly getPossibleActions: () => T[];
 
-  constructor(learningRate: number, epsilon: number, discount: number, getPossibleActions: () => T[]) {
+  constructor(learningRate: number, exploreChance: number, adaptation: number, getPossibleActions: () => T[]) {
     this.qValues = new Map<string, Map<T, number>>();
     this.learningRate = learningRate;
-    this.exploreChance = epsilon;
-    this.adaptation = discount;
+    this.exploreChance = exploreChance;
+    this.adaptation = adaptation;
     this.getPossibleActions = getPossibleActions;
   }
 
@@ -109,7 +109,7 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
     );
   }
 
-  public turnOfLearning() {
+  private turnOfLearning() {
     this.learningRate = 0;
     this.exploreChance = 0;
   }

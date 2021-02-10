@@ -74,13 +74,8 @@ export class GameModel implements IGameModel {
   public hash(): string {
     return (
       this.snakeHeadDirection.toString() +
-      this.score.toString() +
       Number(this.shouldFinish).toString() +
       this.foodPositions
-        .map(({ x, y }) => x.toString() + y.toString())
-        .toString()
-        .replace(/,/g, '') +
-      this.originalFoodsPositions
         .map(({ x, y }) => x.toString() + y.toString())
         .toString()
         .replace(/,/g, '') +

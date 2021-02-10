@@ -44,10 +44,7 @@ describe(GameModel.name, () => {
   });
   describe(GameModel.prototype.hash.name, () => {
     test('should create original hash of class instance', () => {
-      const expectedHash = `${gameModel.snakeHeadDirection}${gameModel.score}${Number(gameModel.shouldFinish)}${gameModel['foodPositions']
-        .map(({ x, y }) => x.toString() + y.toString())
-        .toString()
-        .replace(/,/g, '')}${gameModel['originalFoodsPositions']
+      const expectedHash = `${gameModel.snakeHeadDirection}${Number(gameModel.shouldFinish)}${gameModel['foodPositions']
         .map(({ x, y }) => x.toString() + y.toString())
         .toString()
         .replace(/,/g, '')}${gameModel['snakeBodyPartsPositions']
