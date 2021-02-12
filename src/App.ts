@@ -19,23 +19,12 @@ export class App extends KKWebComponent {
 
   constructor() {
     super(template);
-    const snakeGame: ISnakeGame = new SnakeGame({
-      boardConfiguration: { columnsCount: 4, foodCount: 2, rowsCount: 4 },
-      canvas: this.canvas
-    });
-    const agent: IReinforcementAgent<MoveDirection> = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
-      adaptation: 0.5,
-      exploreChance: 0.1,
-      getPossibleActions: () => Object.values(MoveDirection),
-      learningRate: 0.1
-    });
-    agent.learn(snakeGame, 10000);
     void this.runSnakeGameWithQLearningAgent();
   }
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
     const snakeGame: ISnakeGame = new SnakeGame({
-      boardConfiguration: { columnsCount: 4, foodCount: 2, rowsCount: 4 },
+      boardConfiguration: { columnsCount: 3, foodCount: 2, rowsCount: 3 },
       canvas: this.canvas
     });
     const agent: IReinforcementAgent<MoveDirection> = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
