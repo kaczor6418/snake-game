@@ -12,10 +12,9 @@ import { KeyName } from '../../common/Enums/KeyName';
 import { MoveDirection } from '../GameController/interfaces/MoveDirection';
 import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementPlayer } from '../../services/ReinforcementAgents/interfaces/ReinforcementPlayer';
-import { ReinforcementAgent } from '../../services/ReinforcementAgents/interfaces/ReinforcementAgent';
-import { EnumValueEnumConverter } from '../../converters/EnumValueEnumConverter';
+import { IReinforcementAgent } from '../../services/ReinforcementAgents/interfaces/IReinforcementAgent';
 
-export class SnakeGame implements ISnakeGame<keyof typeof MoveDirection>, ReinforcementPlayer<MoveDirection> {
+export class SnakeGame implements ISnakeGame<MoveDirection>, ReinforcementPlayer<MoveDirection> {
   public readonly model: IGameModel;
   public readonly controller: IGameController;
 
@@ -42,11 +41,11 @@ export class SnakeGame implements ISnakeGame<keyof typeof MoveDirection>, Reinfo
     this.webGLService.fullScreen();
   }
 
-  public runSnakeWithAgent(agent: ReinforcementAgent<keyof typeof MoveDirection>): void {
+  public runSnakeWithAgent(agent: IReinforcementAgent<MoveDirection>): void {
     void agent.fit(
       this,
       (action) => {
-        this.controller.move(EnumValueEnumConverter.toEnumFromValue(action, MoveDirection));
+        this.controller.move(action);
         this.gameView.render();
       },
       1000

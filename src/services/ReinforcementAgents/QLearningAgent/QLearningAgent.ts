@@ -3,48 +3,14 @@ import { MATH_UTILS } from '../../../common/Utils/MATH_UTILS';
 import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementPlayer } from '../interfaces/ReinforcementPlayer';
 import { UTILS } from '../../../common/Utils/UTILS';
-import { ReinforcementAgent } from '../interfaces/ReinforcementAgent';
+import { ReinforcementAgent } from '../ReinforcementAgent';
 
-export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
-  private learningRate: number;
-  private exploreChance: number;
-  private qValues: Map<string, Map<T, number>>;
-
-  private readonly adaptation: number;
-  private readonly getPossibleActions: () => T[];
-
+export class QLearningAgent<T> extends ReinforcementAgent<T> {
   constructor(learningRate: number, exploreChance: number, adaptation: number, getPossibleActions: () => T[]) {
-    this.qValues = new Map<string, Map<T, number>>();
-    this.learningRate = learningRate;
-    this.exploreChance = exploreChance;
-    this.adaptation = adaptation;
-    this.getPossibleActions = getPossibleActions;
+    super(learningRate, exploreChance, adaptation, getPossibleActions);
   }
 
-  public async fit(player: ReinforcementPlayer<T>, callback?: (action: T) => void, callbackDellyInMs = 500): Promise<void> {
-    player.model.reset();
-    while (UTILS.isFalsy(player.model.isGameOver())) {
-      const action = this.getAction(player.model);
-      if (UTILS.isDefined(callback)) {
-        callback(action);
-        await UTILS.wait(callbackDellyInMs);
-      } else {
-        player.controller.move(action);
-      }
-    }
-    if (UTILS.isNullOrUndefined(callback)) {
-      console.info(`YOU FINISHED GAME WITH SCORE:${player.model.score}`);
-    }
-  }
-
-  public learn(player: ReinforcementPlayer<T>, epochs: number): void {
-    for (let i = 0; i < epochs; i++) {
-      this.runSingleEpoch(player);
-    }
-    this.turnOfLearning();
-  }
-
-  private runSingleEpoch(player: ReinforcementPlayer<T>): void {
+  protected runSingleEpoch(player: ReinforcementPlayer<T>): void {
     player.model.reset();
     let state = player.model.copy();
     while (UTILS.isFalsy(state.isGameOver())) {
@@ -55,13 +21,7 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
     }
   }
 
-  private calculateQValue(state: ReinforcementModel, action: T, reward: number, nextState: ReinforcementModel): number {
-    return (
-      (1 - this.learningRate) * this.getQValue(state, action) + this.learningRate * (reward + this.adaptation * this.getMaxValue(nextState))
-    );
-  }
-
-  private getAction(state: ReinforcementModel): T {
+  protected getAction(state: ReinforcementModel): T {
     const possibleActions = this.getPossibleActions();
     const bestAction = this.getBestAction(state);
     let chosenAction = bestAction;
@@ -70,6 +30,12 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
       chosenAction = ARRAY_UTILS.getRandomValue(possibleActions);
     }
     return chosenAction;
+  }
+
+  private calculateQValue(state: ReinforcementModel, action: T, reward: number, nextState: ReinforcementModel): number {
+    return (
+      (1 - this.learningRate) * this.getQValue(state, action) + this.learningRate * (reward + this.adaptation * this.getMaxValue(nextState))
+    );
   }
 
   private getBestAction(state: ReinforcementModel): T {
@@ -107,11 +73,6 @@ export class QLearningAgent<T extends string> implements ReinforcementAgent<T> {
       state.hash(),
       new Map<T, number>([[action, value]])
     );
-  }
-
-  private turnOfLearning() {
-    this.learningRate = 0;
-    this.exploreChance = 0;
   }
 
   private updateQValue(state: ReinforcementModel, action: T, reward: number, nextState: ReinforcementModel): void {
