@@ -4,10 +4,11 @@ import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementPlayer } from '../interfaces/ReinforcementPlayer';
 import { UTILS } from '../../../common/Utils/UTILS';
 import { ReinforcementAgent } from '../ReinforcementAgent';
+import { QLearningAgentProps } from './interfaces/QLearningAgentProps';
 
 export class QLearningAgent<T> extends ReinforcementAgent<T> {
-  constructor(learningRate: number, exploreChance: number, adaptation: number, getPossibleActions: () => T[]) {
-    super(learningRate, exploreChance, adaptation, getPossibleActions);
+  constructor(agentProps: QLearningAgentProps<T>) {
+    super(agentProps);
   }
 
   protected runSingleEpoch(player: ReinforcementPlayer<T>): void {

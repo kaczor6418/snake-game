@@ -2,6 +2,7 @@ import { IReinforcementAgent } from './interfaces/IReinforcementAgent';
 import { ReinforcementPlayer } from './interfaces/ReinforcementPlayer';
 import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementModel } from './interfaces/ReinforcementModel';
+import { ReinforcementAgentProps } from './interfaces/ReinforcementAgentProps';
 
 export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   protected learningRate: number;
@@ -14,7 +15,7 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   protected abstract runSingleEpoch(player: ReinforcementPlayer<T>): void;
   protected abstract getAction(state: ReinforcementModel): T;
 
-  protected constructor(learningRate: number, exploreChance: number, adaptation: number, getPossibleActions: () => T[]) {
+  protected constructor({ learningRate, exploreChance, adaptation, getPossibleActions }: ReinforcementAgentProps<T>) {
     this.qValues = new Map<string, Map<T, number>>();
     this.learningRate = learningRate;
     this.exploreChance = exploreChance;

@@ -14,7 +14,7 @@ import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementPlayer } from '../../services/ReinforcementAgents/interfaces/ReinforcementPlayer';
 import { IReinforcementAgent } from '../../services/ReinforcementAgents/interfaces/IReinforcementAgent';
 
-export class SnakeGame implements ISnakeGame<MoveDirection>, ReinforcementPlayer<MoveDirection> {
+export class SnakeGame implements ISnakeGame, ReinforcementPlayer<MoveDirection> {
   public readonly model: IGameModel;
   public readonly controller: IGameController;
 
