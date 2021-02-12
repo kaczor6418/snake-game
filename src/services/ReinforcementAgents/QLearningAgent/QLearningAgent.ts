@@ -12,7 +12,6 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
   }
 
   protected runSingleEpoch(player: ReinforcementPlayer<T>): void {
-    player.model.reset();
     let state = player.model.copy();
     while (UTILS.isFalsy(state.isGameOver())) {
       const action = this.getAction(state);
@@ -20,6 +19,7 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
       this.updateQValue(state, action, nextState.score, nextState);
       state = nextState.copy();
     }
+    player.model.reset();
   }
 
   protected getAction(state: ReinforcementModel): T {

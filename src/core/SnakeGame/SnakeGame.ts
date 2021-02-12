@@ -35,14 +35,19 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer<MoveDirection>
       webGLService: this.webGLService,
       gameModel: this.model
     });
+    this.gameView.render();
   }
 
   public fullScreen(): void {
     this.webGLService.fullScreen();
   }
 
-  public runSnakeWithAgent(agent: IReinforcementAgent<MoveDirection>): void {
-    void agent.fit(
+  public async runSnakeWithAgent(agent: IReinforcementAgent<MoveDirection>): Promise<void> {
+    if (this.model.isGameOver()) {
+      this.restart();
+      return void 0;
+    }
+    await agent.fit(
       this,
       (action) => {
         this.controller.move(action);
@@ -50,6 +55,11 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer<MoveDirection>
       },
       1000
     );
+    await this.runSnakeWithAgent(agent);
+  }
+
+  public restart(): void {
+    this.model.reset();
   }
 
   public start(): void {

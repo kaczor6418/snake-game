@@ -40,6 +40,7 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   }
 
   public learn(player: ReinforcementPlayer<T>, epochs: number): void {
+    player.model.reset();
     for (let i = 0; i < epochs; i++) {
       this.runSingleEpoch(player);
     }

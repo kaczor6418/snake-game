@@ -5,5 +5,5 @@ import { IReinforcementAgent } from './IReinforcementAgent';
 export interface ReinforcementPlayer<T> {
   readonly model: ReinforcementModel;
   readonly controller: ReinforcementController<T>;
-  runSnakeWithAgent(agent: IReinforcementAgent<T>): void;
+  runSnakeWithAgent(agent: IReinforcementAgent<T>): Promise<void>;
 }
