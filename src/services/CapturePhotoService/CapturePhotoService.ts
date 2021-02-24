@@ -4,18 +4,19 @@ import { UTILS } from '../../common/Utils/UTILS';
 import { ImageFormat } from '../../common/Enums/ImageFormat';
 import { CanvasService } from '../CanvasService/CanvasService';
 import { CanvasContextType } from '../CanvasService/interfaces/CanvasContext';
+import { ICanvasService } from '../CanvasService/interfaces/ICanvasService';
 
 export class CapturePhotoService implements ICapturePhotoService {
   private readonly photoFormat: ImageFormat;
   private readonly photo: HTMLImageElement;
-  private readonly videoDisplay: HTMLCanvasElement;
+  private readonly videoDisplay: ICanvasService;
   private readonly videoStreamer: HTMLVideoElement;
 
   constructor({ displayWrapper, width, photoFormat }: CapturePhotoServiceProps) {
     this.photoFormat = photoFormat;
     this.photo = document.createElement('img');
     this.videoStreamer = this.createVideoStreamer(width, displayWrapper);
-    this.videoDisplay = this.createVideoDisplay();
+    this.videoDisplay = new CanvasService({ canvas: this.createVideoDisplay() });
     void this.getWebCamAccess();
   }
 
@@ -28,9 +29,9 @@ export class CapturePhotoService implements ICapturePhotoService {
   }
 
   public takePhoto(): void {
-    const context = new CanvasService({ canvas: this.videoDisplay }).getContext(CanvasContextType.TWO_D);
+    const context = this.videoDisplay.getContext(CanvasContextType.TWO_D);
     context.drawImage(this.videoStreamer, 0, 0, this.videoStreamer.width, this.videoStreamer.height);
-    this.photo.src = this.videoDisplay.toDataURL(`image/${this.photoFormat}`);
+    this.photo.src = this.videoDisplay.canvas.toDataURL(`image/${this.photoFormat}`);
   }
 
   private createVideoStreamer(width: number, displayWrapper?: HTMLElement): HTMLVideoElement {

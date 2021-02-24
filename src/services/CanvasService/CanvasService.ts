@@ -5,10 +5,14 @@ import { CanvasContextType } from './interfaces/CanvasContext';
 import { CanvasContextError } from '../../errors/CanvasContextError';
 
 export class CanvasService implements ICanvasService {
-  private readonly canvas: HTMLCanvasElement;
+  private readonly _canvas: HTMLCanvasElement;
 
   constructor({ canvas }: CanvasServiceProps) {
-    this.canvas = canvas;
+    this._canvas = canvas;
+  }
+
+  get canvas() {
+    return this._canvas;
   }
 
   public getContext(contextType: CanvasContextType.TWO_D): CanvasRenderingContext2D;
@@ -16,7 +20,7 @@ export class CanvasService implements ICanvasService {
   public getContext(contextType: CanvasContextType.WEBGL): WebGLRenderingContext;
   public getContext(contextType: CanvasContextType.WEBGL2): WebGL2RenderingContext;
   public getContext(contextType: CanvasContextType): CanvasServiceContext {
-    const context = this.canvas.getContext(contextType);
+    const context = this._canvas.getContext(contextType);
     if (UTILS.isNullOrUndefined(context)) {
       throw new CanvasContextError(`Unable to initialize ${contextType} context. Your browser or machine may not support it.`);
     }
