@@ -2,6 +2,8 @@ import { UTILS } from '../../common/Utils/UTILS';
 import DefaultVertexShaderSource from './Shaders/VertextShaderSource.vert';
 import DefaultFragmentShaderSource from './Shaders/FragmentShaderSource.frag';
 import { IWebGLService } from './interfaces/IWebGLService';
+import { CanvasService } from '../CanvasService/CanvasService';
+import { CanvasContextType } from '../CanvasService/interfaces/CanvasContext';
 
 export class WebGLService implements IWebGLService {
   private readonly gl: WebGL2RenderingContext;
@@ -21,7 +23,7 @@ export class WebGLService implements IWebGLService {
     vertexShaderSource: string = DefaultVertexShaderSource,
     fragmentShaderSource: string = DefaultFragmentShaderSource
   ) {
-    this.gl = this.getWebGLContext(canvas);
+    this.gl = new CanvasService({ canvas }).getContext(CanvasContextType.WEBGL2);
     this.canvas = canvas;
     this.vertexShader = this.createShader(this.gl.VERTEX_SHADER, vertexShaderSource);
     this.fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
@@ -113,14 +115,6 @@ export class WebGLService implements IWebGLService {
       this.gl.deleteProgram(program);
       throw Error('An error occurred while creating shader program');
     }
-  }
-
-  private getWebGLContext(canvas: HTMLCanvasElement): WebGL2RenderingContext {
-    const context = canvas.getContext('webgl2');
-    if (UTILS.isNullOrUndefined(context)) {
-      throw new Error('Unable to initialize WebGL. Your browser or machine may not support it.');
-    }
-    return context;
   }
 
   private resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, multiplier = 1): boolean {

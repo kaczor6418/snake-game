@@ -2,6 +2,8 @@ import { CapturePhotoServiceProps } from './interfaces/CapturePhotoServiceProps'
 import { ICapturePhotoService } from './interfaces/ICapturePhotoService';
 import { UTILS } from '../../common/Utils/UTILS';
 import { ImageFormat } from '../../common/Enums/ImageFormat';
+import { CanvasService } from '../CanvasService/CanvasService';
+import { CanvasContextType } from '../CanvasService/interfaces/CanvasContext';
 
 export class CapturePhotoService implements ICapturePhotoService {
   private readonly photoFormat: ImageFormat;
@@ -17,8 +19,16 @@ export class CapturePhotoService implements ICapturePhotoService {
     void this.getWebCamAccess();
   }
 
-  public takePhoto() {
-    const context = this.get2DContext(this.videoDisplay);
+  public resume(): Promise<void> {
+    return this.videoStreamer.play();
+  }
+
+  public stop(): void {
+    this.videoStreamer.pause();
+  }
+
+  public takePhoto(): void {
+    const context = new CanvasService({ canvas: this.videoDisplay }).getContext(CanvasContextType.TWO_D);
     context.drawImage(this.videoStreamer, 0, 0, this.videoStreamer.width, this.videoStreamer.height);
     this.photo.src = this.videoDisplay.toDataURL(`image/${this.photoFormat}`);
   }
@@ -38,14 +48,6 @@ export class CapturePhotoService implements ICapturePhotoService {
     canvas.width = this.videoStreamer.width;
     canvas.height = this.videoStreamer.height;
     return canvas;
-  }
-
-  private get2DContext(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
-    const context = canvas.getContext('2d');
-    if (UTILS.isNullOrUndefined(context)) {
-      throw new Error('Unable to initialize WebGL. Your browser or machine may not support it.');
-    }
-    return context;
   }
 
   private getWebCamAccess(): Promise<void> {
