@@ -24,7 +24,7 @@ export class App extends KKWebComponent {
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
     const snakeGame: ISnakeGame = new SnakeGame({
-      boardConfiguration: { columnsCount: 3, foodCount: 2, rowsCount: 3 },
+      boardConfiguration: { columnsCount: 10, foodCount: 10, rowsCount: 10 },
       canvas: this.canvas
     });
     const agent: IReinforcementAgent<MoveDirection> = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {

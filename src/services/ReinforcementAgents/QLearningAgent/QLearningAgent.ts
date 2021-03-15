@@ -70,10 +70,15 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
   }
 
   private setQValue(state: ReinforcementModel, action: T, value: number): void {
-    this.qValues.set(
-      state.hash(),
-      new Map<T, number>([[action, value]])
-    );
+    const currentState = this.qValues.get(state.hash());
+    if (UTILS.isDefined(currentState)) {
+      currentState.set(action, value);
+    } else {
+      this.qValues.set(
+        state.hash(),
+        new Map<T, number>([[action, value]])
+      );
+    }
   }
 
   private updateQValue(state: ReinforcementModel, action: T, reward: number, nextState: ReinforcementModel): void {
