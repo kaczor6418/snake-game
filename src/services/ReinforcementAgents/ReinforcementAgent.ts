@@ -7,7 +7,6 @@ import { ReinforcementAgentProps } from './interfaces/ReinforcementAgentProps';
 export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   protected learningRate: number;
   protected exploreChance: number;
-  protected qValues: Map<string, Map<T, number>>;
 
   protected readonly adaptation: number;
   protected readonly getPossibleActions: () => T[];
@@ -16,7 +15,6 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   protected abstract getAction(state: ReinforcementModel): T;
 
   protected constructor({ learningRate, exploreChance, adaptation, getPossibleActions }: ReinforcementAgentProps<T>) {
-    this.qValues = new Map<string, Map<T, number>>();
     this.learningRate = learningRate;
     this.exploreChance = exploreChance;
     this.adaptation = adaptation;

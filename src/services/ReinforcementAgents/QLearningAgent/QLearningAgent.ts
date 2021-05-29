@@ -7,8 +7,11 @@ import { ReinforcementAgent } from '../ReinforcementAgent';
 import { QLearningAgentProps } from './interfaces/QLearningAgentProps';
 
 export class QLearningAgent<T> extends ReinforcementAgent<T> {
+  private qValues: Map<string, Map<T, number>>;
+
   constructor(agentProps: QLearningAgentProps<T>) {
     super(agentProps);
+    this.qValues = new Map<string, Map<T, number>>();
   }
 
   protected runSingleEpoch(player: ReinforcementPlayer<T>): void {
