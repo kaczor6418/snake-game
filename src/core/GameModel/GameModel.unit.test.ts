@@ -261,6 +261,20 @@ describe(GameModel.name, () => {
       expect(gameModel['originalFoodsPositions'].length).toBe(foodCount);
     });
   });
+  describe(GameModel.prototype.getModelAsVector.name, () => {
+    test('should return vector with correct snake head direction', () => {
+      expect(gameModel.getModelAsVector()).toContain(gameModel.snakeHeadDirection);
+    });
+    test('should return vector with correct number of foods', () => {
+      const foodsCountInVector = gameModel.getModelAsVector().filter((value) => value === -2).length;
+      expect(foodsCountInVector).toBe(gameModel.allFoods.length);
+    });
+    test('should return vector with correct number of snake body parts', () => {
+      let foodsCountInVector = gameModel.getModelAsVector().filter((value) => value === -1).length;
+      foodsCountInVector = foodsCountInVector === 0 ? foodsCountInVector : foodsCountInVector - 1;
+      expect(foodsCountInVector).toBe(gameModel.snakeBodyPartsCount - 1);
+    });
+  });
 });
 
 export function createGameModelMock(): GameModel {

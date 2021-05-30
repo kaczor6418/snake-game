@@ -192,6 +192,18 @@ export class GameModel implements IGameModel {
     }
   }
 
+  public getModelAsVector(): number[] {
+    const modelVector = new Array<number>(this.rowsCount * this.columnsCount).fill(0);
+    for (const { x, y } of this.foodPositions) {
+      modelVector[x * this.columnsCount + y] = -2;
+    }
+    for (const { x, y } of this.snakeBodyPartsPositions) {
+      modelVector[x * this.columnsCount + y] = -1;
+    }
+    modelVector[this.snakeHeadPosition.x * this.columnsCount + this.snakeHeadPosition.y] = this.snakeHeadDirection;
+    return modelVector;
+  }
+
   protected setSnakeBodyPartsPositions(snakeBodyPartsPositions: Position[]): void {
     this.snakeBodyPartsPositions = snakeBodyPartsPositions;
   }
