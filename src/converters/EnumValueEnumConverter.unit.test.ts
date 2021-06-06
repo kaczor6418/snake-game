@@ -9,7 +9,9 @@ describe(EnumValueEnumConverter.name, () => {
       expect(EnumValueEnumConverter.toEnumFromKey(MoveDirection.LEFT, MoveDirection)).toBe(MoveDirection.LEFT);
     });
     test('should throw an error for not existing enum key', () => {
-      expect(() => EnumValueEnumConverter.toEnumFromKey('NOT_EXISTING', MoveDirection)).toThrowError(EnumKeyOrValueNotFound);
+      expect(() => EnumValueEnumConverter.toEnumFromKey('NOT_EXISTING', MoveDirection)).toThrowError(
+        EnumKeyOrValueNotFound
+      );
     });
   });
   describe(EnumValueEnumConverter.toEnumFromValue.name, () => {

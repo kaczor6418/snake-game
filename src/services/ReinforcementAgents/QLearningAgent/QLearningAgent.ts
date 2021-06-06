@@ -35,7 +35,8 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
 
   private calculateQValue(state: ReinforcementModel, action: T, reward: number, nextState: ReinforcementModel): number {
     return (
-      (1 - this.learningRate) * this.getQValue(state, action) + this.learningRate * (reward + this.adaptation * this.getMaxValue(nextState))
+      (1 - this.learningRate) * this.getQValue(state, action) +
+      this.learningRate * (reward + this.adaptation * this.getMaxValue(nextState))
     );
   }
 
@@ -74,10 +75,7 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     if (UTILS.isDefined(currentState)) {
       currentState.set(action, value);
     } else {
-      this.qValues.set(
-        state.hash(),
-        new Map<T, number>([[action, value]])
-      );
+      this.qValues.set(state.hash(), new Map<T, number>([[action, value]]));
     }
   }
 

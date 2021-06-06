@@ -22,7 +22,9 @@ export class CanvasService implements ICanvasService {
   public getContext(contextType: CanvasContextType): CanvasServiceContext {
     const context = this._canvas.getContext(contextType);
     if (UTILS.isNullOrUndefined(context)) {
-      throw new CanvasContextError(`Unable to initialize ${contextType} context. Your browser or machine may not support it.`);
+      throw new CanvasContextError(
+        `Unable to initialize ${contextType} context. Your browser or machine may not support it.`
+      );
     }
     return context;
   }

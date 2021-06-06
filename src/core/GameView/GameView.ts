@@ -24,12 +24,22 @@ export class GameView implements IGameView {
   }
 
   private drawSnakeBodyPart(position: Position): void {
-    this.webGLService.drawRectangle(this.convertToPositionOnCanvas(position), this.fieldWidth, this.fieldHeight, [0, 1, 0, 1]);
+    this.webGLService.drawRectangle(
+      this.convertToPositionOnCanvas(position),
+      this.fieldWidth,
+      this.fieldHeight,
+      [0, 1, 0, 1]
+    );
   }
 
   private drawFood(position: Position): void {
     const [x, y] = this.convertToPositionOnCanvas(position);
-    this.webGLService.drawTriangle([x, y], [x + this.fieldWidth, y], [x + this.fieldWidth / 2, y + this.fieldHeight], [1, 0, 0, 1]);
+    this.webGLService.drawTriangle(
+      [x, y],
+      [x + this.fieldWidth, y],
+      [x + this.fieldWidth / 2, y + this.fieldHeight],
+      [1, 0, 0, 1]
+    );
   }
 
   private convertToPositionOnCanvas({ x, y }: Position): [x: number, y: number] {

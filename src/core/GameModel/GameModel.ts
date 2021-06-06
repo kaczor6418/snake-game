@@ -119,7 +119,9 @@ export class GameModel implements IGameModel {
   }
 
   public isNotSnakeBodyPosition({ x, y }: Position): boolean {
-    return this.snakeBodyPartsPositions.every((snakeBodyPosition) => snakeBodyPosition.x !== x && snakeBodyPosition.y !== y);
+    return this.snakeBodyPartsPositions.every(
+      (snakeBodyPosition) => snakeBodyPosition.x !== x && snakeBodyPosition.y !== y
+    );
   }
 
   public isNotTopWall(y: number): boolean {
@@ -131,7 +133,9 @@ export class GameModel implements IGameModel {
   }
 
   public isSnakeBodyPartPosition({ x, y }: Position): boolean {
-    return this.snakeBodyPartsPositions.some((snakeBodyPosition) => snakeBodyPosition.x === x && snakeBodyPosition.y === y);
+    return this.snakeBodyPartsPositions.some(
+      (snakeBodyPosition) => snakeBodyPosition.x === x && snakeBodyPosition.y === y
+    );
   }
 
   public isTopWall(y: number): boolean {
@@ -149,7 +153,9 @@ export class GameModel implements IGameModel {
   public removeFood({ x, y }: Position): Position {
     return ARRAY_UTILS.removeElement(
       this.foodPositions,
-      this.foodPositions.findIndex(({ x: foodXPosition, y: foodYPosition }) => x === foodXPosition && y === foodYPosition)
+      this.foodPositions.findIndex(
+        ({ x: foodXPosition, y: foodYPosition }) => x === foodXPosition && y === foodYPosition
+      )
     );
   }
 

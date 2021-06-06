@@ -23,7 +23,11 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
     this.getPossibleActions = getPossibleActions;
   }
 
-  public async fit(player: ReinforcementPlayer<T>, callback?: (action: T) => void, callbackDellyInMs = 500): Promise<void> {
+  public async fit(
+    player: ReinforcementPlayer<T>,
+    callback?: (action: T) => void,
+    callbackDellyInMs = 500
+  ): Promise<void> {
     player.model.reset();
     while (UTILS.isFalsy(player.model.isGameOver())) {
       const action = this.getAction(player.model);

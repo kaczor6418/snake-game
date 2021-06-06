@@ -31,7 +31,10 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer<MoveDirection>
     this.model = new GameModel(boardConfiguration);
     this.controller = new GameController(this.model);
     this.gameView = new GameView({
-      fieldSize: { width: canvas.width / boardConfiguration.columnsCount, height: canvas.height / boardConfiguration.rowsCount },
+      fieldSize: {
+        width: canvas.width / boardConfiguration.columnsCount,
+        height: canvas.height / boardConfiguration.rowsCount
+      },
       webGLService: this.webGLService,
       gameModel: this.model
     });

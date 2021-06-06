@@ -38,7 +38,10 @@ export abstract class KKWebComponent<T = unknown> extends HTMLElement implements
   protected initialize(): void {
     if (UTILS.isDefined(this.props)) {
       for (const [key, value] of Object.entries(this.props)) {
-        this.setAttribute(key.toLowerCase().replace(CONSTANTS.ENUM_DELIMITER, CONSTANTS.COMPONENT_TAG_DELIMITER), <string>value);
+        this.setAttribute(
+          key.toLowerCase().replace(CONSTANTS.ENUM_DELIMITER, CONSTANTS.COMPONENT_TAG_DELIMITER),
+          <string>value
+        );
       }
     }
   }
