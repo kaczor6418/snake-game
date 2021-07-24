@@ -59,25 +59,28 @@ export class GameController implements IGameController {
     } else {
       this.gameModel.score += FieldPoints.BLANK;
     }
+    if (this.gameModel.allFoods.length === 0) {
+      this.gameModel.score += FieldPoints.WON;
+    }
   }
 
   private moveBottom(position: Position): void {
-    ++position.y;
+    position.y++;
     this.gameModel.snakeHeadDirection = Direction.BOTTOM;
   }
 
   private moveLeft(position: Position): void {
-    --position.x;
+    position.x--;
     this.gameModel.snakeHeadDirection = Direction.LEFT;
   }
 
   private moveRight(position: Position): void {
-    ++position.x;
+    position.x++;
     this.gameModel.snakeHeadDirection = Direction.RIGHT;
   }
 
   private moveTop(position: Position): void {
-    --position.y;
+    position.y--;
     this.gameModel.snakeHeadDirection = Direction.TOP;
   }
 }
