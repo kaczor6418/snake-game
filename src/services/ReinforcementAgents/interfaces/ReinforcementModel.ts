@@ -2,7 +2,7 @@ export interface ReinforcementModel {
   readonly score: number;
 
   copy(): ReinforcementModel;
-  getModelAsVector(): number[];
+  environmentAsVector(): number[];
   hash(): string;
   isGameOver(): boolean;
   reset(): void;

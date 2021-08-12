@@ -7,6 +7,7 @@ import { Direction } from './interfaces/Direction';
 import { UTILS } from '../../common/Utils/UTILS';
 import { isNumber } from '../../common/TYPEGUARDS';
 import { ReinforcementModel } from '../../services/ReinforcementAgents/interfaces/ReinforcementModel';
+import { SnakeEnvironmentElements } from './interfaces/SnakeEnvironmentElements';
 
 export class GameModel implements IGameModel {
   public score: number;
@@ -72,18 +73,7 @@ export class GameModel implements IGameModel {
   }
 
   public hash(): string {
-    return (
-      this.snakeHeadDirection.toString() +
-      Number(this.shouldFinish).toString() +
-      this.foodPositions
-        .map(({ x, y }) => x.toString() + y.toString())
-        .toString()
-        .replace(/,/g, '') +
-      this.snakeBodyPartsPositions
-        .map(({ x, y }) => x.toString() + y.toString())
-        .toString()
-        .replace(/,/g, '')
-    );
+    return this.environmentAsVector().toString().replace(/,/g, '');
   }
 
   public isBottomWall(y: number): boolean {
@@ -192,15 +182,16 @@ export class GameModel implements IGameModel {
     }
   }
 
-  public getModelAsVector(): number[] {
+  public environmentAsVector(): number[] {
     const modelVector = new Array<number>(this.rowsCount * this.columnsCount).fill(0);
     for (const { x, y } of this.foodPositions) {
-      modelVector[x * this.columnsCount + y] = -2;
+      modelVector[x * this.columnsCount + y] = Number(`${SnakeEnvironmentElements.FOOD}${x}${y}`);
     }
     for (const { x, y } of this.snakeBodyPartsPositions) {
-      modelVector[x * this.columnsCount + y] = -1;
+      modelVector[x * this.columnsCount + y] = Number(`${SnakeEnvironmentElements.BODY_PART}${x}${y}`);
     }
-    modelVector[this.snakeHeadPosition.x * this.columnsCount + this.snakeHeadPosition.y] = this.snakeHeadDirection;
+    const snakeHeadPosition = this.snakeHeadPosition.x * this.columnsCount + this.snakeHeadPosition.y;
+    modelVector[snakeHeadPosition] = Number(`${modelVector[snakeHeadPosition]}${this.snakeHeadDirection}`);
     return modelVector;
   }
 

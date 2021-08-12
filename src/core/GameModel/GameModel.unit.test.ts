@@ -43,15 +43,24 @@ describe(GameModel.name, () => {
     });
   });
   describe(GameModel.prototype.hash.name, () => {
-    test('should create original hash of class instance', () => {
-      const expectedHash = `${gameModel.snakeHeadDirection}${Number(gameModel.shouldFinish)}${gameModel['foodPositions']
-        .map(({ x, y }) => x.toString() + y.toString())
-        .toString()
-        .replace(/,/g, '')}${gameModel['snakeBodyPartsPositions']
-        .map(({ x, y }) => x.toString() + y.toString())
-        .toString()
-        .replace(/,/g, '')}`;
-      expect(gameModel.hash()).toBe(expectedHash);
+    test('should create same has everytime in the same state', () => {
+      expect(gameModel.hash()).toBe(gameModel.hash());
+    });
+    test('should create different hash if food was eaten', () => {
+      const hashBeforeFoodEat = gameModel.hash();
+      gameModel.removeFood(gameModel['foodPositions'][0]);
+      expect(hashBeforeFoodEat).not.toBe(gameModel.hash());
+    });
+    test('should create different hash if snake has move', () => {
+      const hashBeforeSnakeMove = gameModel.hash();
+      const changedSnakeHeadPosition = { x: gameModel.snakeHeadPosition.x + 1, y: gameModel.snakeHeadPosition.y + 1 };
+      gameModel.setNewSnakeHead(changedSnakeHeadPosition);
+      expect(hashBeforeSnakeMove).not.toBe(gameModel.hash());
+    });
+    test('should create different hash if snake head changed direction', () => {
+      const hashBeforeSnakeMove = gameModel.hash();
+      gameModel.snakeHeadDirection = gameModel.snakeHeadDirection + 1;
+      expect(hashBeforeSnakeMove).not.toBe(gameModel.hash());
     });
   });
   describe(GameModel.prototype.isBottomWall.name, () => {
@@ -261,18 +270,17 @@ describe(GameModel.name, () => {
       expect(gameModel['originalFoodsPositions'].length).toBe(foodCount);
     });
   });
-  describe(GameModel.prototype.getModelAsVector.name, () => {
-    test('should return vector with correct snake head direction', () => {
-      expect(gameModel.getModelAsVector()).toContain(gameModel.snakeHeadDirection);
-    });
-    test('should return vector with correct number of foods', () => {
-      const foodsCountInVector = gameModel.getModelAsVector().filter((value) => value === -2).length;
-      expect(foodsCountInVector).toBe(gameModel.allFoods.length);
-    });
-    test('should return vector with correct number of snake body parts', () => {
-      let foodsCountInVector = gameModel.getModelAsVector().filter((value) => value === -1).length;
-      foodsCountInVector = foodsCountInVector === 0 ? foodsCountInVector : foodsCountInVector - 1;
-      expect(foodsCountInVector).toBe(gameModel.snakeBodyPartsCount - 1);
+  describe(GameModel.prototype.environmentAsVector.name, () => {
+    test('should return vector with correct size', () => {
+      const expectedSize =
+        gameModel['columnsCount'] * gameModel['rowsCount'] -
+        gameModel.snakeBodyPartsCount -
+        gameModel.allFoods.length +
+        gameModel.snakeBodyPartsCount * 3 +
+        gameModel.allFoods.length * 3 +
+        1;
+      const environmentVectorLength = gameModel.environmentAsVector().toString().replace(/,/g, '').length;
+      expect(expectedSize).toBe(environmentVectorLength);
     });
   });
 });
