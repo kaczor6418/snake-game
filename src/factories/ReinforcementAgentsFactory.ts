@@ -1,7 +1,7 @@
 import { ReinforcementAgentsNames } from './ReinforcementAgentsNames';
-import { IReinforcementAgent } from '../services/ReinforcementAgents/interfaces/IReinforcementAgent';
-import { QLearningAgent } from '../services/ReinforcementAgents/QLearningAgent/QLearningAgent';
-import { ReinforcementAgentProps } from '../services/ReinforcementAgents/interfaces/ReinforcementAgentProps';
+import { IReinforcementAgent } from '../ReinforcementAgents/interfaces/IReinforcementAgent';
+import { QLearningAgent } from '../ReinforcementAgents/QLearningAgent/QLearningAgent';
+import { ReinforcementAgentProps } from '../ReinforcementAgents/interfaces/ReinforcementAgentProps';
 import { ThisSituationShouldNeverHappenError } from '../errors/ThisSituationShouldNeverHappenError';
 
 export function createReinforcementAgent<T>(

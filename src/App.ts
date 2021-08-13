@@ -3,7 +3,7 @@ import { CONSTANTS } from './common/CONSTANTS';
 import { SnakeGame } from './core/SnakeGame/SnakeGame';
 import { MoveDirection } from './core/GameController/interfaces/MoveDirection';
 import { ISnakeGame } from './core/SnakeGame/interfaces/ISnakeGame';
-import { IReinforcementAgent } from './services/ReinforcementAgents/interfaces/IReinforcementAgent';
+import { IReinforcementAgent } from './ReinforcementAgents/interfaces/IReinforcementAgent';
 import { createReinforcementAgent } from './factories/ReinforcementAgentsFactory';
 import { ReinforcementAgentsNames } from './factories/ReinforcementAgentsNames';
 
@@ -29,7 +29,7 @@ export class App extends KKWebComponent {
     });
     const agent: IReinforcementAgent<MoveDirection> = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
       adaptation: 0.5,
-      exploreChance: 0.1,
+      initialEpsilon: 0.1,
       getPossibleActions: () => Object.values(MoveDirection),
       learningRate: 0.1
     });

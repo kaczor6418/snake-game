@@ -1,8 +1,8 @@
-import { ARRAY_UTILS } from '../../../common/Utils/ARRAY_UTILS';
-import { MATH_UTILS } from '../../../common/Utils/MATH_UTILS';
+import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
+import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
 import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementPlayer } from '../interfaces/ReinforcementPlayer';
-import { UTILS } from '../../../common/Utils/UTILS';
+import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementAgent } from '../ReinforcementAgent';
 import { QLearningAgentProps } from './interfaces/QLearningAgentProps';
 
@@ -29,7 +29,7 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     const possibleActions = this.getPossibleActions();
     const bestAction = this.getBestAction(state);
     let chosenAction = bestAction;
-    if (possibleActions.length > 1 && MATH_UTILS.generateRandomNumber(0, 1) < this.exploreChance) {
+    if (possibleActions.length > 1 && MATH_UTILS.generateRandomNumber(0, 1) < this.initialEpsilon) {
       ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);
       chosenAction = ARRAY_UTILS.getRandomValue(possibleActions);
     }

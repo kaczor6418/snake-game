@@ -1,7 +1,7 @@
 import { Position } from './Position';
 import { Direction } from './Direction';
 import { GameModelProps } from './GameModelProps';
-import { ReinforcementModel } from '../../../services/ReinforcementAgents/interfaces/ReinforcementModel';
+import { ReinforcementModel } from '../../../ReinforcementAgents/interfaces/ReinforcementModel';
 
 export interface IGameModel extends ReinforcementModel {
   score: number;

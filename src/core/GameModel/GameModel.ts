@@ -6,7 +6,7 @@ import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
 import { Direction } from './interfaces/Direction';
 import { UTILS } from '../../common/Utils/UTILS';
 import { isNumber } from '../../common/TYPEGUARDS';
-import { ReinforcementModel } from '../../services/ReinforcementAgents/interfaces/ReinforcementModel';
+import { ReinforcementModel } from '../../ReinforcementAgents/interfaces/ReinforcementModel';
 import { SnakeEnvironmentElements } from './interfaces/SnakeEnvironmentElements';
 
 export class GameModel implements IGameModel {
