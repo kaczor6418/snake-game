@@ -1,12 +1,12 @@
 import { IReinforcementAgent } from './interfaces/IReinforcementAgent';
 import { ReinforcementPlayer } from './interfaces/ReinforcementPlayer';
-import { UTILS } from '../../common/Utils/UTILS';
+import { UTILS } from '../common/Utils/UTILS';
 import { ReinforcementModel } from './interfaces/ReinforcementModel';
 import { ReinforcementAgentProps } from './interfaces/ReinforcementAgentProps';
 
 export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   protected learningRate: number;
-  protected exploreChance: number;
+  protected initialEpsilon: number;
 
   protected readonly adaptation: number;
   protected readonly getPossibleActions: () => T[];
@@ -14,9 +14,9 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   protected abstract runSingleEpoch(player: ReinforcementPlayer<T>): void;
   protected abstract getAction(state: ReinforcementModel): T;
 
-  protected constructor({ learningRate, exploreChance, adaptation, getPossibleActions }: ReinforcementAgentProps<T>) {
+  protected constructor({ learningRate, initialEpsilon, adaptation, getPossibleActions }: ReinforcementAgentProps<T>) {
     this.learningRate = learningRate;
-    this.exploreChance = exploreChance;
+    this.initialEpsilon = initialEpsilon;
     this.adaptation = adaptation;
     this.getPossibleActions = getPossibleActions;
   }
@@ -51,6 +51,6 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
 
   private turnOfLearning() {
     this.learningRate = 0;
-    this.exploreChance = 0;
+    this.initialEpsilon = 0;
   }
 }

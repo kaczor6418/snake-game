@@ -1,3 +1,4 @@
+import 'jest';
 import { ARRAY_UTILS } from './ARRAY_UTILS';
 import { CouldNotFindValueError } from '../../errors/CouldNotFindValueError';
 

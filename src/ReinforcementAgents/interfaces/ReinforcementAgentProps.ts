@@ -1,6 +1,6 @@
 export interface ReinforcementAgentProps<T> {
   learningRate: number;
-  exploreChance: number;
+  initialEpsilon: number;
   adaptation: number;
   getPossibleActions: () => T[];
 }

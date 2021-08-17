@@ -1,5 +1,8 @@
-import { layers, LayersModel, sequential } from '@tensorflow/tfjs';
-import { Sequential } from '@tensorflow/tfjs-layers/src/models';
+/* eslint-disable */
+// @ts-nocheck
+// import { layers, LayersModel, sequential } from '@tensorflow/tfjs';
+// import { Sequential } from '@tensorflow/tfjs-layers/src/models';
+import * as tf from '@tensorflow/tfjs';
 import { UTILS } from '../../common/Utils/UTILS';
 import { CanNotCopyWeights } from '../../errors/CanNotCopyWeights';
 
@@ -7,7 +10,7 @@ export class DeepQNetwork {
   private readonly environmentHeight: number;
   private readonly environmentWidth: number;
   private readonly actionsCount: number;
-  private readonly model: LayersModel;
+  private readonly model: tf.LayersModel;
 
   constructor(environmentHeight: number, environmentWidth: number, actionsCount: number) {
     this.environmentWidth = environmentWidth;
@@ -16,10 +19,10 @@ export class DeepQNetwork {
     this.model = this.createNetwork();
   }
 
-  private createNetwork(): LayersModel {
-    const model: Sequential = sequential();
+  private createNetwork(): tf.LayersModel {
+    const model: tf.Sequential = tf.sequential();
     model.add(
-      layers.conv2d({
+      tf.layers.conv2d({
         filters: 128,
         kernelSize: 3,
         strides: 1,
@@ -27,28 +30,28 @@ export class DeepQNetwork {
         inputShape: [this.environmentHeight, this.environmentWidth, 2]
       })
     );
-    model.add(layers.batchNormalization());
+    model.add(tf.layers.batchNormalization());
     model.add(
-      layers.conv2d({
+      tf.layers.conv2d({
         filters: 256,
         kernelSize: 3,
         strides: 1,
         activation: 'relu'
       })
     );
-    model.add(layers.batchNormalization());
+    model.add(tf.layers.batchNormalization());
     model.add(
-      layers.conv2d({
+      tf.layers.conv2d({
         filters: 256,
         kernelSize: 3,
         strides: 1,
         activation: 'relu'
       })
     );
-    model.add(layers.flatten());
-    model.add(layers.dense({ units: 100, activation: 'relu' }));
-    model.add(layers.dropout({ rate: 0.25 }));
-    model.add(layers.dense({ units: this.actionsCount }));
+    model.add(tf.layers.flatten());
+    model.add(tf.layers.dense({ units: 100, activation: 'relu' }));
+    model.add(tf.layers.dropout({ rate: 0.25 }));
+    model.add(tf.layers.dense({ units: this.actionsCount }));
     return model;
   }
 

@@ -1,4 +1,6 @@
-import { util } from '@tensorflow/tfjs';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import * as tf from '@tensorflow/tfjs';
 import { BufferOverSize } from '../../errors/BufferOverSize';
 
 export class ReplayMemory {
@@ -32,7 +34,7 @@ export class ReplayMemory {
       throw new BufferOverSize(batchSize, this.bufferMaxSize);
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    util.shuffle(this.bufferIndexesMap);
+    tf.util.shuffle(this.bufferIndexesMap);
     return this.bufferIndexesMap.map((mappedIndex) => this.buffer[mappedIndex]);
   }
 }
