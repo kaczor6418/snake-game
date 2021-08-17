@@ -1,8 +1,7 @@
 import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
 import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
-import { ReinforcementModel } from '../interfaces/ReinforcementModel';
-import { ReinforcementPlayer } from '../interfaces/ReinforcementPlayer';
 import { UTILS } from '../../common/Utils/UTILS';
+import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementAgent } from '../ReinforcementAgent';
 import { QLearningAgentProps } from './interfaces/QLearningAgentProps';
 
@@ -14,18 +13,18 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     this.qValues = new Map<string, Map<T, number>>();
   }
 
-  protected runSingleEpoch(player: ReinforcementPlayer<T>): void {
-    let state = player.model.copy();
+  protected runSingleEpoch(): void {
+    let state = this.player.model.copy();
     while (UTILS.isFalsy(state.isGameOver())) {
       const action = this.getAction(state);
-      const nextState = player.controller.move(action);
+      const nextState = this.player.controller.move(action);
       this.updateQValue(state, action, nextState.score, nextState);
       state = nextState.copy();
     }
-    player.model.reset();
+    this.player.model.reset();
   }
 
-  protected getAction(state: ReinforcementModel): T {
+  protected getAction(state: ReinforcementModel<T>): T {
     const possibleActions = this.getPossibleActions();
     const bestAction = this.getBestAction(state);
     let chosenAction = bestAction;
@@ -36,14 +35,19 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     return chosenAction;
   }
 
-  private calculateQValue(state: ReinforcementModel, action: T, reward: number, nextState: ReinforcementModel): number {
+  private calculateQValue(
+    state: ReinforcementModel<T>,
+    action: T,
+    reward: number,
+    nextState: ReinforcementModel<T>
+  ): number {
     return (
       (1 - this.learningRate) * this.getQValue(state, action) +
       this.learningRate * (reward + this.adaptation * this.getMaxValue(nextState))
     );
   }
 
-  private getBestAction(state: ReinforcementModel): T {
+  private getBestAction(state: ReinforcementModel<T>): T {
     const [firstAction, ...actions] = this.getPossibleActions();
     let bestActions = [firstAction];
     let bestActionValue = this.getQValue(state, firstAction);
@@ -59,7 +63,7 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     return ARRAY_UTILS.getRandomValue(bestActions);
   }
 
-  private getMaxValue(state: ReinforcementModel): number {
+  private getMaxValue(state: ReinforcementModel<T>): number {
     return this.getPossibleActions().reduce((maxValue, action) => {
       const newValue = this.getQValue(state, action);
       if (newValue > maxValue) {
@@ -69,11 +73,11 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     }, -Infinity);
   }
 
-  private getQValue(state: ReinforcementModel, action: T): number {
+  private getQValue(state: ReinforcementModel<T>, action: T): number {
     return this.qValues.get(state.hash())?.get(action) ?? 0;
   }
 
-  private setQValue(state: ReinforcementModel, action: T, value: number): void {
+  private setQValue(state: ReinforcementModel<T>, action: T, value: number): void {
     const currentState = this.qValues.get(state.hash());
     if (UTILS.isDefined(currentState)) {
       currentState.set(action, value);
@@ -82,7 +86,12 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     }
   }
 
-  private updateQValue(state: ReinforcementModel, action: T, reward: number, nextState: ReinforcementModel): void {
+  private updateQValue(
+    state: ReinforcementModel<T>,
+    action: T,
+    reward: number,
+    nextState: ReinforcementModel<T>
+  ): void {
     this.setQValue(state, action, this.calculateQValue(state, action, reward, nextState));
   }
 }

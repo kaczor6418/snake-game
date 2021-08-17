@@ -1,9 +1,10 @@
+import { MoveDirection } from '../../GameController/interfaces/MoveDirection';
 import { Position } from './Position';
 import { Direction } from './Direction';
 import { GameModelProps } from './GameModelProps';
 import { ReinforcementModel } from '../../../ReinforcementAgents/interfaces/ReinforcementModel';
 
-export interface IGameModel extends ReinforcementModel {
+export interface IGameModel extends ReinforcementModel<MoveDirection> {
   score: number;
   shouldFinish: boolean;
   snakeHeadDirection: Direction;

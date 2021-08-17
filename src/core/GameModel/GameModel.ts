@@ -1,3 +1,5 @@
+import { EnvironmentSize } from '../../common/interfaces/EnvironmentSize';
+import { MoveDirection } from '../GameController/interfaces/MoveDirection';
 import { Position } from './interfaces/Position';
 import { GameModelProps } from './interfaces/GameModelProps';
 import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
@@ -33,12 +35,23 @@ export class GameModel implements IGameModel {
     this.originalFoodsPositions = ARRAY_UTILS.shellCopy(this.foodPositions);
   }
 
-  get allFoods() {
+  get allActions(): MoveDirection[] {
+    return Object.values(MoveDirection);
+  }
+
+  get allFoods(): Position[] {
     return this.foodPositions;
   }
 
-  get allSnakeBodyParts() {
+  get allSnakeBodyParts(): Position[] {
     return this.snakeBodyPartsPositions;
+  }
+
+  get environmentSize(): EnvironmentSize {
+    return {
+      width: this.columnsCount,
+      height: this.rowsCount
+    };
   }
 
   get snakeHeadPosition(): Position {
@@ -61,7 +74,7 @@ export class GameModel implements IGameModel {
     }
   }
 
-  public copy(): ReinforcementModel {
+  public copy(): ReinforcementModel<MoveDirection> {
     const gameModelCopy = new GameModel({ columnsCount: this.columnsCount, rowsCount: this.rowsCount, foodCount: 0 });
     gameModelCopy.score = this.score;
     gameModelCopy.shouldFinish = this.shouldFinish;

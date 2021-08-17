@@ -7,10 +7,11 @@ import { UTILS } from '../../common/Utils/UTILS';
 import { CanNotCopyWeights } from '../../errors/CanNotCopyWeights';
 
 export class DeepQNetwork {
+  public readonly model: tf.LayersModel;
+
   private readonly environmentHeight: number;
   private readonly environmentWidth: number;
   private readonly actionsCount: number;
-  private readonly model: tf.LayersModel;
 
   constructor(environmentHeight: number, environmentWidth: number, actionsCount: number) {
     this.environmentWidth = environmentWidth;
@@ -55,7 +56,7 @@ export class DeepQNetwork {
     return model;
   }
 
-  public copyWeightsToNetwork(targetModel: LayersModel): void {
+  public copyWeightsToNetwork(targetModel: tf.LayersModel): void {
     if (UTILS.isNullOrUndefined(this.model)) {
       throw new CanNotCopyWeights();
     }

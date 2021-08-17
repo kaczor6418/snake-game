@@ -50,14 +50,10 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer<MoveDirection>
       this.restart();
       return void 0;
     }
-    await agent.fit(
-      this,
-      (action) => {
-        this.controller.move(action);
-        this.gameView.render();
-      },
-      1000
-    );
+    await agent.fit((action) => {
+      this.controller.move(action);
+      this.gameView.render();
+    }, 1000);
     await this.runSnakeWithAgent(agent);
   }
 

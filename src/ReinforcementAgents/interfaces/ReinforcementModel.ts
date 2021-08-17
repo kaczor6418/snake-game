@@ -1,7 +1,11 @@
-export interface ReinforcementModel {
-  readonly score: number;
+import { EnvironmentSize } from '../../common/interfaces/EnvironmentSize';
 
-  copy(): ReinforcementModel;
+export interface ReinforcementModel<T> {
+  readonly allActions: T[];
+  readonly score: number;
+  readonly environmentSize: EnvironmentSize;
+
+  copy(): ReinforcementModel<T>;
   environmentAsVector(): number[];
   hash(): string;
   isGameOver(): boolean;

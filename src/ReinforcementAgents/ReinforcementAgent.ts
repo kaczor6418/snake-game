@@ -10,41 +10,45 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
 
   protected readonly adaptation: number;
   protected readonly getPossibleActions: () => T[];
+  protected readonly player: ReinforcementPlayer<T>;
 
-  protected abstract runSingleEpoch(player: ReinforcementPlayer<T>): void;
-  protected abstract getAction(state: ReinforcementModel): T;
+  protected abstract runSingleEpoch(): void;
+  protected abstract getAction(state: ReinforcementModel<T>): T;
 
-  protected constructor({ learningRate, initialEpsilon, adaptation, getPossibleActions }: ReinforcementAgentProps<T>) {
+  protected constructor({
+    learningRate,
+    initialEpsilon,
+    adaptation,
+    getPossibleActions,
+    player
+  }: ReinforcementAgentProps<T>) {
     this.learningRate = learningRate;
     this.initialEpsilon = initialEpsilon;
     this.adaptation = adaptation;
     this.getPossibleActions = getPossibleActions;
+    this.player = player;
   }
 
-  public async fit(
-    player: ReinforcementPlayer<T>,
-    callback?: (action: T) => void,
-    callbackDellyInMs = 500
-  ): Promise<void> {
-    player.model.reset();
-    while (UTILS.isFalsy(player.model.isGameOver())) {
-      const action = this.getAction(player.model);
+  public async fit(callback?: (action: T) => void, callbackDellyInMs = 500): Promise<void> {
+    this.player.model.reset();
+    while (UTILS.isFalsy(this.player.model.isGameOver())) {
+      const action = this.getAction(this.player.model);
       if (UTILS.isDefined(callback)) {
         callback(action);
         await UTILS.wait(callbackDellyInMs);
       } else {
-        player.controller.move(action);
+        this.player.controller.move(action);
       }
     }
     if (UTILS.isNullOrUndefined(callback)) {
-      console.info(`YOU FINISHED GAME WITH SCORE:${player.model.score}`);
+      console.info(`YOU FINISHED GAME WITH SCORE:${this.player.model.score}`);
     }
   }
 
-  public learn(player: ReinforcementPlayer<T>, epochs: number): void {
-    player.model.reset();
+  public learn(epochs: number): void {
+    this.player.model.reset();
     for (let i = 0; i < epochs; i++) {
-      this.runSingleEpoch(player);
+      this.runSingleEpoch();
     }
     this.turnOfLearning();
   }
