@@ -86,7 +86,7 @@ export class GameModel implements IGameModel {
   }
 
   public hash(): string {
-    return this.environmentAsVector().toString().replace(/,/g, '');
+    return this.stateAsVector().toString().replace(/,/g, '');
   }
 
   public isBottomWall(y: number): boolean {
@@ -195,7 +195,7 @@ export class GameModel implements IGameModel {
     }
   }
 
-  public environmentAsVector(): number[] {
+  public stateAsVector(): number[] {
     const modelVector = new Array<number>(this.rowsCount * this.columnsCount).fill(0);
     for (const { x, y } of this.foodPositions) {
       modelVector[x * this.columnsCount + y] = Number(`${SnakeEnvironmentElements.FOOD}${x}${y}`);

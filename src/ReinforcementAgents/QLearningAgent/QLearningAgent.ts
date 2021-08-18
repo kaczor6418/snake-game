@@ -28,7 +28,7 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     const possibleActions = this.getPossibleActions();
     const bestAction = this.getBestAction(state);
     let chosenAction = bestAction;
-    if (possibleActions.length > 1 && MATH_UTILS.generateRandomNumber(0, 1) < this.initialEpsilon) {
+    if (possibleActions.length > 1 && MATH_UTILS.generateRandomNumber(0, 1) < this.minEpsilon) {
       ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);
       chosenAction = ARRAY_UTILS.getRandomValue(possibleActions);
     }

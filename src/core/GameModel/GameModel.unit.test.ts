@@ -270,7 +270,7 @@ describe(GameModel.name, () => {
       expect(gameModel['originalFoodsPositions'].length).toBe(foodCount);
     });
   });
-  describe(GameModel.prototype.environmentAsVector.name, () => {
+  describe(GameModel.prototype.stateAsVector.name, () => {
     test('should return vector with correct size', () => {
       const expectedSize =
         gameModel['columnsCount'] * gameModel['rowsCount'] -
@@ -279,7 +279,7 @@ describe(GameModel.name, () => {
         gameModel.snakeBodyPartsCount * 3 +
         gameModel.allFoods.length * 3 +
         1;
-      const environmentVectorLength = gameModel.environmentAsVector().toString().replace(/,/g, '').length;
+      const environmentVectorLength = gameModel.stateAsVector().toString().replace(/,/g, '').length;
       expect(expectedSize).toBe(environmentVectorLength);
     });
   });

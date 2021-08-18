@@ -6,7 +6,7 @@ export interface ReinforcementModel<T> {
   readonly environmentSize: EnvironmentSize;
 
   copy(): ReinforcementModel<T>;
-  environmentAsVector(): number[];
+  stateAsVector(): number[];
   hash(): string;
   isGameOver(): boolean;
   reset(): void;

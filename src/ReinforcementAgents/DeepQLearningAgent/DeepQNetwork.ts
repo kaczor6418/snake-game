@@ -13,11 +13,12 @@ export class DeepQNetwork {
   private readonly environmentWidth: number;
   private readonly actionsCount: number;
 
-  constructor(environmentHeight: number, environmentWidth: number, actionsCount: number) {
+  constructor(environmentHeight: number, environmentWidth: number, actionsCount: number, trainable = true) {
     this.environmentWidth = environmentWidth;
     this.environmentHeight = environmentHeight;
     this.actionsCount = actionsCount;
     this.model = this.createNetwork();
+    this.model.trainable = trainable;
   }
 
   private createNetwork(): tf.LayersModel {

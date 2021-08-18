@@ -6,7 +6,7 @@ import { ReinforcementAgentProps } from './interfaces/ReinforcementAgentProps';
 
 export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   protected learningRate: number;
-  protected initialEpsilon: number;
+  protected minEpsilon: number;
 
   protected readonly adaptation: number;
   protected readonly getPossibleActions: () => T[];
@@ -17,13 +17,13 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
 
   protected constructor({
     learningRate,
-    initialEpsilon,
+    minEpsilon,
     adaptation,
     getPossibleActions,
     player
   }: ReinforcementAgentProps<T>) {
     this.learningRate = learningRate;
-    this.initialEpsilon = initialEpsilon;
+    this.minEpsilon = minEpsilon;
     this.adaptation = adaptation;
     this.getPossibleActions = getPossibleActions;
     this.player = player;
@@ -55,6 +55,6 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
 
   private turnOfLearning() {
     this.learningRate = 0;
-    this.initialEpsilon = 0;
+    this.minEpsilon = 0;
   }
 }
