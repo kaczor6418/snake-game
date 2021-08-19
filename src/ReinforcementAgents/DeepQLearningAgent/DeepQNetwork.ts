@@ -9,14 +9,12 @@ import { CanNotCopyWeights } from '../../errors/CanNotCopyWeights';
 export class DeepQNetwork {
   public readonly model: tf.LayersModel;
 
-  private readonly environmentHeight: number;
-  private readonly environmentWidth: number;
-  private readonly actionsCount: number;
+  private readonly outputSize: number;
+  private readonly inputSize: number;
 
-  constructor(environmentHeight: number, environmentWidth: number, actionsCount: number, trainable = true) {
-    this.environmentWidth = environmentWidth;
-    this.environmentHeight = environmentHeight;
-    this.actionsCount = actionsCount;
+  constructor(inputSize: number, outputSize: number, trainable = true) {
+    this.inputSize = inputSize;
+    this.outputSize = outputSize;
     this.model = this.createNetwork();
     this.model.trainable = trainable;
   }
@@ -24,36 +22,35 @@ export class DeepQNetwork {
   private createNetwork(): tf.LayersModel {
     const model: tf.Sequential = tf.sequential();
     model.add(
-      tf.layers.conv2d({
-        filters: 128,
-        kernelSize: 3,
-        strides: 1,
-        activation: 'relu',
-        inputShape: [this.environmentHeight, this.environmentWidth, 2]
-      })
-    );
-    model.add(tf.layers.batchNormalization());
-    model.add(
-      tf.layers.conv2d({
-        filters: 256,
-        kernelSize: 3,
-        strides: 1,
+      tf.layers.dense({
+        units: 16,
+        inputDim: this.inputSize,
         activation: 'relu'
       })
     );
-    model.add(tf.layers.batchNormalization());
     model.add(
-      tf.layers.conv2d({
-        filters: 256,
-        kernelSize: 3,
-        strides: 1,
+      tf.layers.dense({
+        units: 32,
         activation: 'relu'
       })
     );
-    model.add(tf.layers.flatten());
-    model.add(tf.layers.dense({ units: 100, activation: 'relu' }));
-    model.add(tf.layers.dropout({ rate: 0.25 }));
-    model.add(tf.layers.dense({ units: this.actionsCount }));
+    model.add(
+      tf.layers.dense({
+        units: 64,
+        activation: 'relu'
+      })
+    );
+    model.add(
+      tf.layers.dense({
+        units: 16,
+        inputDim: this.outputSize,
+        activation: 'relu'
+      })
+    );
+    model.compile({
+      loss: 'meanSquaredError',
+      optimizer: 'adam'
+    });
     return model;
   }
 
