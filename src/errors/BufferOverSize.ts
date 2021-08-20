@@ -1,6 +1,6 @@
 export class BufferOverSize extends Error {
-  constructor(batchSize: number, maxSize: number) {
-    super(`Current batch size (${batchSize}) exceeds buffer total size (${maxSize})`);
+  constructor(size: number, maxSize: number) {
+    super(`Value: ${size}, exceeds buffer total size (${maxSize})`);
     this.name = BufferOverSize.name;
   }
 }

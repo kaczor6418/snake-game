@@ -1,14 +1,14 @@
 import { EnvironmentSize } from '../../common/interfaces/EnvironmentSize';
-import { MoveDirection } from '../GameController/interfaces/MoveDirection';
-import { Position } from './interfaces/Position';
-import { GameModelProps } from './interfaces/GameModelProps';
-import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
-import { IGameModel } from './interfaces/IGameModel';
-import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
-import { Direction } from './interfaces/Direction';
-import { UTILS } from '../../common/Utils/UTILS';
 import { isNumber } from '../../common/TYPEGUARDS';
+import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
+import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
+import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementModel } from '../../ReinforcementAgents/interfaces/ReinforcementModel';
+import { MoveDirection } from '../GameController/interfaces/MoveDirection';
+import { Direction } from './interfaces/Direction';
+import { GameModelProps } from './interfaces/GameModelProps';
+import { IGameModel } from './interfaces/IGameModel';
+import { Position } from './interfaces/Position';
 import { SnakeEnvironmentElements } from './interfaces/SnakeEnvironmentElements';
 
 export class GameModel implements IGameModel {
@@ -36,7 +36,7 @@ export class GameModel implements IGameModel {
   }
 
   get allActions(): MoveDirection[] {
-    return Object.values(MoveDirection);
+    return [MoveDirection.LEFT, MoveDirection.RIGHT, MoveDirection.STRAIGHT];
   }
 
   get allFoods(): Position[] {

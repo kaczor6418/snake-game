@@ -6,7 +6,7 @@ import { MoveDirection } from '../core/GameController/interfaces/MoveDirection';
 describe(EnumValueEnumConverter.name, () => {
   describe(EnumValueEnumConverter.toEnumFromKey.name, () => {
     test('should convert to enum for existing enum key', () => {
-      expect(EnumValueEnumConverter.toEnumFromKey(MoveDirection.LEFT, MoveDirection)).toBe(MoveDirection.LEFT);
+      expect(EnumValueEnumConverter.toEnumFromKey('LEFT', MoveDirection)).toBe(MoveDirection.LEFT);
     });
     test('should throw an error for not existing enum key', () => {
       expect(() => EnumValueEnumConverter.toEnumFromKey('NOT_EXISTING', MoveDirection)).toThrowError(

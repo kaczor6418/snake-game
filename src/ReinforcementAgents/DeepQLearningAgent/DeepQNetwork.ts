@@ -23,7 +23,7 @@ export class DeepQNetwork {
     const model: tf.Sequential = tf.sequential();
     model.add(
       tf.layers.dense({
-        units: 16,
+        units: this.inputSize,
         inputDim: this.inputSize,
         activation: 'relu'
       })
@@ -42,9 +42,12 @@ export class DeepQNetwork {
     );
     model.add(
       tf.layers.dense({
-        units: 16,
-        inputDim: this.outputSize,
+        units: 32,
         activation: 'relu'
+      })
+    );    model.add(
+      tf.layers.dense({
+        units: this.outputSize,
       })
     );
     model.compile({

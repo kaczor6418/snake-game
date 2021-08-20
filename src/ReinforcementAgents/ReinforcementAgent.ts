@@ -1,3 +1,5 @@
+import { ARRAY_UTILS } from '../common/Utils/ARRAY_UTILS';
+import { MATH_UTILS } from '../common/Utils/MATH_UTILS';
 import { IReinforcementAgent } from './interfaces/IReinforcementAgent';
 import { ReinforcementPlayer } from './interfaces/ReinforcementPlayer';
 import { UTILS } from '../common/Utils/UTILS';
@@ -6,14 +8,15 @@ import { ReinforcementAgentProps } from './interfaces/ReinforcementAgentProps';
 
 export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   protected learningRate: number;
-  protected minEpsilon: number;
+  protected currentEpsilon: number;
 
+  protected readonly minEpsilon: number;
   protected readonly adaptation: number;
   protected readonly getPossibleActions: () => T[];
   protected readonly player: ReinforcementPlayer<T>;
 
   protected abstract runSingleEpoch(): void;
-  protected abstract getAction(state: ReinforcementModel<T>): T;
+  protected abstract getBestAction(state: ReinforcementModel<T>): T;
 
   protected constructor({
     learningRate,
@@ -24,6 +27,7 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
   }: ReinforcementAgentProps<T>) {
     this.learningRate = learningRate;
     this.minEpsilon = minEpsilon;
+    this.currentEpsilon = this.minEpsilon;
     this.adaptation = adaptation;
     this.getPossibleActions = getPossibleActions;
     this.player = player;
@@ -53,8 +57,19 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
     this.turnOfLearning();
   }
 
+  protected getAction(state: ReinforcementModel<T>): T {
+    const possibleActions = this.getPossibleActions();
+    const bestAction = this.getBestAction(state);
+    let chosenAction = bestAction;
+    if (possibleActions.length > 1 && MATH_UTILS.generateRandomNumber(0, 1) < this.currentEpsilon) {
+      ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);
+      chosenAction = ARRAY_UTILS.getRandomValue(possibleActions);
+    }
+    return chosenAction;
+  }
+
   private turnOfLearning() {
     this.learningRate = 0;
-    this.minEpsilon = 0;
+    this.currentEpsilon = 0;
   }
 }

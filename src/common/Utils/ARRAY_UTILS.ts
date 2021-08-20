@@ -49,4 +49,10 @@ export namespace ARRAY_UTILS {
       return hasSameShape;
     });
   }
+
+  export function resetValuesToEmpty(arr: unknown[]): void {
+    const arrSize = arr.length;
+    arr.length = 0;
+    arr.length = arrSize;
+  }
 }

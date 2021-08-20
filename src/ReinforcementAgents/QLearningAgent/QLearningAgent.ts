@@ -1,5 +1,4 @@
 import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
-import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
 import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementAgent } from '../ReinforcementAgent';
@@ -24,17 +23,6 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     this.player.model.reset();
   }
 
-  protected getAction(state: ReinforcementModel<T>): T {
-    const possibleActions = this.getPossibleActions();
-    const bestAction = this.getBestAction(state);
-    let chosenAction = bestAction;
-    if (possibleActions.length > 1 && MATH_UTILS.generateRandomNumber(0, 1) < this.minEpsilon) {
-      ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);
-      chosenAction = ARRAY_UTILS.getRandomValue(possibleActions);
-    }
-    return chosenAction;
-  }
-
   private calculateQValue(
     state: ReinforcementModel<T>,
     action: T,
@@ -47,7 +35,7 @@ export class QLearningAgent<T> extends ReinforcementAgent<T> {
     );
   }
 
-  private getBestAction(state: ReinforcementModel<T>): T {
+  protected getBestAction(state: ReinforcementModel<T>): T {
     const [firstAction, ...actions] = this.getPossibleActions();
     let bestActions = [firstAction];
     let bestActionValue = this.getQValue(state, firstAction);

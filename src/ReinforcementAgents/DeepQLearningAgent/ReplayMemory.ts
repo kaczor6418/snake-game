@@ -1,12 +1,12 @@
 /* eslint-disable */
 // @ts-nocheck
 import * as tf from '@tensorflow/tfjs';
+import { ARRAY_UTILS, resetValuesToEmpty } from "../../common/Utils/ARRAY_UTILS";
 import { BufferOverSize } from '../../errors/BufferOverSize';
 import { MemoryItem } from './interfaces/MemoryItem';
 
 export class ReplayMemory {
-  private bufferIndex: number;
-  private currentBufferSize: number;
+  private currentBufferIndex: number;
 
   private readonly buffer: MemoryItem[];
   private readonly bufferMaxSize: number;
@@ -15,9 +15,7 @@ export class ReplayMemory {
   constructor(bufferMaxSize: number) {
     this.bufferMaxSize = bufferMaxSize;
     this.buffer = new Array<MemoryItem>(this.bufferMaxSize);
-    this.bufferIndex = 0;
-    this.currentBufferSize = 0;
-
+    this.currentBufferIndex = 0;
     this.bufferIndexesMap = [];
     for (let i = 0; i < bufferMaxSize; i++) {
       this.bufferIndexesMap.push(i);
@@ -25,9 +23,11 @@ export class ReplayMemory {
   }
 
   public append(item: MemoryItem): void {
-    this.buffer[this.bufferIndex] = item;
-    this.currentBufferSize = Math.min(this.currentBufferSize + 1, this.bufferMaxSize);
-    this.bufferIndex = (this.bufferIndex + 1) % this.bufferMaxSize;
+    if (this.isFull()) {
+      throw new BufferOverSize(this.currentBufferIndex, this.bufferMaxSize);
+    }
+    this.buffer[this.currentBufferIndex] = item;
+    this.currentBufferIndex++;
   }
 
   public sample(batchSize: number): MemoryItem[] {
@@ -37,4 +37,14 @@ export class ReplayMemory {
     tf.util.shuffle(this.bufferIndexesMap);
     return this.bufferIndexesMap.map((mappedIndex) => this.buffer[mappedIndex]);
   }
+
+  public reset(): void {
+    ARRAY_UTILS.resetValuesToEmpty(this.buffer);
+    this.currentBufferIndex = 0;
+  }
+
+  public isFull(): boolean {
+    return this.currentBufferIndex === this.bufferMaxSize;
+  }
+
 }
