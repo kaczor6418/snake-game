@@ -23,18 +23,6 @@ export class QLearningAgent extends ReinforcementAgent {
     this.player.model.reset();
   }
 
-  private calculateQValue(
-    state: ReinforcementModel,
-    action: number,
-    reward: number,
-    nextState: ReinforcementModel
-  ): number {
-    return (
-      (1 - this.learningRate) * this.getQValue(state, action) +
-      this.learningRate * (reward + this.adaptation * this.getMaxValue(nextState))
-    );
-  }
-
   protected getBestAction(state: ReinforcementModel): number {
     const [firstAction, ...actions] = this.getPossibleActions();
     let bestActions = [firstAction];
@@ -49,6 +37,18 @@ export class QLearningAgent extends ReinforcementAgent {
       }
     }
     return ARRAY_UTILS.getRandomValue(bestActions);
+  }
+
+  private calculateQValue(
+    state: ReinforcementModel,
+    action: number,
+    reward: number,
+    nextState: ReinforcementModel
+  ): number {
+    return (
+      (1 - this.learningRate) * this.getQValue(state, action) +
+      this.learningRate * (reward + this.adaptation * this.getMaxValue(nextState))
+    );
   }
 
   private getMaxValue(state: ReinforcementModel): number {

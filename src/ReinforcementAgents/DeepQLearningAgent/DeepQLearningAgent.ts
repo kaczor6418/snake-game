@@ -1,6 +1,5 @@
-/* eslint-disable */
-// @ts-nocheck
-import * as tf from '@tensorflow/tfjs';
+import { tensor1d, tensor2d } from '@tensorflow/tfjs';
+import { Tensor } from '@tensorflow/tfjs-core';
 import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementAgent } from '../ReinforcementAgent';
 import { DeepQNetwork } from './DeepQNetwork';
@@ -29,10 +28,10 @@ export class DeepQLearningAgent extends ReinforcementAgent {
     this.targetNetwork = new DeepQNetwork(environmentSize, this.player.model.allActions.length, false);
   }
 
+  protected runSingleEpoch(): void {}
+
   protected getBestAction(state: ReinforcementModel): number {
-    return (this.qNetwork.model.predict(tf.tensor1d(state.stateAsVector())) as tf.Tensor1D)
-      .argMax()
-      .arraySync() as number;
+    return (this.qNetwork.model.predict(tensor1d(state.stateAsVector())) as Tensor).argMax().arraySync() as number;
   }
 
   private async replayExperience(batchSize: number): Promise<void> {
@@ -43,44 +42,43 @@ export class DeepQLearningAgent extends ReinforcementAgent {
       states.push(state);
       nextStates.push(nextState);
     }
-    const statesTensor = tf.tensor(states);
-    const nextStatesTensor = tf.tensor(nextStates);
-    const stateTargets = this.qNetwork.model.predictOnBatch(statesTensor);
-    const nextStateTargets = this.targetNetwork.model.predictOnBatch(nextStatesTensor);
-    for (let i = 0; i < randomMemories.length; i++) {
-      const [_state, action, reward, _nextState, done] = randomMemories[i].arraySync();
+    const statesTensor = tensor2d(states);
+    const nextStatesTensor = tensor2d(nextStates);
+    const stateTargets = (this.qNetwork.model.predictOnBatch(statesTensor) as Tensor).bufferSync();
+    const nextStateTargets: Array<number[]> = (
+      this.targetNetwork.model.predictOnBatch(nextStatesTensor) as Tensor
+    ).arraySync() as Array<number[]>;
+    for (let i = 0; i < stateTargets.size; i++) {
+      const [_state, action, reward, _nextState, done] = randomMemories[i];
       if (done) {
-        stateTargets.bufferSync().set(reward, i, action);
+        stateTargets.set(reward, i, action);
       } else {
-        const bestActionQuality = Math.max(...nextStateTargets[i].arraySync());
+        const bestActionQuality = Math.max(...nextStateTargets[i]);
         const newQValue = reward + this.adaptation * bestActionQuality;
-        stateTargets.bufferSync().set(newQValue, i, action);
+        stateTargets.set(newQValue, i, action);
       }
     }
-    await this.qNetwork.model.trainOnBatch(statesTensor, stateTargets);
+    await this.qNetwork.model.trainOnBatch(statesTensor, stateTargets.toTensor());
     this.replayUpdateCounter++;
     this.decreaseExplorationChance();
     if (this.replayUpdateCounter === this.replayUpdateIndicator) {
-      this.updateWeights;
+      this.updateTargetModelWeights();
       this.replayUpdateCounter = 0;
     }
   }
 
-  private updateTargetModel(): void {
-    const qNetworkWeights = this.qNetwork.model.getWeights();
-    const targetNetworkWeights = this.targetNetwork.model.getWeights();
-    const singleBufferSize = targetNetworkWeights[0].arraySync().length;
+  private updateTargetModelWeights(): void {
+    const qNetworkWeights: Tensor[] = this.qNetwork.model.getWeights();
+    const targetNetworkWeights: Tensor[] = this.targetNetwork.model.getWeights();
     for (let i = 0; i < targetNetworkWeights.length; i++) {
       const targetTensorBuffer = targetNetworkWeights[i].bufferSync();
       const qTensorBuffer = qNetworkWeights[i].bufferSync();
-      for (let j = 0; j < singleBufferSize; j++) {
+      for (let j = 0; j < targetTensorBuffer.size; j++) {
         const newWeight = this.tau * qTensorBuffer.get(0, j) + (1 - this.tau) * targetTensorBuffer.get(0, j);
         targetTensorBuffer.set(newWeight, 0, j);
       }
     }
   }
-
-  private takeStep() {}
 
   private decreaseExplorationChance(): void {
     const newEpsilon = this.maxEpsilon * this.epsilonDecay;
