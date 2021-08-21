@@ -1,4 +1,3 @@
-import 'jest';
 import { App } from './App';
 
 describe(App.name, () => {

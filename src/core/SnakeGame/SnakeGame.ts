@@ -14,7 +14,7 @@ import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementPlayer } from '../../ReinforcementAgents/interfaces/ReinforcementPlayer';
 import { IReinforcementAgent } from '../../ReinforcementAgents/interfaces/IReinforcementAgent';
 
-export class SnakeGame implements ISnakeGame, ReinforcementPlayer<MoveDirection> {
+export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
   public readonly model: IGameModel;
   public readonly controller: IGameController;
 
@@ -45,7 +45,7 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer<MoveDirection>
     this.webGLService.fullScreen();
   }
 
-  public async runSnakeWithAgent(agent: IReinforcementAgent<MoveDirection>): Promise<void> {
+  public async runSnakeWithAgent(agent: IReinforcementAgent): Promise<void> {
     if (this.model.isGameOver()) {
       this.restart();
       return void 0;

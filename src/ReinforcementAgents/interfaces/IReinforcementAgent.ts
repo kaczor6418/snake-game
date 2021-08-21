@@ -1,4 +1,4 @@
-export interface IReinforcementAgent<T> {
+export interface IReinforcementAgent {
   learn(epochs: number): void;
-  fit(callback?: (action: T) => void, callbackDellyInMs?: number): Promise<void>;
+  fit(callback?: (action: number) => void, callbackDellyInMs?: number): Promise<void>;
 }

@@ -1,4 +1,3 @@
-import 'jest';
 import { UTILS } from './UTILS';
 
 describe(UTILS.isDefined.name, () => {

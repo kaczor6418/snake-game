@@ -1,6 +1,6 @@
 import { ReinforcementAgentProps } from '../../interfaces/ReinforcementAgentProps';
 
-export interface DeepQLearningAgentProps<T> extends ReinforcementAgentProps<T> {
+export interface DeepQLearningAgentProps extends ReinforcementAgentProps {
   tau: number;
   epsilonDecay: number;
   maxEpsilon: number;

@@ -6,25 +6,19 @@ import { UTILS } from '../common/Utils/UTILS';
 import { ReinforcementModel } from './interfaces/ReinforcementModel';
 import { ReinforcementAgentProps } from './interfaces/ReinforcementAgentProps';
 
-export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
+export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected learningRate: number;
   protected currentEpsilon: number;
 
   protected readonly minEpsilon: number;
   protected readonly adaptation: number;
-  protected readonly getPossibleActions: () => T[];
-  protected readonly player: ReinforcementPlayer<T>;
+  protected readonly getPossibleActions: () => number[];
+  protected readonly player: ReinforcementPlayer;
 
   protected abstract runSingleEpoch(): void;
-  protected abstract getBestAction(state: ReinforcementModel<T>): T;
+  protected abstract getBestAction(state: ReinforcementModel): number;
 
-  protected constructor({
-    learningRate,
-    minEpsilon,
-    adaptation,
-    getPossibleActions,
-    player
-  }: ReinforcementAgentProps<T>) {
+  protected constructor({ learningRate, minEpsilon, adaptation, getPossibleActions, player }: ReinforcementAgentProps) {
     this.learningRate = learningRate;
     this.minEpsilon = minEpsilon;
     this.currentEpsilon = this.minEpsilon;
@@ -33,7 +27,7 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
     this.player = player;
   }
 
-  public async fit(callback?: (action: T) => void, callbackDellyInMs = 500): Promise<void> {
+  public async fit(callback?: (action: number) => void, callbackDellyInMs = 500): Promise<void> {
     this.player.model.reset();
     while (UTILS.isFalsy(this.player.model.isGameOver())) {
       const action = this.getAction(this.player.model);
@@ -57,7 +51,7 @@ export abstract class ReinforcementAgent<T> implements IReinforcementAgent<T> {
     this.turnOfLearning();
   }
 
-  protected getAction(state: ReinforcementModel<T>): T {
+  protected getAction(state: ReinforcementModel): number {
     const possibleActions = this.getPossibleActions();
     const bestAction = this.getBestAction(state);
     let chosenAction = bestAction;

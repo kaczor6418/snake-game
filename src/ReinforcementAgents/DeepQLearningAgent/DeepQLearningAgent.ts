@@ -7,7 +7,7 @@ import { DeepQNetwork } from './DeepQNetwork';
 import { DeepQLearningAgentProps } from './interfaces/DeepQLearningAgentProps';
 import { ReplayMemory } from './ReplayMemory';
 
-export class DeepQLearningAgent<T> extends ReinforcementAgent<T> {
+export class DeepQLearningAgent extends ReinforcementAgent {
   private replayUpdateCounter = 0;
   private replayUpdateIndicator = 10;
 
@@ -18,7 +18,7 @@ export class DeepQLearningAgent<T> extends ReinforcementAgent<T> {
   private readonly qNetwork: DeepQNetwork;
   private readonly targetNetwork: DeepQNetwork;
 
-  constructor({ replayBufferSize, epsilonDecay, maxEpsilon, tau, ...baseAgentProps }: DeepQLearningAgentProps<T>) {
+  constructor({ replayBufferSize, epsilonDecay, maxEpsilon, tau, ...baseAgentProps }: DeepQLearningAgentProps) {
     super(baseAgentProps);
     this.tau = tau;
     this.maxEpsilon = maxEpsilon;
@@ -29,8 +29,10 @@ export class DeepQLearningAgent<T> extends ReinforcementAgent<T> {
     this.targetNetwork = new DeepQNetwork(environmentSize, this.player.model.allActions.length, false);
   }
 
-  protected getBestAction(state: ReinforcementModel<T>): T {
-    return this.qNetwork.model.predict(tf.tensor(state.stateAsVector())).argMax().arraySync();
+  protected getBestAction(state: ReinforcementModel): number {
+    return (this.qNetwork.model.predict(tf.tensor1d(state.stateAsVector())) as tf.Tensor1D)
+      .argMax()
+      .arraySync() as number;
   }
 
   private async replayExperience(batchSize: number): Promise<void> {

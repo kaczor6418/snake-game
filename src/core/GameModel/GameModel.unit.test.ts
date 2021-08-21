@@ -1,4 +1,3 @@
-import 'jest';
 import { GameModel } from './GameModel';
 import { Position } from './interfaces/Position';
 

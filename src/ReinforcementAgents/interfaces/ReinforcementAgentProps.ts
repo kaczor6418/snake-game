@@ -1,9 +1,9 @@
 import { ReinforcementPlayer } from './ReinforcementPlayer';
 
-export interface ReinforcementAgentProps<T> {
+export interface ReinforcementAgentProps {
   learningRate: number;
   minEpsilon: number;
   adaptation: number;
-  getPossibleActions: () => T[];
-  player: ReinforcementPlayer<T>;
+  getPossibleActions: () => number[];
+  player: ReinforcementPlayer;
 }

@@ -1,7 +1,5 @@
-/* eslint-disable */
-// @ts-nocheck
-import * as tf from '@tensorflow/tfjs';
-import { ARRAY_UTILS, resetValuesToEmpty } from "../../common/Utils/ARRAY_UTILS";
+import { util } from '@tensorflow/tfjs';
+import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
 import { BufferOverSize } from '../../errors/BufferOverSize';
 import { MemoryItem } from './interfaces/MemoryItem';
 
@@ -34,7 +32,7 @@ export class ReplayMemory {
     if (batchSize > this.bufferMaxSize) {
       throw new BufferOverSize(batchSize, this.bufferMaxSize);
     }
-    tf.util.shuffle(this.bufferIndexesMap);
+    util.shuffle(this.bufferIndexesMap);
     return this.bufferIndexesMap.map((mappedIndex) => this.buffer[mappedIndex]);
   }
 
@@ -46,5 +44,4 @@ export class ReplayMemory {
   public isFull(): boolean {
     return this.currentBufferIndex === this.bufferMaxSize;
   }
-
 }

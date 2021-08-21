@@ -1,4 +1,3 @@
-import 'jest';
 import { MATH_UTILS } from './MATH_UTILS';
 
 describe(MATH_UTILS.generateRandomInteger.name, () => {

@@ -74,7 +74,7 @@ export class GameModel implements IGameModel {
     }
   }
 
-  public copy(): ReinforcementModel<MoveDirection> {
+  public copy(): ReinforcementModel {
     const gameModelCopy = new GameModel({ columnsCount: this.columnsCount, rowsCount: this.rowsCount, foodCount: 0 });
     gameModelCopy.score = this.score;
     gameModelCopy.shouldFinish = this.shouldFinish;

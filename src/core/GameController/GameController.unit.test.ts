@@ -1,4 +1,3 @@
-import 'jest';
 import { GameController } from './GameController';
 import { createGameModelMock } from '../GameModel/GameModel.unit.test';
 import { IGameModel } from '../GameModel/interfaces/IGameModel';

@@ -1,13 +1,9 @@
-/* eslint-disable */
-// @ts-nocheck
-// import { layers, LayersModel, sequential } from '@tensorflow/tfjs';
-// import { Sequential } from '@tensorflow/tfjs-layers/src/models';
-import * as tf from '@tensorflow/tfjs';
+import { layers, LayersModel, sequential, Sequential } from '@tensorflow/tfjs';
 import { UTILS } from '../../common/Utils/UTILS';
 import { CanNotCopyWeights } from '../../errors/CanNotCopyWeights';
 
 export class DeepQNetwork {
-  public readonly model: tf.LayersModel;
+  public readonly model: LayersModel;
 
   private readonly outputSize: number;
   private readonly inputSize: number;
@@ -19,35 +15,36 @@ export class DeepQNetwork {
     this.model.trainable = trainable;
   }
 
-  private createNetwork(): tf.LayersModel {
-    const model: tf.Sequential = tf.sequential();
+  private createNetwork(): LayersModel {
+    const model: Sequential = sequential();
     model.add(
-      tf.layers.dense({
+      layers.dense({
         units: this.inputSize,
         inputDim: this.inputSize,
         activation: 'relu'
       })
     );
     model.add(
-      tf.layers.dense({
+      layers.dense({
         units: 32,
         activation: 'relu'
       })
     );
     model.add(
-      tf.layers.dense({
+      layers.dense({
         units: 64,
         activation: 'relu'
       })
     );
     model.add(
-      tf.layers.dense({
+      layers.dense({
         units: 32,
         activation: 'relu'
       })
-    );    model.add(
-      tf.layers.dense({
-        units: this.outputSize,
+    );
+    model.add(
+      layers.dense({
+        units: this.outputSize
       })
     );
     model.compile({
@@ -57,7 +54,7 @@ export class DeepQNetwork {
     return model;
   }
 
-  public copyWeightsToNetwork(targetModel: tf.LayersModel): void {
+  public copyWeightsToNetwork(targetModel: LayersModel): void {
     if (UTILS.isNullOrUndefined(this.model)) {
       throw new CanNotCopyWeights();
     }

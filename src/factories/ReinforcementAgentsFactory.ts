@@ -4,11 +4,11 @@ import { QLearningAgent } from '../ReinforcementAgents/QLearningAgent/QLearningA
 import { ReinforcementAgentProps } from '../ReinforcementAgents/interfaces/ReinforcementAgentProps';
 import { ThisSituationShouldNeverHappenError } from '../errors/ThisSituationShouldNeverHappenError';
 
-export function createReinforcementAgent<T>(
+export function createReinforcementAgent(
   agentName: ReinforcementAgentsNames,
-  props: ReinforcementAgentProps<T>
-): IReinforcementAgent<T> {
-  let agent: IReinforcementAgent<T>;
+  props: ReinforcementAgentProps
+): IReinforcementAgent {
+  let agent: IReinforcementAgent;
   switch (agentName) {
     case ReinforcementAgentsNames.Q_LEARNING:
       agent = new QLearningAgent(props);
