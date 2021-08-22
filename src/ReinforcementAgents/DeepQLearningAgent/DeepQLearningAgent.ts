@@ -8,45 +8,63 @@ import { MovingAverage } from './MovingAverage';
 import { ReplayMemory } from './ReplayMemory';
 
 export class DeepQLearningAgent extends ReinforcementAgent {
-  private replayUpdateCounter = 0;
-  private replayUpdateIndicator = 10;
-
   private readonly minScore: number;
+  private readonly replayUpdateTrigger: number;
   private readonly tau: number;
   private readonly maxEpsilon: number;
   private readonly epsilonDecay: number;
+  private readonly batchSize: number;
   private readonly replayMemory: ReplayMemory;
   private readonly qNetwork: DeepQNetwork;
   private readonly targetNetwork: DeepQNetwork;
 
   constructor({
-    replayBufferSize,
+    batchSize,
+    minScore,
     epsilonDecay,
     maxEpsilon,
+    replayUpdateIndicator,
     tau,
-    minScore,
+    replayBufferSize,
     ...baseAgentProps
   }: DeepQLearningAgentProps) {
     super(baseAgentProps);
     this.tau = tau ?? 0.85;
     this.minScore = minScore;
+    this.batchSize = batchSize;
+    this.replayUpdateTrigger = replayUpdateIndicator;
     this.maxEpsilon = maxEpsilon;
     this.epsilonDecay = epsilonDecay;
-    this.replayMemory = new ReplayMemory(replayBufferSize ?? 64);
+    this.replayMemory = new ReplayMemory(replayBufferSize ?? this.batchSize * 2);
     const environmentSize = this.player.model.environmentSize.width * this.player.model.environmentSize.height;
     this.qNetwork = new DeepQNetwork(environmentSize, this.player.model.allActions.length);
     this.targetNetwork = new DeepQNetwork(environmentSize, this.player.model.allActions.length, false);
   }
 
   protected runSingleEpoch(): void {
-    this.player.model.reset();
+    this.replayMemory.reset();
+    let replayCounter = 1;
     const totalReward = new MovingAverage(100);
+    while (totalReward.average() >= this.minScore) {
+      this.player.model.reset();
+      totalReward.addOrReplace(this.singleRun());
+      if (replayCounter % this.replayUpdateTrigger && this.replayMemory.isFull()) {
+        void this.replayExperience();
+      }
+      replayCounter++;
+    }
+  }
+
+  protected getBestAction(state: ReinforcementModel): number {
+    return (this.qNetwork.model.predict(tensor1d(state.stateAsVector())) as Tensor).argMax().arraySync() as number;
+  }
+
+  private singleRun(): number {
     let state = this.player.model.copy();
-    while (!this.replayMemory.isFull() && !state.isGameOver()) {
+    while (!state.isGameOver()) {
       const action = this.getAction(state);
       const nextState = this.player.controller.move(action);
-      totalReward.addOrReplace(nextState.score);
-      this.replayMemory.append([
+      this.replayMemory.addOrReplace([
         state.stateAsVector(),
         action,
         nextState.score,
@@ -55,19 +73,13 @@ export class DeepQLearningAgent extends ReinforcementAgent {
       ]);
       state = nextState.copy();
     }
-    if (this.replayMemory.isFull()) {
-      this.replayExperience();
-    }
+    return state.score;
   }
 
-  protected getBestAction(state: ReinforcementModel): number {
-    return (this.qNetwork.model.predict(tensor1d(state.stateAsVector())) as Tensor).argMax().arraySync() as number;
-  }
-
-  private async replayExperience(batchSize: number): Promise<void> {
+  private async replayExperience(): Promise<void> {
     const states = [];
     const nextStates = [];
-    const randomMemories = this.replayMemory.sample(batchSize);
+    const randomMemories = this.replayMemory.sample(this.batchSize);
     for (const [state, _action, _reward, nextState] of randomMemories) {
       states.push(state);
       nextStates.push(nextState);
@@ -89,12 +101,8 @@ export class DeepQLearningAgent extends ReinforcementAgent {
       }
     }
     await this.qNetwork.model.trainOnBatch(statesTensor, stateTargets.toTensor());
-    this.replayUpdateCounter++;
     this.decreaseExplorationChance();
-    if (this.replayUpdateCounter === this.replayUpdateIndicator) {
-      this.updateTargetModelWeights();
-      this.replayUpdateCounter = 0;
-    }
+    this.updateTargetModelWeights();
   }
 
   private updateTargetModelWeights(): void {
