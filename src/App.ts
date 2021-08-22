@@ -1,11 +1,12 @@
-import { KKWebComponent } from './components/KKWebComponent/KKWebComponent';
 import { CONSTANTS } from './common/CONSTANTS';
-import { SnakeGame } from './core/SnakeGame/SnakeGame';
+import { KKWebComponent } from './components/KKWebComponent/KKWebComponent';
 import { MoveDirection } from './core/GameController/interfaces/MoveDirection';
 import { ISnakeGame } from './core/SnakeGame/interfaces/ISnakeGame';
-import { IReinforcementAgent } from './ReinforcementAgents/interfaces/IReinforcementAgent';
+import { SnakeGame } from './core/SnakeGame/SnakeGame';
 import { createReinforcementAgent } from './factories/ReinforcementAgentsFactory';
 import { ReinforcementAgentsNames } from './factories/ReinforcementAgentsNames';
+import { DeepQNetwork } from './ReinforcementAgents/DeepQLearningAgent/DeepQNetwork';
+import { IReinforcementAgent } from './ReinforcementAgents/interfaces/IReinforcementAgent';
 
 const template = `
   <h1>Snake Game</h1>
@@ -19,21 +20,24 @@ export class App extends KKWebComponent {
 
   constructor() {
     super(template);
+    const x = new DeepQNetwork(6, 6);
+    console.dir(x);
     void this.runSnakeGameWithQLearningAgent();
   }
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
     const snakeGame: ISnakeGame = new SnakeGame({
-      boardConfiguration: { columnsCount: 5, foodCount: 10, rowsCount: 5 },
+      boardConfiguration: { columnsCount: 6, foodCount: 11, rowsCount: 6 },
       canvas: this.canvas
     });
-    const agent: IReinforcementAgent<MoveDirection> = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
+    const agent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
       adaptation: 0.5,
-      initialEpsilon: 0.1,
-      getPossibleActions: () => Object.values(MoveDirection),
-      learningRate: 0.1
+      minEpsilon: 0.1,
+      getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.STRAIGHT, MoveDirection.RIGHT],
+      learningRate: 0.1,
+      player: snakeGame
     });
-    agent.learn(snakeGame, 10000);
+    agent.learn(10000);
     for (let i = 0; i < 5; i++) {
       await snakeGame.runSnakeWithAgent(agent);
     }

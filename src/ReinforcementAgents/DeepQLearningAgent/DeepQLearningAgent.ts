@@ -4,12 +4,14 @@ import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementAgent } from '../ReinforcementAgent';
 import { DeepQNetwork } from './DeepQNetwork';
 import { DeepQLearningAgentProps } from './interfaces/DeepQLearningAgentProps';
+import { MovingAverage } from './MovingAverage';
 import { ReplayMemory } from './ReplayMemory';
 
 export class DeepQLearningAgent extends ReinforcementAgent {
   private replayUpdateCounter = 0;
   private replayUpdateIndicator = 10;
 
+  private readonly minScore: number;
   private readonly tau: number;
   private readonly maxEpsilon: number;
   private readonly epsilonDecay: number;
@@ -17,18 +19,46 @@ export class DeepQLearningAgent extends ReinforcementAgent {
   private readonly qNetwork: DeepQNetwork;
   private readonly targetNetwork: DeepQNetwork;
 
-  constructor({ replayBufferSize, epsilonDecay, maxEpsilon, tau, ...baseAgentProps }: DeepQLearningAgentProps) {
+  constructor({
+    replayBufferSize,
+    epsilonDecay,
+    maxEpsilon,
+    tau,
+    minScore,
+    ...baseAgentProps
+  }: DeepQLearningAgentProps) {
     super(baseAgentProps);
-    this.tau = tau;
+    this.tau = tau ?? 0.85;
+    this.minScore = minScore;
     this.maxEpsilon = maxEpsilon;
     this.epsilonDecay = epsilonDecay;
-    this.replayMemory = new ReplayMemory(replayBufferSize);
+    this.replayMemory = new ReplayMemory(replayBufferSize ?? 64);
     const environmentSize = this.player.model.environmentSize.width * this.player.model.environmentSize.height;
     this.qNetwork = new DeepQNetwork(environmentSize, this.player.model.allActions.length);
     this.targetNetwork = new DeepQNetwork(environmentSize, this.player.model.allActions.length, false);
   }
 
-  protected runSingleEpoch(): void {}
+  protected runSingleEpoch(): void {
+    this.player.model.reset();
+    const totalReward = new MovingAverage(100);
+    let state = this.player.model.copy();
+    while (!this.replayMemory.isFull() && !state.isGameOver()) {
+      const action = this.getAction(state);
+      const nextState = this.player.controller.move(action);
+      totalReward.addOrReplace(nextState.score);
+      this.replayMemory.append([
+        state.stateAsVector(),
+        action,
+        nextState.score,
+        nextState.stateAsVector(),
+        Number(nextState.isGameOver())
+      ]);
+      state = nextState.copy();
+    }
+    if (this.replayMemory.isFull()) {
+      this.replayExperience();
+    }
+  }
 
   protected getBestAction(state: ReinforcementModel): number {
     return (this.qNetwork.model.predict(tensor1d(state.stateAsVector())) as Tensor).argMax().arraySync() as number;

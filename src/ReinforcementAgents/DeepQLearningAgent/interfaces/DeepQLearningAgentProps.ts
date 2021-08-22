@@ -1,8 +1,10 @@
 import { ReinforcementAgentProps } from '../../interfaces/ReinforcementAgentProps';
 
 export interface DeepQLearningAgentProps extends ReinforcementAgentProps {
-  tau: number;
   epsilonDecay: number;
   maxEpsilon: number;
-  replayBufferSize: number;
+  minScore: number;
+
+  replayBufferSize?: number;
+  tau?: number;
 }
