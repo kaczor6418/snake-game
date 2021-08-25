@@ -3,15 +3,15 @@ import { Tensor } from '@tensorflow/tfjs-core';
 import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementAgent } from '../ReinforcementAgent';
 import { DeepQNetwork } from './DeepQNetwork';
-import { DeepQLearningAgentProps } from './interfaces/DeepQLearningAgentProps';
+import { DoubleDeepQLearningAgentProps } from './interfaces/DoubleDeepQLearningAgentProps';
 import { MovingAverage } from './MovingAverage';
 import { ReplayMemory } from './ReplayMemory';
 
-export class DeepQLearningAgent extends ReinforcementAgent {
+export class DoubleDeepQLearningAgent extends ReinforcementAgent {
   private readonly minScore: number;
   private readonly replayUpdateTrigger: number;
   private readonly tau: number;
-  private readonly maxEpsilon: number;
+  private readonly minEpsilon: number;
   private readonly epsilonDecay: number;
   private readonly batchSize: number;
   private readonly replayMemory: ReplayMemory;
@@ -22,18 +22,18 @@ export class DeepQLearningAgent extends ReinforcementAgent {
     batchSize,
     minScore,
     epsilonDecay,
-    maxEpsilon,
+    minEpsilon,
     replayUpdateIndicator,
     tau,
     replayBufferSize,
     ...baseAgentProps
-  }: DeepQLearningAgentProps) {
+  }: DoubleDeepQLearningAgentProps) {
     super(baseAgentProps);
     this.tau = tau ?? 0.85;
     this.minScore = minScore;
     this.batchSize = batchSize;
     this.replayUpdateTrigger = replayUpdateIndicator;
-    this.maxEpsilon = maxEpsilon;
+    this.minEpsilon = minEpsilon;
     this.epsilonDecay = epsilonDecay;
     this.replayMemory = new ReplayMemory(replayBufferSize ?? this.batchSize * 2);
     const environmentSize = this.player.model.environmentSize.width * this.player.model.environmentSize.height;
@@ -119,7 +119,7 @@ export class DeepQLearningAgent extends ReinforcementAgent {
   }
 
   private decreaseExplorationChance(): void {
-    const newEpsilon = this.maxEpsilon * this.epsilonDecay;
+    const newEpsilon = this.currentEpsilon * this.epsilonDecay;
     if (newEpsilon >= this.minEpsilon) {
       this.currentEpsilon = newEpsilon;
     }

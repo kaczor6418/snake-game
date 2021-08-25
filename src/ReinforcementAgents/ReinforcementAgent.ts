@@ -4,13 +4,13 @@ import { IReinforcementAgent } from './interfaces/IReinforcementAgent';
 import { ReinforcementPlayer } from './interfaces/ReinforcementPlayer';
 import { UTILS } from '../common/Utils/UTILS';
 import { ReinforcementModel } from './interfaces/ReinforcementModel';
-import { ReinforcementAgentProps } from './interfaces/ReinforcementAgentProps';
+import { BaseReinforcementAgentProps } from './interfaces/ReinforcementAgentProps';
 
 export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected learningRate: number;
   protected currentEpsilon: number;
 
-  protected readonly minEpsilon: number;
+  protected readonly initialEpsilon: number;
   protected readonly adaptation: number;
   protected readonly getPossibleActions: () => number[];
   protected readonly player: ReinforcementPlayer;
@@ -18,17 +18,22 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected abstract runSingleEpoch(): void;
   protected abstract getBestAction(state: ReinforcementModel): number;
 
-  protected constructor({ learningRate, minEpsilon, adaptation, getPossibleActions, player }: ReinforcementAgentProps) {
+  protected constructor({
+    learningRate,
+    initialEpsilon,
+    adaptation,
+    getPossibleActions,
+    player
+  }: BaseReinforcementAgentProps) {
     this.learningRate = learningRate;
-    this.minEpsilon = minEpsilon;
-    this.currentEpsilon = this.minEpsilon;
+    this.initialEpsilon = initialEpsilon;
+    this.currentEpsilon = this.initialEpsilon;
     this.adaptation = adaptation;
     this.getPossibleActions = getPossibleActions;
     this.player = player;
   }
 
   public async fit(callback?: (action: number) => void, callbackDellyInMs = 500): Promise<void> {
-    this.player.model.reset();
     while (UTILS.isFalsy(this.player.model.isGameOver())) {
       const action = this.getAction(this.player.model);
       if (UTILS.isDefined(callback)) {

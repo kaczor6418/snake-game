@@ -20,7 +20,7 @@ export class DeepQNetwork {
     model.add(
       layers.dense({
         units: this.inputSize,
-        inputDim: this.inputSize,
+        inputShape: [this.inputSize],
         activation: 'relu'
       })
     );

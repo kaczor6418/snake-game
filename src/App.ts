@@ -5,7 +5,6 @@ import { ISnakeGame } from './core/SnakeGame/interfaces/ISnakeGame';
 import { SnakeGame } from './core/SnakeGame/SnakeGame';
 import { createReinforcementAgent } from './factories/ReinforcementAgentsFactory';
 import { ReinforcementAgentsNames } from './factories/ReinforcementAgentsNames';
-import { DeepQNetwork } from './ReinforcementAgents/DeepQLearningAgent/DeepQNetwork';
 import { IReinforcementAgent } from './ReinforcementAgents/interfaces/IReinforcementAgent';
 
 const template = `
@@ -20,8 +19,6 @@ export class App extends KKWebComponent {
 
   constructor() {
     super(template);
-    const x = new DeepQNetwork(6, 6);
-    console.dir(x);
     void this.runSnakeGameWithQLearningAgent();
   }
 
@@ -30,15 +27,22 @@ export class App extends KKWebComponent {
       boardConfiguration: { columnsCount: 6, foodCount: 11, rowsCount: 6 },
       canvas: this.canvas
     });
-    const agent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
+    const agent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
       adaptation: 0.5,
-      minEpsilon: 0.1,
+      initialEpsilon: 0.1,
       getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.STRAIGHT, MoveDirection.RIGHT],
       learningRate: 0.1,
-      player: snakeGame
+      player: snakeGame,
+      batchSize: 64,
+      epsilonDecay: 0.95,
+      replayUpdateIndicator: 10,
+      minEpsilon: 0.01,
+      minScore: 600
     });
+    console.log(agent);
     agent.learn(10000);
     for (let i = 0; i < 5; i++) {
+      snakeGame.model.reset();
       await snakeGame.runSnakeWithAgent(agent);
     }
   }
