@@ -12,7 +12,7 @@ export class QLearningAgent extends ReinforcementAgent {
     this.qValues = new Map<string, Map<number, number>>();
   }
 
-  protected runSingleEpoch(): void {
+  protected async runSingleEpoch(): Promise<void> {
     this.player.model.reset();
     let state = this.player.model.copy();
     while (UTILS.isFalsy(state.isGameOver())) {
@@ -21,6 +21,7 @@ export class QLearningAgent extends ReinforcementAgent {
       this.updateQValue(state, action, nextState.score, nextState);
       state = nextState.copy();
     }
+    return Promise.resolve();
   }
 
   protected getBestAction(state: ReinforcementModel): number {

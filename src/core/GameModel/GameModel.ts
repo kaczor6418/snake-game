@@ -198,10 +198,12 @@ export class GameModel implements IGameModel {
   public stateAsVector(): number[] {
     const modelVector = new Array<number>(this.rowsCount * this.columnsCount).fill(0);
     for (const { x, y } of this.foodPositions) {
-      modelVector[x * this.columnsCount + y] = Number(`${SnakeEnvironmentElements.FOOD}${x}${y}`);
+      modelVector[x * this.columnsCount + y] = Number(SnakeEnvironmentElements.FOOD);
     }
     for (const { x, y } of this.snakeBodyPartsPositions) {
-      modelVector[x * this.columnsCount + y] = Number(`${SnakeEnvironmentElements.BODY_PART}${x}${y}`);
+      if (x * this.columnsCount + y >= 0) {
+        modelVector[x * this.columnsCount + y] = Number(SnakeEnvironmentElements.BODY_PART);
+      }
     }
     if (modelVector.length > this.rowsCount * this.columnsCount) {
       modelVector.pop();

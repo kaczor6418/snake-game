@@ -25,14 +25,14 @@ export class DeepQNetwork {
         activation: 'relu'
       })
     );
-    model.add(layers.batchNormalization());
+    // model.add(layers.batchNormalization());
     model.add(
       layers.dense({
         units: 32,
         activation: 'relu'
       })
     );
-    model.add(layers.batchNormalization());
+    // model.add(layers.batchNormalization());
     model.add(
       layers.dense({
         units: 64,

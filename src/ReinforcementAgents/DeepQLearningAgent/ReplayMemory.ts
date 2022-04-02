@@ -1,5 +1,6 @@
 import { util } from '@tensorflow/tfjs';
 import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
+import { UTILS } from '../../common/Utils/UTILS';
 import { BufferOverSize } from '../../errors/BufferOverSize';
 import { MemoryItem } from './interfaces/MemoryItem';
 
@@ -46,6 +47,6 @@ export class ReplayMemory {
   }
 
   public isFull(): boolean {
-    return this.bufferIndex === this.bufferMaxSize;
+    return UTILS.isDefined(this.buffer[this.bufferMaxSize - 1]);
   }
 }

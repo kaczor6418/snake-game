@@ -35,8 +35,12 @@ module.exports = {
     extensions: ['.ts', '.js']
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    hot: true
+    host: 'local-ip',
+    port: 8080,
+    hot: 'only',
+    static: {
+      directory: path.resolve(__dirname, 'dist')
+    }
   },
   plugins: [
     new HTMLWebpackPlugin({

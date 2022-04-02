@@ -15,7 +15,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected readonly getPossibleActions: () => number[];
   protected readonly player: ReinforcementPlayer;
 
-  protected abstract runSingleEpoch(): void;
+  protected abstract runSingleEpoch(): Promise<void>;
   protected abstract getBestAction(state: ReinforcementModel): number;
 
   protected constructor({
@@ -48,10 +48,9 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
     }
   }
 
-  public learn(epochs: number): void {
+  public async learn(epochs: number): Promise<void> {
     for (let i = 0; i < epochs; i++) {
-      console.log('Epoch:', i);
-      this.runSingleEpoch();
+      await this.runSingleEpoch();
     }
     this.turnOfLearning();
   }
