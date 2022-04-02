@@ -13,6 +13,7 @@ export class QLearningAgent extends ReinforcementAgent {
   }
 
   protected runSingleEpoch(): void {
+    this.player.model.reset();
     let state = this.player.model.copy();
     while (UTILS.isFalsy(state.isGameOver())) {
       const action = this.getAction(state);
@@ -20,7 +21,6 @@ export class QLearningAgent extends ReinforcementAgent {
       this.updateQValue(state, action, nextState.score, nextState);
       state = nextState.copy();
     }
-    this.player.model.reset();
   }
 
   protected getBestAction(state: ReinforcementModel): number {

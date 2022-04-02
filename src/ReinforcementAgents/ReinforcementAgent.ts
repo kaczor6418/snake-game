@@ -49,8 +49,8 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   }
 
   public learn(epochs: number): void {
-    this.player.model.reset();
     for (let i = 0; i < epochs; i++) {
+      console.log('Epoch:', i);
       this.runSingleEpoch();
     }
     this.turnOfLearning();

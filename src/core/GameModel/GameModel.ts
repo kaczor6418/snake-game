@@ -203,8 +203,11 @@ export class GameModel implements IGameModel {
     for (const { x, y } of this.snakeBodyPartsPositions) {
       modelVector[x * this.columnsCount + y] = Number(`${SnakeEnvironmentElements.BODY_PART}${x}${y}`);
     }
-    const snakeHeadPosition = this.snakeHeadPosition.x * this.columnsCount + this.snakeHeadPosition.y;
-    modelVector[snakeHeadPosition] = Number(`${modelVector[snakeHeadPosition]}${this.snakeHeadDirection}`);
+    if (modelVector.length > this.rowsCount * this.columnsCount) {
+      modelVector.pop();
+    }
+    // const snakeHeadPosition = this.snakeHeadPosition.x * this.columnsCount + this.snakeHeadPosition.y;
+    // modelVector[snakeHeadPosition] = Number(`${modelVector[snakeHeadPosition]}${this.snakeHeadDirection}`);
     return modelVector;
   }
 

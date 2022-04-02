@@ -1,4 +1,4 @@
-import { layers, LayersModel, sequential, Sequential } from '@tensorflow/tfjs';
+import { AdamOptimizer, layers, LayersModel, sequential, Sequential, train } from '@tensorflow/tfjs';
 import { UTILS } from '../../common/Utils/UTILS';
 import { CanNotCopyWeights } from '../../errors/CanNotCopyWeights';
 
@@ -6,30 +6,33 @@ export class DeepQNetwork {
   public readonly model: LayersModel;
 
   private readonly outputSize: number;
-  private readonly inputSize: number;
+  private readonly inputSize: number = 0;
 
-  constructor(inputSize: number, outputSize: number, trainable = true) {
+  constructor(inputSize: number, outputSize: number, learningRate: number, trainable = true) {
     this.inputSize = inputSize;
     this.outputSize = outputSize;
-    this.model = this.createNetwork();
+    this.model = this.createNetwork(learningRate);
     this.model.trainable = trainable;
   }
 
-  private createNetwork(): LayersModel {
+  public createNetwork(learningRate: number): LayersModel {
+    const adamOptimizer: AdamOptimizer = train.adam(learningRate);
     const model: Sequential = sequential();
     model.add(
       layers.dense({
-        units: this.inputSize,
+        units: 1,
         inputShape: [this.inputSize],
         activation: 'relu'
       })
     );
+    model.add(layers.batchNormalization());
     model.add(
       layers.dense({
         units: 32,
         activation: 'relu'
       })
     );
+    model.add(layers.batchNormalization());
     model.add(
       layers.dense({
         units: 64,
@@ -42,14 +45,15 @@ export class DeepQNetwork {
         activation: 'relu'
       })
     );
+    model.add(layers.dropout({ rate: 0.25 }));
     model.add(
       layers.dense({
         units: this.outputSize
       })
     );
     model.compile({
-      loss: 'meanSquaredError',
-      optimizer: 'adam'
+      optimizer: adamOptimizer,
+      loss: 'meanSquaredError'
     });
     return model;
   }

@@ -7,9 +7,6 @@ export interface DoubleDeepQLearningAgentProps extends BaseReinforcementAgentPro
   minEpsilon: number;
   minScore: number;
   replayUpdateIndicator: number;
-
-  replayBufferSize?: number;
-  tau?: number;
 }
 
 export function isDoubleDeepQLearningAgentProps(

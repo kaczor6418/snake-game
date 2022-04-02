@@ -24,10 +24,17 @@ export class App extends KKWebComponent {
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
     const snakeGame: ISnakeGame = new SnakeGame({
-      boardConfiguration: { columnsCount: 6, foodCount: 11, rowsCount: 6 },
+      boardConfiguration: { columnsCount: 2, foodCount: 3, rowsCount: 2 },
       canvas: this.canvas
     });
-    const agent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
+    const qAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
+      adaptation: 0.5,
+      initialEpsilon: 0.1,
+      getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.RIGHT, MoveDirection.STRAIGHT],
+      player: snakeGame,
+      learningRate: 0.1
+    });
+    const ddqnAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
       adaptation: 0.5,
       initialEpsilon: 0.1,
       getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.STRAIGHT, MoveDirection.RIGHT],
@@ -37,13 +44,13 @@ export class App extends KKWebComponent {
       epsilonDecay: 0.95,
       replayUpdateIndicator: 10,
       minEpsilon: 0.01,
-      minScore: 600
+      minScore: 100
     });
-    console.log(agent);
-    agent.learn(10000);
+    console.log(qAgent);
+    qAgent.learn(10000);
     for (let i = 0; i < 5; i++) {
       snakeGame.model.reset();
-      await snakeGame.runSnakeWithAgent(agent);
+      await snakeGame.runSnakeWithAgent(ddqnAgent);
     }
   }
 }
