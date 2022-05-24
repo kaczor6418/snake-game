@@ -1,7 +1,7 @@
 export enum FieldPoints {
-  BLANK = -0.01,
-  FOOD = 0.1,
-  TAIL = -1,
-  WALL = -1,
-  WON = 1
+  BLANK = -10,
+  FOOD = 100,
+  TAIL = -10000,
+  WALL = -10000,
+  WON = 1000
 }

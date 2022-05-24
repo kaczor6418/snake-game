@@ -1,4 +1,4 @@
 export enum SnakeEnvironmentElements {
-  BODY_PART = -1,
-  FOOD = 1
+  BODY_PART = 1,
+  FOOD = 2
 }

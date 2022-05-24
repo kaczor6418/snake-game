@@ -271,13 +271,7 @@ describe(GameModel.name, () => {
   });
   describe(GameModel.prototype.stateAsVector.name, () => {
     test('should return vector with correct size', () => {
-      const expectedSize =
-        gameModel['columnsCount'] * gameModel['rowsCount'] -
-        gameModel.snakeBodyPartsCount -
-        gameModel.allFoods.length +
-        gameModel.snakeBodyPartsCount * 3 +
-        gameModel.allFoods.length * 3 +
-        1;
+      const expectedSize = gameModel['columnsCount'] * gameModel['rowsCount'];
       const environmentVectorLength = gameModel.stateAsVector().toString().replace(/,/g, '').length;
       expect(expectedSize).toBe(environmentVectorLength);
     });
