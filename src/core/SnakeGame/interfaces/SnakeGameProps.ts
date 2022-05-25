@@ -1,6 +1,6 @@
-import { GameModelProps } from '../../GameModel/interfaces/GameModelProps';
+import { SnakeGameModelProps } from '../../GameModel/interfaces/SnakeGameModelProps';
 
 export interface SnakeGameProps {
   canvas: HTMLCanvasElement;
-  boardConfiguration: GameModelProps;
+  boardConfiguration: SnakeGameModelProps;
 }

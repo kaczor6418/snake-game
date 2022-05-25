@@ -2,10 +2,10 @@ import { IGameView } from './interfaces/IGameView';
 import { IWebGLService } from '../../services/WebGLService/interfaces/IWebGLService';
 import { Position } from '../GameModel/interfaces/Position';
 import { GameViewProps } from './interfaces/GameViewProps';
-import { IGameModel } from '../GameModel/interfaces/IGameModel';
+import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
 
 export class GameView implements IGameView {
-  private readonly gameModel: IGameModel;
+  private readonly gameModel: ISnakeGameModel;
   private readonly webGLService: IWebGLService;
   private readonly fieldWidth: number;
   private readonly fieldHeight: number;

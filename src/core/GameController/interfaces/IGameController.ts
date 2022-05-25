@@ -1,7 +1,7 @@
 import { MoveDirection } from './MoveDirection';
-import { IGameModel } from '../../GameModel/interfaces/IGameModel';
+import { ISnakeGameModel } from '../../GameModel/interfaces/ISnakeGameModel';
 import { ReinforcementController } from '../../../ReinforcementAgents/interfaces/ReinforcementController';
 
 export interface IGameController extends ReinforcementController {
-  move(direction: MoveDirection): IGameModel;
+  move(direction: MoveDirection): ISnakeGameModel;
 }

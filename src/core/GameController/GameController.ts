@@ -1,4 +1,4 @@
-import { IGameModel } from '../GameModel/interfaces/IGameModel';
+import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
 import { IGameController } from './interfaces/IGameController';
 import { MoveDirection } from './interfaces/MoveDirection';
 import { UTILS } from '../../common/Utils/UTILS';
@@ -7,13 +7,13 @@ import { Direction } from '../GameModel/interfaces/Direction';
 import { FieldPoints } from './interfaces/FieldPoints';
 
 export class GameController implements IGameController {
-  private readonly gameModel: IGameModel;
+  private readonly gameModel: ISnakeGameModel;
 
-  constructor(gameModel: IGameModel) {
+  constructor(gameModel: ISnakeGameModel) {
     this.gameModel = gameModel;
   }
 
-  public move(direction: MoveDirection): IGameModel {
+  public move(direction: MoveDirection): ISnakeGameModel {
     const snakeHead: Position = UTILS.shellCopy(this.gameModel.snakeHeadPosition);
     if (
       (direction === MoveDirection.LEFT && this.gameModel.snakeHeadDirection === Direction.LEFT) ||

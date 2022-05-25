@@ -3,8 +3,8 @@ import { ISnakeGame } from './interfaces/ISnakeGame';
 import { IGameController } from '../GameController/interfaces/IGameController';
 import { IGameView } from '../GameView/interfaces/IGameView';
 import { GameController } from '../GameController/GameController';
-import { GameModel } from '../GameModel/GameModel';
-import { IGameModel } from '../GameModel/interfaces/IGameModel';
+import { SnakeGameModel } from '../GameModel/SnakeGameModel';
+import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
 import { IWebGLService } from '../../services/WebGLService/interfaces/IWebGLService';
 import { WebGLService } from '../../services/WebGLService/WebGLService';
 import { GameView } from '../GameView/GameView';
@@ -15,7 +15,7 @@ import { ReinforcementPlayer } from '../../ReinforcementAgents/interfaces/Reinfo
 import { IReinforcementAgent } from '../../ReinforcementAgents/interfaces/IReinforcementAgent';
 
 export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
-  public readonly model: IGameModel;
+  public readonly model: ISnakeGameModel;
   public readonly controller: IGameController;
 
   private readonly webGLService: IWebGLService;
@@ -28,7 +28,7 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
     this.pause = false;
     this.chosenMove = MoveDirection.STRAIGHT;
     this.webGLService = new WebGLService(canvas);
-    this.model = new GameModel(boardConfiguration);
+    this.model = new SnakeGameModel(boardConfiguration);
     this.controller = new GameController(this.model);
     this.gameView = new GameView({
       fieldSize: {

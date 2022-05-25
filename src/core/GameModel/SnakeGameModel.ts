@@ -6,12 +6,12 @@ import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementModel } from '../../ReinforcementAgents/interfaces/ReinforcementModel';
 import { MoveDirection } from '../GameController/interfaces/MoveDirection';
 import { Direction } from './interfaces/Direction';
-import { GameModelProps } from './interfaces/GameModelProps';
-import { IGameModel } from './interfaces/IGameModel';
+import { SnakeGameModelProps } from './interfaces/SnakeGameModelProps';
+import { ISnakeGameModel } from './interfaces/ISnakeGameModel';
 import { Position } from './interfaces/Position';
 import { SnakeEnvironmentElements } from './interfaces/SnakeEnvironmentElements';
 
-export class GameModel implements IGameModel {
+export class SnakeGameModel implements ISnakeGameModel {
   public score: number;
   public shouldFinish: boolean;
   public snakeHeadDirection: Direction;
@@ -23,7 +23,7 @@ export class GameModel implements IGameModel {
   private originalFoodsPositions: Position[];
   private snakeBodyPartsPositions: Position[];
 
-  constructor({ foodCount, rowsCount, columnsCount }: GameModelProps) {
+  constructor({ foodCount, rowsCount, columnsCount }: SnakeGameModelProps) {
     this.score = 0;
     this.shouldFinish = false;
     this.snakeHeadDirection = Direction.RIGHT;
@@ -75,7 +75,11 @@ export class GameModel implements IGameModel {
   }
 
   public copy(): ReinforcementModel {
-    const gameModelCopy = new GameModel({ columnsCount: this.columnsCount, rowsCount: this.rowsCount, foodCount: 0 });
+    const gameModelCopy = new SnakeGameModel({
+      columnsCount: this.columnsCount,
+      rowsCount: this.rowsCount,
+      foodCount: 0
+    });
     gameModelCopy.score = this.score;
     gameModelCopy.shouldFinish = this.shouldFinish;
     gameModelCopy.snakeHeadDirection = this.snakeHeadDirection;
@@ -185,7 +189,7 @@ export class GameModel implements IGameModel {
     this.snakeBodyPartsPositions.push(position);
   }
 
-  public updateBoard(props: Partial<GameModelProps>): void {
+  public updateBoard(props: Partial<SnakeGameModelProps>): void {
     this.reset();
     this.rowsCount = props.rowsCount ?? this.rowsCount;
     this.columnsCount = props.columnsCount ?? this.columnsCount;

@@ -1,6 +1,6 @@
 import { GameView } from './GameView';
 import { webGLServiceMock } from '../../services/WebGLService/__mocks__/web-gl-service';
-import { createGameModelMock } from '../GameModel/GameModel.unit.test';
+import { createGameModelMock } from '../../../test/src/core/SnakeGameModel.spec';
 
 describe(GameView.name, () => {
   let gameView: GameView;

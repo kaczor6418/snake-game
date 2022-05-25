@@ -1,14 +1,14 @@
 import { GameController } from './GameController';
-import { createGameModelMock } from '../GameModel/GameModel.unit.test';
-import { IGameModel } from '../GameModel/interfaces/IGameModel';
-import { GameModel } from '../GameModel/GameModel';
+import { createGameModelMock } from '../../../test/src/core/SnakeGameModel.spec';
+import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
+import { SnakeGameModel } from '../GameModel/SnakeGameModel';
 import { Direction } from '../GameModel/interfaces/Direction';
 import { MoveDirection } from './interfaces/MoveDirection';
 import { Position } from '../GameModel/interfaces/Position';
 
 describe(GameController.name, () => {
   let gameController: GameController;
-  let gameModel: GameModel;
+  let gameModel: SnakeGameModel;
   beforeEach(() => {
     gameModel = createGameModelMock();
     gameController = createGameController(gameModel);
@@ -121,6 +121,6 @@ describe(GameController.name, () => {
   });
 });
 
-function createGameController(gameModel: IGameModel): GameController {
+function createGameController(gameModel: ISnakeGameModel): GameController {
   return new GameController(gameModel);
 }

@@ -1,9 +1,9 @@
 import { FieldSize } from './FieldSize';
 import { IWebGLService } from '../../../services/WebGLService/interfaces/IWebGLService';
-import { IGameModel } from '../../GameModel/interfaces/IGameModel';
+import { ISnakeGameModel } from '../../GameModel/interfaces/ISnakeGameModel';
 
 export interface GameViewProps {
-  gameModel: IGameModel;
+  gameModel: ISnakeGameModel;
   webGLService: IWebGLService;
   fieldSize: FieldSize;
 }
