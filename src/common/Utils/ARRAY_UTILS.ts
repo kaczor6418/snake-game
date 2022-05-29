@@ -2,8 +2,8 @@ import { UTILS } from './UTILS';
 import { CouldNotFindValueError } from '../../errors/CouldNotFindValueError';
 
 export namespace ARRAY_UTILS {
-  export function shellCopy<T>(array: T[]): T[] {
-    return array.map((element) => UTILS.shellCopy(element));
+  export function shallowCopy<T>(array: T[]): T[] {
+    return array.map((element) => UTILS.shallowCopy(element));
   }
 
   export function isEmpty(array: Array<unknown>): boolean {
@@ -19,7 +19,7 @@ export namespace ARRAY_UTILS {
   }
 
   export function getLastElementCopy<T>(array: T[]): T {
-    return UTILS.shellCopy(array[array.length - 1]);
+    return UTILS.shallowCopy(array[array.length - 1]);
   }
 
   export function removeElement<T>(array: T[], index: number): T {

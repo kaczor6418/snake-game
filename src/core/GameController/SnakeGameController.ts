@@ -1,12 +1,12 @@
 import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
-import { IGameController } from './interfaces/IGameController';
+import { ISnakeGameController } from './interfaces/ISnakeGameController';
 import { MoveDirection } from './interfaces/MoveDirection';
 import { UTILS } from '../../common/Utils/UTILS';
 import { Position } from '../GameModel/interfaces/Position';
 import { Direction } from '../GameModel/interfaces/Direction';
 import { FieldPoints } from './interfaces/FieldPoints';
 
-export class GameController implements IGameController {
+export class SnakeGameController implements ISnakeGameController {
   private readonly gameModel: ISnakeGameModel;
 
   constructor(gameModel: ISnakeGameModel) {
@@ -14,7 +14,7 @@ export class GameController implements IGameController {
   }
 
   public move(direction: MoveDirection): ISnakeGameModel {
-    const snakeHead: Position = UTILS.shellCopy(this.gameModel.snakeHeadPosition);
+    const snakeHead: Position = UTILS.shallowCopy(this.gameModel.snakeHeadPosition);
     if (
       (direction === MoveDirection.LEFT && this.gameModel.snakeHeadDirection === Direction.LEFT) ||
       (direction === MoveDirection.RIGHT && this.gameModel.snakeHeadDirection === Direction.RIGHT) ||
@@ -60,7 +60,8 @@ export class GameController implements IGameController {
       this.gameModel.score += FieldPoints.BLANK;
     }
     if (this.gameModel.allFoods.length === 0) {
-      this.gameModel.score += FieldPoints.WON;
+      this.gameModel.score += FieldPoints.WIN;
+      this.gameModel.shouldFinish = true;
     }
   }
 

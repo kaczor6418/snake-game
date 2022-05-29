@@ -32,7 +32,7 @@ export class SnakeGameModel implements ISnakeGameModel {
     this.columnsCount = columnsCount;
     this.lastSnakeTailPart = { x: 0, y: 0 };
     this.foodPositions = this.generateRandomFoodsPositions(foodCount);
-    this.originalFoodsPositions = ARRAY_UTILS.shellCopy(this.foodPositions);
+    this.originalFoodsPositions = ARRAY_UTILS.shallowCopy(this.foodPositions);
   }
 
   get allActions(): MoveDirection[] {
@@ -94,9 +94,9 @@ export class SnakeGameModel implements ISnakeGameModel {
     gameModelCopy.score = this.score;
     gameModelCopy.shouldFinish = this.shouldFinish;
     gameModelCopy.snakeHeadDirection = this.snakeHeadDirection;
-    gameModelCopy.setFoodsOriginalPositions(ARRAY_UTILS.shellCopy(this.originalFoodsPositions));
-    gameModelCopy.setFoodsPositions(ARRAY_UTILS.shellCopy(this.foodPositions));
-    gameModelCopy.setSnakeBodyPartsPositions(ARRAY_UTILS.shellCopy(this.snakeBodyPartsPositions));
+    gameModelCopy.setFoodsOriginalPositions(ARRAY_UTILS.shallowCopy(this.originalFoodsPositions));
+    gameModelCopy.setFoodsPositions(ARRAY_UTILS.shallowCopy(this.foodPositions));
+    gameModelCopy.setSnakeBodyPartsPositions(ARRAY_UTILS.shallowCopy(this.snakeBodyPartsPositions));
     return gameModelCopy;
   }
 
@@ -192,7 +192,7 @@ export class SnakeGameModel implements ISnakeGameModel {
     this.snakeHeadDirection = Direction.RIGHT;
     this.snakeBodyPartsPositions = [{ x: 0, y: 0 }];
     this.lastSnakeTailPart = { x: 0, y: 0 };
-    this.foodPositions = ARRAY_UTILS.shellCopy(this.originalFoodsPositions);
+    this.foodPositions = ARRAY_UTILS.shallowCopy(this.originalFoodsPositions);
   }
 
   public setNewSnakeHead(position: Position): void {

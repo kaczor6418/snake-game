@@ -1,13 +1,13 @@
 import { ARRAY_UTILS } from './ARRAY_UTILS';
 import { CouldNotFindValueError } from '../../errors/CouldNotFindValueError';
 
-describe(ARRAY_UTILS.shellCopy.name, () => {
+describe(ARRAY_UTILS.shallowCopy.name, () => {
   test('should make a shell copy of every element', () => {
     const arr = [
       { x: 0, y: 1 },
       { x: 1, y: 1 }
     ];
-    const arrCopy = ARRAY_UTILS.shellCopy(arr);
+    const arrCopy = ARRAY_UTILS.shallowCopy(arr);
     ++arrCopy[0].x;
     ++arrCopy[1].x;
     expect(arr[0].x).toBe(0);

@@ -1,8 +1,8 @@
 import { SnakeGameProps } from './interfaces/SnakeGameProps';
 import { ISnakeGame } from './interfaces/ISnakeGame';
-import { IGameController } from '../GameController/interfaces/IGameController';
+import { ISnakeGameController } from '../GameController/interfaces/ISnakeGameController';
 import { IGameView } from '../GameView/interfaces/IGameView';
-import { GameController } from '../GameController/GameController';
+import { SnakeGameController } from '../GameController/SnakeGameController';
 import { SnakeGameModel } from '../GameModel/SnakeGameModel';
 import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
 import { IWebGLService } from '../../services/WebGLService/interfaces/IWebGLService';
@@ -16,7 +16,7 @@ import { IReinforcementAgent } from '../../ReinforcementAgents/interfaces/IReinf
 
 export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
   public readonly model: ISnakeGameModel;
-  public readonly controller: IGameController;
+  public readonly controller: ISnakeGameController;
 
   private readonly webGLService: IWebGLService;
   private readonly gameView: IGameView;
@@ -29,7 +29,7 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
     this.chosenMove = MoveDirection.STRAIGHT;
     this.webGLService = new WebGLService(canvas);
     this.model = new SnakeGameModel(boardConfiguration);
-    this.controller = new GameController(this.model);
+    this.controller = new SnakeGameController(this.model);
     this.gameView = new GameView({
       fieldSize: {
         width: canvas.width / boardConfiguration.columnsCount,

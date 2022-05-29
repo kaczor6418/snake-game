@@ -1,12 +1,12 @@
-import { MATH_UTILS } from '../../../src/common/Utils/MATH_UTILS';
-import { UTILS } from '../../../src/common/Utils/UTILS';
-import { MoveDirection } from '../../../src/core/GameController/interfaces/MoveDirection';
-import { Direction } from '../../../src/core/GameModel/interfaces/Direction';
-import { ISnakeGameModel } from '../../../src/core/GameModel/interfaces/ISnakeGameModel';
-import { Position } from '../../../src/core/GameModel/interfaces/Position';
-import { SnakeEnvironmentElements } from '../../../src/core/GameModel/interfaces/SnakeEnvironmentElements';
-import { SnakeGameModel } from '../../../src/core/GameModel/SnakeGameModel';
-import { InvalidPositionError } from '../../../src/errors/InvalidPositionError';
+import { MATH_UTILS } from '../../../../src/common/Utils/MATH_UTILS';
+import { UTILS } from '../../../../src/common/Utils/UTILS';
+import { MoveDirection } from '../../../../src/core/GameController/interfaces/MoveDirection';
+import { Direction } from '../../../../src/core/GameModel/interfaces/Direction';
+import { ISnakeGameModel } from '../../../../src/core/GameModel/interfaces/ISnakeGameModel';
+import { Position } from '../../../../src/core/GameModel/interfaces/Position';
+import { SnakeEnvironmentElements } from '../../../../src/core/GameModel/interfaces/SnakeEnvironmentElements';
+import { SnakeGameModel } from '../../../../src/core/GameModel/SnakeGameModel';
+import { InvalidPositionError } from '../../../../src/errors/InvalidPositionError';
 
 describe(SnakeGameModel.name, () => {
   let gameModel: ISnakeGameModel;
@@ -72,7 +72,7 @@ describe(SnakeGameModel.name, () => {
     });
   });
   describe(SnakeGameModel.prototype.copy.name, () => {
-    test('should create copy of class instance', () => {
+    it('should create copy of class instance', () => {
       const gameModelCopy = gameModel.copy();
       expect(gameModelCopy).not.toBe(gameModel);
       expect(gameModelCopy.hash()).toBe(gameModel.hash());
@@ -100,153 +100,153 @@ describe(SnakeGameModel.name, () => {
     });
   });
   describe(SnakeGameModel.prototype.isBottomWall.name, () => {
-    test('should return true if position is a bottom wall', () => {
+    it('should return true if position is a bottom wall', () => {
       expect(gameModel.isBottomWall(rowsCount)).toBeTruthy();
     });
-    test('should return false if position is not a bottom wall', () => {
+    it('should return false if position is not a bottom wall', () => {
       expect(gameModel.isBottomWall(rowsCount - 1)).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isFoodPosition.name, () => {
-    test('should return true if position is a food position', () => {
+    it('should return true if position is a food position', () => {
       expect(gameModel.isFoodPosition(gameModel.allFoods[0])).toBeTruthy();
     });
-    test('should return false if position is not a food position', () => {
+    it('should return false if position is not a food position', () => {
       expect(gameModel.isFoodPosition({ x: columnsCount, y: rowsCount })).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isGameOver.name, () => {
-    test('should return true if all food have been eaten', () => {
+    it('should return true if all food have been eaten', () => {
       for (const foodPosition of structuredClone(gameModel.allFoods)) {
         gameModel.removeFood(foodPosition);
       }
       expect(gameModel.isGameOver()).toBeTruthy();
     });
-    test('should return false if all food have NOT been eaten and shouldFinish is false', () => {
+    it('should return false if all food have NOT been eaten and shouldFinish is false', () => {
       gameModel.shouldFinish = false;
       expect(gameModel.isGameOver()).toBeFalsy();
     });
-    test('should return true if shouldFinish is true', () => {
+    it('should return true if shouldFinish is true', () => {
       gameModel.shouldFinish = true;
       expect(gameModel.isGameOver()).toBeTruthy();
     });
   });
   describe(SnakeGameModel.prototype.isLeftWall.name, () => {
-    test('should return true if position is a left wall', () => {
+    it('should return true if position is a left wall', () => {
       expect(gameModel.isLeftWall(-1)).toBeTruthy();
     });
-    test('should return false if position is not a left wall', () => {
+    it('should return false if position is not a left wall', () => {
       expect(gameModel.isLeftWall(0)).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isNotBottomWall.name, () => {
-    test('should return true if position is not a bottom wall', () => {
+    it('should return true if position is not a bottom wall', () => {
       expect(gameModel.isNotBottomWall(0)).toBeTruthy();
     });
-    test('should return false if position is a bottom wall', () => {
+    it('should return false if position is a bottom wall', () => {
       expect(gameModel.isNotBottomWall(rowsCount)).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isNotFoodPosition.name, () => {
-    test('should return true if position is not a food position', () => {
+    it('should return true if position is not a food position', () => {
       expect(gameModel.isNotFoodPosition({ x: -1, y: -1 })).toBeTruthy();
     });
-    test('should return false if position is a food position', () => {
+    it('should return false if position is a food position', () => {
       expect(gameModel.isNotFoodPosition(gameModel.allFoods[0])).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isNotLeftWall.name, () => {
-    test('should return true if position is not a left wall', () => {
+    it('should return true if position is not a left wall', () => {
       expect(gameModel.isNotLeftWall(0)).toBeTruthy();
     });
-    test('should return false if position is a left wall', () => {
+    it('should return false if position is a left wall', () => {
       expect(gameModel.isNotLeftWall(-1)).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isNotRightWall.name, () => {
-    test('should return true if position is not a right wall', () => {
+    it('should return true if position is not a right wall', () => {
       expect(gameModel.isNotRightWall(0)).toBeTruthy();
     });
-    test('should return false if position is a right wall', () => {
+    it('should return false if position is a right wall', () => {
       expect(gameModel.isNotRightWall(columnsCount)).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isNotSnakeBodyPosition.name, () => {
-    test('should return true if position is not a snake body part position', () => {
+    it('should return true if position is not a snake body part position', () => {
       expect(gameModel.isNotSnakeBodyPosition({ x: -1, y: -1 })).toBeTruthy();
     });
-    test('should return false if position is a snake body part position', () => {
+    it('should return false if position is a snake body part position', () => {
       expect(gameModel.isNotSnakeBodyPosition(gameModel.allSnakeBodyParts[0])).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isNotTopWall.name, () => {
-    test('should return true if position is not a top wall', () => {
+    it('should return true if position is not a top wall', () => {
       expect(gameModel.isNotTopWall(0)).toBeTruthy();
     });
-    test('should return false if position is a top wall', () => {
+    it('should return false if position is a top wall', () => {
       expect(gameModel.isNotTopWall(-1)).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isNotWall.name, () => {
-    test('should return false if position is not a bottom wall', () => {
+    it('should return false if position is not a bottom wall', () => {
       expect(gameModel.isNotWall({ x: 0, y: rowsCount })).toBeFalsy();
     });
-    test('should return false if position is not a left wall', () => {
+    it('should return false if position is not a left wall', () => {
       expect(gameModel.isNotWall({ x: -1, y: 0 })).toBeFalsy();
     });
-    test('should return false if position is not a right wall', () => {
+    it('should return false if position is not a right wall', () => {
       expect(gameModel.isNotWall({ x: columnsCount, y: 0 })).toBeFalsy();
     });
-    test('should return false if position is not a top wall', () => {
+    it('should return false if position is not a top wall', () => {
       expect(gameModel.isNotWall({ x: 0, y: -1 })).toBeFalsy();
     });
-    test('should return true if position is not a wall', () => {
+    it('should return true if position is not a wall', () => {
       expect(gameModel.isNotWall({ x: 0, y: 0 })).toBeTruthy();
     });
   });
   describe(SnakeGameModel.prototype.isRightWall.name, () => {
-    test('should return true if position is a right wall', () => {
+    it('should return true if position is a right wall', () => {
       expect(gameModel.isRightWall(columnsCount)).toBeTruthy();
     });
-    test('should return false if position is not a right wall', () => {
+    it('should return false if position is not a right wall', () => {
       expect(gameModel.isRightWall(0)).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isSnakeBodyPartPosition.name, () => {
-    test('should return true if position is a snake body part position', () => {
+    it('should return true if position is a snake body part position', () => {
       expect(gameModel.isSnakeBodyPartPosition(gameModel.allSnakeBodyParts[0])).toBeTruthy();
     });
-    test('should return false if position is not a snake body part position', () => {
+    it('should return false if position is not a snake body part position', () => {
       expect(gameModel.isSnakeBodyPartPosition({ x: -1, y: -1 })).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isTopWall.name, () => {
-    test('should return true if position is a top wall', () => {
+    it('should return true if position is a top wall', () => {
       expect(gameModel.isTopWall(-1)).toBeTruthy();
     });
-    test('should return false if position is not a top wall', () => {
+    it('should return false if position is not a top wall', () => {
       expect(gameModel.isTopWall(0)).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.isWall.name, () => {
-    test('should return true if position is a bottom wall', () => {
+    it('should return true if position is a bottom wall', () => {
       expect(gameModel.isWall({ x: 0, y: rowsCount })).toBeTruthy();
     });
-    test('should return true if position is a left wall', () => {
+    it('should return true if position is a left wall', () => {
       expect(gameModel.isWall({ x: -1, y: 0 })).toBeTruthy();
     });
-    test('should return true if position is a right wall', () => {
+    it('should return true if position is a right wall', () => {
       expect(gameModel.isWall({ x: columnsCount, y: 0 })).toBeTruthy();
     });
-    test('should return true if position is a top wall', () => {
+    it('should return true if position is a top wall', () => {
       expect(gameModel.isWall({ x: 0, y: -1 })).toBeTruthy();
     });
-    test('should return false if position is not a wall', () => {
+    it('should return false if position is not a wall', () => {
       expect(gameModel.isWall({ x: 0, y: 0 })).toBeFalsy();
     });
   });
   describe(SnakeGameModel.prototype.removeFood.name, () => {
-    test('should remove one food from foods list', () => {
+    it('should remove one food from foods list', () => {
       const foodsCountBeforeRemove: number = gameModel.allFoods.length;
       const foodPositionToRemove: Position = gameModel.allFoods[0];
       gameModel.removeFood(foodPositionToRemove);
@@ -255,7 +255,7 @@ describe(SnakeGameModel.name, () => {
         gameModel.allFoods.some((foodPosition) => UTILS.isObjectWithSameKeyValues(foodPositionToRemove, foodPosition))
       ).toBeFalsy();
     });
-    test('should remove all food from foods list', () => {
+    it('should remove all food from foods list', () => {
       for (const foodPosition of structuredClone(gameModel.allFoods)) {
         gameModel.removeFood(foodPosition);
       }
@@ -263,14 +263,14 @@ describe(SnakeGameModel.name, () => {
     });
   });
   describe(SnakeGameModel.prototype.removeSnakeBodyPart.name, () => {
-    test('should remove one snake body part with given position from snake body parts list', () => {
+    it('should remove one snake body part with given position from snake body parts list', () => {
       const snakeBodyPartsCountBeforeRemove: number = gameModel.snakeBodyPartsCount;
       const bodyPart: Position = gameModel.allSnakeBodyParts[0];
       const expected = gameModel.removeSnakeBodyPart(bodyPart);
       expect(gameModel.snakeBodyPartsCount).toEqual(snakeBodyPartsCountBeforeRemove - 1);
       expect(bodyPart).toBe(expected);
     });
-    test('should remove one snake body part under given index from snake body parts list', () => {
+    it('should remove one snake body part under given index from snake body parts list', () => {
       const snakeBodyPartsCountBeforeRemove: number = gameModel.snakeBodyPartsCount;
       const bodyPart: Position = gameModel.allSnakeBodyParts[0];
       const expected = gameModel.removeSnakeBodyPart(0);
@@ -279,31 +279,31 @@ describe(SnakeGameModel.name, () => {
     });
   });
   describe(SnakeGameModel.prototype.reset.name, () => {
-    test('should rest game board to initial state after eating one food', () => {
+    it('should rest game board to initial state after eating one food', () => {
       const initialFoodCount = gameModel.allFoods.length;
       gameModel.removeFood(gameModel.allFoods[0]);
       gameModel.reset();
       expect(initialFoodCount).toBe(gameModel.allFoods.length);
     });
-    test('should rest game board to initial state after increasing snake body size', () => {
+    it('should rest game board to initial state after increasing snake body size', () => {
       const initialSnakeBodyPartsCount = gameModel.snakeBodyPartsCount;
       gameModel.addNewSnakeTailPart();
       gameModel.reset();
       expect(initialSnakeBodyPartsCount).toBe(gameModel.snakeBodyPartsCount);
     });
-    test('should rest game board to initial state after chaining head position', () => {
+    it('should rest game board to initial state after chaining head position', () => {
       const initialSnakeHeadPosition = gameModel.snakeHeadPosition;
       gameModel.setNewSnakeHead({ x: 0, y: 1 });
       gameModel.reset();
       expect(initialSnakeHeadPosition).toMatchObject(gameModel.snakeHeadPosition);
     });
-    test('should rest game board to initial state after chaining head direction', () => {
+    it('should rest game board to initial state after chaining head direction', () => {
       const initialSnakeHeadDirection = gameModel.snakeHeadDirection;
       gameModel.snakeHeadDirection = Direction.TOP;
       gameModel.reset();
       expect(initialSnakeHeadDirection).toBe(gameModel.snakeHeadDirection);
     });
-    test('should rest game board to initial state after changing score', () => {
+    it('should rest game board to initial state after changing score', () => {
       const initialScore = gameModel.score;
       gameModel.score = 12;
       gameModel.reset();
@@ -311,35 +311,35 @@ describe(SnakeGameModel.name, () => {
     });
   });
   describe(SnakeGameModel.prototype.setNewSnakeHead.name, () => {
-    test('should set new head position', () => {
+    it('should set new head position', () => {
       const newHeadPosition: Position = { x: 1, y: 2 };
       gameModel.setNewSnakeHead(newHeadPosition);
       expect(gameModel.snakeHeadPosition).toMatchObject(newHeadPosition);
     });
   });
   describe(SnakeGameModel.prototype.updateBoard.name, () => {
-    test('should update only columns count', () => {
+    it('should update only columns count', () => {
       const newColumnsCount = columnsCount + 1;
       const initialFood = gameModel.allFoods;
       gameModel.updateBoard({ columnsCount: newColumnsCount });
       expect(gameModel.hash().length).toBe(newColumnsCount * rowsCount);
       expect(gameModel.allFoods).toStrictEqual(initialFood);
     });
-    test('should update only rows count', () => {
+    it('should update only rows count', () => {
       const newRowsCount = rowsCount + 1;
       const initialFood = gameModel.allFoods;
       gameModel.updateBoard({ rowsCount: newRowsCount });
       expect(gameModel.hash().length).toBe(newRowsCount * columnsCount);
       expect(gameModel.allFoods).toStrictEqual(initialFood);
     });
-    test('should update only foods count', () => {
+    it('should update only foods count', () => {
       const initialBoardSize = gameModel.hash().length;
       const newFoodCount = foodCount + 1;
       gameModel.updateBoard({ foodCount: newFoodCount });
       expect(gameModel.allFoods.length).toBe(newFoodCount);
       expect(gameModel.hash().length).toBe(initialBoardSize);
     });
-    test('should update food, columns and rows count', () => {
+    it('should update food, columns and rows count', () => {
       const newColumnsCount = columnsCount + 1;
       const newRowsCount = rowsCount + 1;
       const newFoodCount = foodCount + 1;
@@ -349,7 +349,7 @@ describe(SnakeGameModel.name, () => {
     });
   });
   describe(SnakeGameModel.prototype.stateAsVector.name, () => {
-    test('should return vector with initial body parts food and size', () => {
+    it('should return vector with initial body parts food and size', () => {
       const vector = gameModel.stateAsVector();
       const foodInVector = vector.filter((value) => value === SnakeEnvironmentElements.FOOD).length;
       const bodyPartsInVector = vector.filter((value) => value === SnakeEnvironmentElements.BODY_PART).length;
@@ -358,7 +358,7 @@ describe(SnakeGameModel.name, () => {
       expect(vector).toContain(gameModel.snakeHeadDirection);
       expect(vector.length).toBe(rowsCount * columnsCount);
     });
-    test('should return vector without eaten food and additional snake body part', () => {
+    it('should return vector without eaten food and additional snake body part', () => {
       gameModel.removeFood(gameModel.allFoods[0]);
       gameModel.setNewSnakeHead({ x: 0, y: 1 });
       gameModel.addNewSnakeTailPart();

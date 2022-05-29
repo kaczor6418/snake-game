@@ -29,10 +29,10 @@ describe(UTILS.isNullOrUndefined.name, () => {
   });
 });
 
-describe(UTILS.shellCopy.name, () => {
+describe(UTILS.shallowCopy.name, () => {
   test('should not modify copied elements', () => {
     const obj = { x: 0, y: 0 };
-    const objCopy = UTILS.shellCopy(obj);
+    const objCopy = UTILS.shallowCopy(obj);
     ++objCopy.x;
     ++objCopy.y;
     expect(obj.x).toBe(0);

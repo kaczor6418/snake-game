@@ -7,8 +7,8 @@ export namespace UTILS {
     return value != null;
   }
 
-  export function shellCopy<T>(value: T): T {
-    return Object.assign({}, value);
+  export function shallowCopy<T>(value: T): T {
+    return { ...value };
   }
 
   export function isTruthy(value: unknown): boolean {
