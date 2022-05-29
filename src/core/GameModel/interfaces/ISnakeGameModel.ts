@@ -33,4 +33,5 @@ export interface ISnakeGameModel extends ReinforcementModel {
   removeSnakeBodyPart(position: number | Position): Position;
   setNewSnakeHead(position: Position): void;
   updateBoard(props: Partial<SnakeGameModelProps>): void;
+  copy(): ISnakeGameModel;
 }

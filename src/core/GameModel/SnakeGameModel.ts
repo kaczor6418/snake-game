@@ -3,7 +3,7 @@ import { isNumber } from '../../common/TYPEGUARDS';
 import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
 import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
 import { UTILS } from '../../common/Utils/UTILS';
-import { ReinforcementModel } from '../../ReinforcementAgents/interfaces/ReinforcementModel';
+import { InvalidPositionError } from '../../errors/InvalidPositionError';
 import { MoveDirection } from '../GameController/interfaces/MoveDirection';
 import { Direction } from './interfaces/Direction';
 import { SnakeGameModelProps } from './interfaces/SnakeGameModelProps';
@@ -18,7 +18,7 @@ export class SnakeGameModel implements ISnakeGameModel {
 
   private rowsCount: number;
   private columnsCount: number;
-  private lastSnakeTailPart: Position | null;
+  private lastSnakeTailPart: Position;
   private foodPositions: Position[];
   private originalFoodsPositions: Position[];
   private snakeBodyPartsPositions: Position[];
@@ -63,18 +63,29 @@ export class SnakeGameModel implements ISnakeGameModel {
   }
 
   public addFood(position: Position): void {
+    if (position.x >= this.columnsCount || position.y >= this.rowsCount) {
+      throw new InvalidPositionError(
+        `Can not add food under: ${JSON.stringify(position)} position if x is bigger than total rows count(${
+          this.rowsCount - 1
+        }) or y is bigger than total columns count(${this.columnsCount - 1})`
+      );
+    }
+    const hasFoodUnderNewPosition = this.foodPositions.some((foodPosition) =>
+      UTILS.isObjectWithSameKeyValues(position, foodPosition)
+    );
+    if (hasFoodUnderNewPosition) {
+      throw new InvalidPositionError(
+        `Can not add food under: ${JSON.stringify(position)} if there is already food under this position`
+      );
+    }
     this.foodPositions.push(position);
   }
 
   public addNewSnakeTailPart(): void {
-    if (UTILS.isDefined(this.lastSnakeTailPart)) {
-      this.snakeBodyPartsPositions.unshift(this.lastSnakeTailPart);
-    } else {
-      throw new Error('Can not add snake tail part before moving head!');
-    }
+    this.snakeBodyPartsPositions.unshift(this.lastSnakeTailPart);
   }
 
-  public copy(): ReinforcementModel {
+  public copy(): ISnakeGameModel {
     const gameModelCopy = new SnakeGameModel({
       columnsCount: this.columnsCount,
       rowsCount: this.rowsCount,

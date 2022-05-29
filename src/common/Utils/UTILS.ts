@@ -22,4 +22,12 @@ export namespace UTILS {
   export function wait(ms: number): Promise<void> {
     return new Promise<void>((resolve) => window.setTimeout(resolve, ms));
   }
+
+  export function isObjectWithSameKeyValues<T extends Partial<Record<keyof T, unknown>>>(
+    source: T,
+    target: T,
+    keys: Array<keyof T> = Object.keys(source) as Array<keyof T>
+  ) {
+    return keys.every((key) => source[key] === target[key]);
+  }
 }
