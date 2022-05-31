@@ -1,11 +1,11 @@
-import { FieldPoints } from '../../../../src/core/GameController/interfaces/FieldPoints';
-import { ISnakeGameController } from '../../../../src/core/GameController/interfaces/ISnakeGameController';
-import { MoveDirection } from '../../../../src/core/GameController/interfaces/MoveDirection';
-import { SnakeGameController } from '../../../../src/core/GameController/SnakeGameController';
-import { Direction } from '../../../../src/core/GameModel/interfaces/Direction';
-import { ISnakeGameModel } from '../../../../src/core/GameModel/interfaces/ISnakeGameModel';
-import { Position } from '../../../../src/core/GameModel/interfaces/Position';
-import { SnakeGameModel } from '../../../../src/core/GameModel/SnakeGameModel';
+import { FieldPoints } from '../../../../src/core/SnakeGame/Controller/interfaces/FieldPoints';
+import { ISnakeGameController } from '../../../../src/core/SnakeGame/Controller/interfaces/ISnakeGameController';
+import { MoveDirection } from '../../../../src/core/SnakeGame/Controller/interfaces/MoveDirection';
+import { SnakeGameController } from '../../../../src/core/SnakeGame/Controller/SnakeGameController';
+import { Direction } from '../../../../src/core/SnakeGame/Model/interfaces/Direction';
+import { ISnakeGameModel } from '../../../../src/core/SnakeGame/Model/interfaces/ISnakeGameModel';
+import { Position } from '../../../../src/core/SnakeGame/Model/interfaces/Position';
+import { SnakeGameModel } from '../../../../src/core/SnakeGame/Model/SnakeGameModel';
 
 describe(SnakeGameController.name, () => {
   const rowsCount = 4;

@@ -1,16 +1,16 @@
-import { IGameView } from './interfaces/IGameView';
-import { IWebGLService } from '../../services/WebGLService/interfaces/IWebGLService';
-import { Position } from '../GameModel/interfaces/Position';
-import { GameViewProps } from './interfaces/GameViewProps';
-import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
+import { ISnakeGameView } from './interfaces/ISnakeGameView';
+import { IWebGLService } from '../../../services/WebGLService/interfaces/IWebGLService';
+import { Position } from '../Model/interfaces/Position';
+import { SnakeGameViewProps } from './interfaces/SnakeGameViewProps';
+import { ISnakeGameModel } from '../Model/interfaces/ISnakeGameModel';
 
-export class GameView implements IGameView {
+export class SnakeGameView implements ISnakeGameView {
   private readonly gameModel: ISnakeGameModel;
   private readonly webGLService: IWebGLService;
   private readonly fieldWidth: number;
   private readonly fieldHeight: number;
 
-  constructor({ gameModel, fieldSize, webGLService }: GameViewProps) {
+  constructor({ gameModel, fieldSize, webGLService }: SnakeGameViewProps) {
     this.gameModel = gameModel;
     this.webGLService = webGLService;
     this.fieldWidth = fieldSize.width;

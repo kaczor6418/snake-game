@@ -1,9 +1,9 @@
-import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
+import { ISnakeGameModel } from '../Model/interfaces/ISnakeGameModel';
 import { ISnakeGameController } from './interfaces/ISnakeGameController';
 import { MoveDirection } from './interfaces/MoveDirection';
-import { UTILS } from '../../common/Utils/UTILS';
-import { Position } from '../GameModel/interfaces/Position';
-import { Direction } from '../GameModel/interfaces/Direction';
+import { UTILS } from '../../../common/Utils/UTILS';
+import { Position } from '../Model/interfaces/Position';
+import { Direction } from '../Model/interfaces/Direction';
 import { FieldPoints } from './interfaces/FieldPoints';
 
 export class SnakeGameController implements ISnakeGameController {

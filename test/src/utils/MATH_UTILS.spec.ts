@@ -1,4 +1,4 @@
-import { MATH_UTILS } from './MATH_UTILS';
+import { MATH_UTILS } from '../../../src/common/Utils/MATH_UTILS';
 
 describe(MATH_UTILS.generateRandomInteger.name, () => {
   test('should generate random value in range 0 - 3', () => {

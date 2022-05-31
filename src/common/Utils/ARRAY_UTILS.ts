@@ -35,7 +35,7 @@ export namespace ARRAY_UTILS {
     if (indexOfValueToRemove < 0) {
       throw new CouldNotFindValueError('Could not find value in array');
     }
-    return array.splice(array.findIndex((v) => v === value) ?? array.length, 1)[0];
+    return array.splice(indexOfValueToRemove, 1)[0];
   }
 
   export function hasObjectWithSameShape<T extends Record<string, unknown>>(arr: T[], value: T): boolean {

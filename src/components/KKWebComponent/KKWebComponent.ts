@@ -4,13 +4,13 @@ import { UTILS } from '../../common/Utils/UTILS';
 import { CONSTANTS } from '../../common/CONSTANTS';
 
 export abstract class KKWebComponent<T = unknown> extends HTMLElement implements WebComponentLifecycle {
-  public readonly shadowRoot!: ShadowRoot;
+  public readonly shadowRoot: ShadowRoot;
 
   private readonly props: KKWebComponentObservedAttributes<T> | undefined = undefined;
 
   protected constructor(template: string, styles?: string, props?: KKWebComponentObservedAttributes<T>) {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.shadowRoot = this.attachShadow({ mode: 'open' });
     this.shadowRoot.innerHTML = template;
     this.injectStyles(styles);
     this.props = props;

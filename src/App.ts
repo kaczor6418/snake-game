@@ -1,6 +1,6 @@
 import { CONSTANTS } from './common/CONSTANTS';
 import { KKWebComponent } from './components/KKWebComponent/KKWebComponent';
-import { MoveDirection } from './core/GameController/interfaces/MoveDirection';
+import { MoveDirection } from './core/SnakeGame/Controller/interfaces/MoveDirection';
 import { ISnakeGame } from './core/SnakeGame/interfaces/ISnakeGame';
 import { SnakeGame } from './core/SnakeGame/SnakeGame';
 import { createReinforcementAgent } from './factories/ReinforcementAgentsFactory';
@@ -24,7 +24,7 @@ export class App extends KKWebComponent {
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
     const snakeGame: ISnakeGame = new SnakeGame({
-      boardConfiguration: { columnsCount: 6, foodCount: 6, rowsCount: 10 },
+      boardConfiguration: { columnsCount: 8, rowsCount: 8, foodCount: 10 },
       canvas: this.canvas
     });
     const qAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
@@ -48,7 +48,7 @@ export class App extends KKWebComponent {
     });
     console.log(ddqnAgent);
     console.log(qAgent);
-    await qAgent.learn(1000);
+    await qAgent.learn(5000);
     // await ddqnAgent.learn(100);
     for (let i = 0; i < 5; i++) {
       snakeGame.model.reset();

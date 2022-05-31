@@ -1,4 +1,4 @@
-import { UTILS } from './UTILS';
+import { UTILS } from '../../../src/common/Utils/UTILS';
 
 describe(UTILS.isDefined.name, () => {
   test('should be truthy for not null or undefined values', () => {

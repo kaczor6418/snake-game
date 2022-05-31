@@ -1,15 +1,15 @@
 import { SnakeGameProps } from './interfaces/SnakeGameProps';
 import { ISnakeGame } from './interfaces/ISnakeGame';
-import { ISnakeGameController } from '../GameController/interfaces/ISnakeGameController';
-import { IGameView } from '../GameView/interfaces/IGameView';
-import { SnakeGameController } from '../GameController/SnakeGameController';
-import { SnakeGameModel } from '../GameModel/SnakeGameModel';
-import { ISnakeGameModel } from '../GameModel/interfaces/ISnakeGameModel';
+import { ISnakeGameController } from './Controller/interfaces/ISnakeGameController';
+import { ISnakeGameView } from './View/interfaces/ISnakeGameView';
+import { SnakeGameController } from './Controller/SnakeGameController';
+import { SnakeGameModel } from './Model/SnakeGameModel';
+import { ISnakeGameModel } from './Model/interfaces/ISnakeGameModel';
 import { IWebGLService } from '../../services/WebGLService/interfaces/IWebGLService';
 import { WebGLService } from '../../services/WebGLService/WebGLService';
-import { GameView } from '../GameView/GameView';
+import { SnakeGameView } from './View/SnakeGameView';
 import { KeyName } from '../../common/Enums/KeyName';
-import { MoveDirection } from '../GameController/interfaces/MoveDirection';
+import { MoveDirection } from './Controller/interfaces/MoveDirection';
 import { UTILS } from '../../common/Utils/UTILS';
 import { ReinforcementPlayer } from '../../ReinforcementAgents/interfaces/ReinforcementPlayer';
 import { IReinforcementAgent } from '../../ReinforcementAgents/interfaces/IReinforcementAgent';
@@ -19,7 +19,7 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
   public readonly controller: ISnakeGameController;
 
   private readonly webGLService: IWebGLService;
-  private readonly gameView: IGameView;
+  private readonly gameView: ISnakeGameView;
 
   private pause: boolean;
   private chosenMove: MoveDirection;
@@ -30,7 +30,7 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
     this.webGLService = new WebGLService(canvas);
     this.model = new SnakeGameModel(boardConfiguration);
     this.controller = new SnakeGameController(this.model);
-    this.gameView = new GameView({
+    this.gameView = new SnakeGameView({
       fieldSize: {
         width: canvas.width / boardConfiguration.columnsCount,
         height: canvas.height / boardConfiguration.rowsCount

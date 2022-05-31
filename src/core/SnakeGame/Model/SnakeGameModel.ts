@@ -1,10 +1,10 @@
-import { EnvironmentSize } from '../../common/interfaces/EnvironmentSize';
-import { isNumber } from '../../common/TYPEGUARDS';
-import { ARRAY_UTILS } from '../../common/Utils/ARRAY_UTILS';
-import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
-import { UTILS } from '../../common/Utils/UTILS';
-import { InvalidPositionError } from '../../errors/InvalidPositionError';
-import { MoveDirection } from '../GameController/interfaces/MoveDirection';
+import { EnvironmentSize } from '../../../common/interfaces/EnvironmentSize';
+import { isNumber } from '../../../common/TYPEGUARDS';
+import { ARRAY_UTILS } from '../../../common/Utils/ARRAY_UTILS';
+import { MATH_UTILS } from '../../../common/Utils/MATH_UTILS';
+import { UTILS } from '../../../common/Utils/UTILS';
+import { InvalidPositionError } from '../../../errors/InvalidPositionError';
+import { MoveDirection } from '../Controller/interfaces/MoveDirection';
 import { Direction } from './interfaces/Direction';
 import { SnakeGameModelProps } from './interfaces/SnakeGameModelProps';
 import { ISnakeGameModel } from './interfaces/ISnakeGameModel';

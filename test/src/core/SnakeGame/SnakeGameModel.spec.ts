@@ -1,11 +1,11 @@
 import { MATH_UTILS } from '../../../../src/common/Utils/MATH_UTILS';
 import { UTILS } from '../../../../src/common/Utils/UTILS';
-import { MoveDirection } from '../../../../src/core/GameController/interfaces/MoveDirection';
-import { Direction } from '../../../../src/core/GameModel/interfaces/Direction';
-import { ISnakeGameModel } from '../../../../src/core/GameModel/interfaces/ISnakeGameModel';
-import { Position } from '../../../../src/core/GameModel/interfaces/Position';
-import { SnakeEnvironmentElements } from '../../../../src/core/GameModel/interfaces/SnakeEnvironmentElements';
-import { SnakeGameModel } from '../../../../src/core/GameModel/SnakeGameModel';
+import { MoveDirection } from '../../../../src/core/SnakeGame/Controller/interfaces/MoveDirection';
+import { Direction } from '../../../../src/core/SnakeGame/Model/interfaces/Direction';
+import { ISnakeGameModel } from '../../../../src/core/SnakeGame/Model/interfaces/ISnakeGameModel';
+import { Position } from '../../../../src/core/SnakeGame/Model/interfaces/Position';
+import { SnakeEnvironmentElements } from '../../../../src/core/SnakeGame/Model/interfaces/SnakeEnvironmentElements';
+import { SnakeGameModel } from '../../../../src/core/SnakeGame/Model/SnakeGameModel';
 import { InvalidPositionError } from '../../../../src/errors/InvalidPositionError';
 
 describe(SnakeGameModel.name, () => {
@@ -375,7 +375,3 @@ describe(SnakeGameModel.name, () => {
     gameModel.reset();
   });
 });
-
-export function createGameModelMock(): SnakeGameModel {
-  return new SnakeGameModel({ foodCount: 2, columnsCount: 4, rowsCount: 4 });
-}
