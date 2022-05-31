@@ -12,15 +12,15 @@ export namespace UTILS {
   }
 
   export function isTruthy(value: unknown): boolean {
-    return value == true;
+    return !!value;
   }
 
   export function isFalsy(value: unknown): boolean {
-    return value == false;
+    return !value;
   }
 
   export function wait(ms: number): Promise<void> {
-    return new Promise<void>((resolve) => window.setTimeout(resolve, ms));
+    return new Promise<void>((resolve) => setTimeout(resolve, ms));
   }
 
   export function isObjectWithSameKeyValues<T extends Partial<Record<keyof T, unknown>>>(

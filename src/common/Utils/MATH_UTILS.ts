@@ -8,7 +8,7 @@ export namespace MATH_UTILS {
   }
 
   export function sum(arr: number[]): number {
-    return arr.reduce((sumAcc, value) => (sumAcc += value), 0);
+    return arr.reduce((sumAcc, value) => sumAcc + value, 0);
   }
 
   export function average(arr: number[]): number {
