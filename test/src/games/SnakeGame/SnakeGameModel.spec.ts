@@ -1,11 +1,11 @@
 import { MATH_UTILS } from '../../../../src/common/Utils/MATH_UTILS';
 import { UTILS } from '../../../../src/common/Utils/UTILS';
-import { MoveDirection } from '../../../../src/core/SnakeGame/Controller/interfaces/MoveDirection';
-import { Direction } from '../../../../src/core/SnakeGame/Model/interfaces/Direction';
-import { ISnakeGameModel } from '../../../../src/core/SnakeGame/Model/interfaces/ISnakeGameModel';
-import { Position } from '../../../../src/core/SnakeGame/Model/interfaces/Position';
-import { SnakeEnvironmentElements } from '../../../../src/core/SnakeGame/Model/interfaces/SnakeEnvironmentElements';
-import { SnakeGameModel } from '../../../../src/core/SnakeGame/Model/SnakeGameModel';
+import { MoveDirection } from '../../../../src/games/SnakeGame/Controller/interfaces/MoveDirection';
+import { Direction } from '../../../../src/games/SnakeGame/Model/interfaces/Direction';
+import { ISnakeGameModel } from '../../../../src/games/SnakeGame/Model/interfaces/ISnakeGameModel';
+import { Position } from '../../../../src/games/SnakeGame/Model/interfaces/Position';
+import { SnakeEnvironmentElements } from '../../../../src/games/SnakeGame/Model/interfaces/SnakeEnvironmentElements';
+import { SnakeGameModel } from '../../../../src/games/SnakeGame/Model/SnakeGameModel';
 import { InvalidPositionError } from '../../../../src/errors/InvalidPositionError';
 
 describe(SnakeGameModel.name, () => {

@@ -1,6 +1,5 @@
 import { EnumValueEnumConverter } from '../../../src/converters/EnumValueEnumConverter';
 import { EnumKeyOrValueNotFound } from '../../../src/errors/EnumKeyOrValueNotFound';
-import { MoveDirection } from '../../../src/core/SnakeGame/Controller/interfaces/MoveDirection';
 
 enum TestEnum {
   TEST_1 = 'TEST_1',
@@ -13,9 +12,7 @@ describe(EnumValueEnumConverter.name, () => {
       expect(EnumValueEnumConverter.toEnumFromKey(TestEnum.TEST_1, TestEnum)).toBe(TestEnum.TEST_1);
     });
     it('should throw an error for not existing enum key', () => {
-      expect(() => EnumValueEnumConverter.toEnumFromKey('NOT_EXISTING', MoveDirection)).toThrowError(
-        EnumKeyOrValueNotFound
-      );
+      expect(() => EnumValueEnumConverter.toEnumFromKey('NOT_EXISTING', TestEnum)).toThrowError(EnumKeyOrValueNotFound);
     });
   });
   describe(EnumValueEnumConverter.toEnumFromValue.name, () => {
@@ -23,7 +20,7 @@ describe(EnumValueEnumConverter.name, () => {
       expect(EnumValueEnumConverter.toEnumFromValue(TestEnum.TEST_2, TestEnum)).toBe(TestEnum.TEST_2);
     });
     it('should throw an error for not existing enum value', () => {
-      expect(() => EnumValueEnumConverter.toEnumFromValue('MoveDirection.NOT_EXISTING', MoveDirection)).toThrowError(
+      expect(() => EnumValueEnumConverter.toEnumFromValue('TestEnum.NOT_EXISTING', TestEnum)).toThrowError(
         EnumKeyOrValueNotFound
       );
     });

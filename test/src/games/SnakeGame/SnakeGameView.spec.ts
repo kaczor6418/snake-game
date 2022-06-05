@@ -1,6 +1,6 @@
-import { ISnakeGameModel } from '../../../../src/core/SnakeGame/Model/interfaces/ISnakeGameModel';
-import { ISnakeGameView } from '../../../../src/core/SnakeGame/View/interfaces/ISnakeGameView';
-import { SnakeGameView } from '../../../../src/core/SnakeGame/View/SnakeGameView';
+import { ISnakeGameModel } from '../../../../src/games/SnakeGame/Model/interfaces/ISnakeGameModel';
+import { ISnakeGameView } from '../../../../src/games/SnakeGame/View/interfaces/ISnakeGameView';
+import { SnakeGameView } from '../../../../src/games/SnakeGame/View/SnakeGameView';
 import { IWebGLService } from '../../../../src/services/WebGLService/interfaces/IWebGLService';
 import { createManualMock } from '../../../createManualMock';
 
