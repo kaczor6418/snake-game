@@ -1,6 +1,7 @@
 import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
+import { IMovingAverage } from './interfaces/IMovingAverage';
 
-export class MovingAverage {
+export class MovingAverage implements IMovingAverage {
   private index = 0;
 
   private readonly buffer: number[];
@@ -19,5 +20,9 @@ export class MovingAverage {
 
   public average(): number {
     return MATH_UTILS.average(this.buffer);
+  }
+
+  public reset(): void {
+    this.buffer.fill(0);
   }
 }

@@ -5,7 +5,6 @@ export interface DoubleDeepQLearningAgentProps extends BaseReinforcementAgentPro
   batchSize: number;
   epsilonDecay: number;
   minEpsilon: number;
-  minScore: number;
   replayUpdateIndicator: number;
 }
 

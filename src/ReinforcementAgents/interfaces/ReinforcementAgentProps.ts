@@ -8,6 +8,8 @@ export interface BaseReinforcementAgentProps {
   adaptation: number;
   getPossibleActions: () => number[];
   player: ReinforcementPlayer;
+
+  cumulativeRewardThreshold?: number;
 }
 
 export type ReinforcementAgentProps = QLearningAgentProps | DoubleDeepQLearningAgentProps;

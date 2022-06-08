@@ -19,7 +19,13 @@ export class App extends KKWebComponent {
 
   constructor() {
     super(template);
-    void this.runSnakeGameWithQLearningAgent();
+    // const snakeGame: ISnakeGame = new SnakeGame({
+    //   boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 10 },
+    //   canvas: this.canvas
+    // });
+    // snakeGame.start();
+    // void this.runSnakeGameWithQLearningAgent();
+    void this.runSnakeGameWithDDQLearningAgent();
   }
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
@@ -34,25 +40,34 @@ export class App extends KKWebComponent {
       player: snakeGame,
       learningRate: 0.1
     });
-    // const ddqnAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
-    //   adaptation: 0.5,
-    //   initialEpsilon: 0.1,
-    //   getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.RIGHT, MoveDirection.STRAIGHT],
-    //   learningRate: 0.1,
-    //   player: snakeGame,
-    //   batchSize: 64,
-    //   epsilonDecay: 0.95,
-    //   replayUpdateIndicator: 10,
-    //   minEpsilon: 0.01,
-    //   minScore: 150
-    // });
-    // console.log(ddqnAgent);
-    console.log(qAgent);
     await qAgent.learn(10000);
-    // await ddqnAgent.learn(100);
     for (let i = 0; i < 5; i++) {
       snakeGame.model.reset();
       await snakeGame.runSnakeWithAgent(qAgent);
+    }
+  }
+
+  public async runSnakeGameWithDDQLearningAgent(): Promise<void> {
+    const snakeGame: ISnakeGame = new SnakeGame({
+      boardConfiguration: { columnsCount: 3, rowsCount: 3, foodCount: 3 },
+      canvas: this.canvas
+    });
+    const ddqnAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
+      adaptation: 0.5,
+      initialEpsilon: 0.1,
+      getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.RIGHT, MoveDirection.STRAIGHT],
+      learningRate: 0.1,
+      player: snakeGame,
+      batchSize: 64,
+      epsilonDecay: 0.95,
+      replayUpdateIndicator: 10,
+      minEpsilon: 0.01,
+      cumulativeRewardThreshold: 150
+    });
+    await ddqnAgent.learn(100);
+    for (let i = 0; i < 5; i++) {
+      snakeGame.model.reset();
+      await snakeGame.runSnakeWithAgent(ddqnAgent);
     }
   }
 }

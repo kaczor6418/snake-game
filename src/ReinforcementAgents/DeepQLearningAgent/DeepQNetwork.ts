@@ -25,14 +25,12 @@ export class DeepQNetwork {
         activation: 'relu'
       })
     );
-    // model.add(layers.batchNormalization());
     model.add(
       layers.dense({
         units: 32,
         activation: 'relu'
       })
     );
-    // model.add(layers.batchNormalization());
     model.add(
       layers.dense({
         units: 64,
@@ -45,7 +43,6 @@ export class DeepQNetwork {
         activation: 'relu'
       })
     );
-    model.add(layers.dropout({ rate: 0.25 }));
     model.add(
       layers.dense({
         units: this.outputSize

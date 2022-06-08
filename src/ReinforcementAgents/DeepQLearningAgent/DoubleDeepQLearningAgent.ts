@@ -1,11 +1,11 @@
 import {
   AdamOptimizer,
-  Tensor,
   buffer,
   dispose,
   losses,
   oneHot,
   scalar,
+  Tensor,
   tensor1d,
   tidy,
   train,
@@ -15,53 +15,49 @@ import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementAgent } from '../ReinforcementAgent';
 import { DeepQNetwork } from './DeepQNetwork';
 import { DoubleDeepQLearningAgentProps } from './interfaces/DoubleDeepQLearningAgentProps';
-import { MovingAverage } from './MovingAverage';
 import { ReplayMemory } from './ReplayMemory';
 
 export class DoubleDeepQLearningAgent extends ReinforcementAgent {
-  private readonly minScore: number;
   private readonly replayUpdateIndicator: number;
   private readonly minEpsilon: number;
   private readonly epsilonDecay: number;
   private readonly batchSize: number;
   private readonly optimizer: AdamOptimizer;
   private readonly replayMemory: ReplayMemory;
-  private readonly qNetwork: DeepQNetwork;
-  private readonly targetNetwork: DeepQNetwork;
+  private readonly predictingNetwork: DeepQNetwork;
+  private readonly trainingNetwork: DeepQNetwork;
 
   constructor({
     batchSize,
-    minScore,
     epsilonDecay,
     minEpsilon,
     replayUpdateIndicator,
     ...baseAgentProps
   }: DoubleDeepQLearningAgentProps) {
     super(baseAgentProps);
-    this.minScore = minScore;
     this.batchSize = batchSize;
     this.replayUpdateIndicator = replayUpdateIndicator;
     this.minEpsilon = minEpsilon;
     this.epsilonDecay = epsilonDecay;
-    this.replayMemory = new ReplayMemory(this.batchSize);
+    this.replayMemory = new ReplayMemory(this.batchSize * 3);
     this.optimizer = train.adam(this.learningRate);
     const inputSize = this.player.model.environmentSize.width * this.player.model.environmentSize.height;
-    this.qNetwork = new DeepQNetwork(inputSize, this.player.model.allActions.length, this.learningRate);
-    this.targetNetwork = new DeepQNetwork(inputSize, this.player.model.allActions.length, this.learningRate);
+    this.predictingNetwork = new DeepQNetwork(inputSize, this.player.model.allActions.length, this.learningRate);
+    this.trainingNetwork = new DeepQNetwork(inputSize, this.player.model.allActions.length, this.learningRate);
+    this.initializeReplayExperienceBuffer();
   }
 
   protected async runSingleEpoch(): Promise<void> {
     let replayCounter = 1;
-    const totalReward = new MovingAverage(100);
-    while (replayCounter < this.minScore) {
-      totalReward.addOrReplace(this.singleRun());
-      if (this.replayMemory.isFull()) {
-        await this.replayExperience();
-        this.targetNetwork.copyWeightsToNetwork(this.qNetwork.model);
-      }
-      if (replayCounter % this.replayUpdateIndicator && this.replayMemory.isFull()) {
-        console.log('Score:', this.player.model.score);
-        console.log('Epsilon;', this.currentEpsilon);
+    this.player.model.reset();
+    let state = this.player.model.copy();
+    while (!state.isGameOver()) {
+      this.trainOnReplayBatch();
+      const nextState = this.playSingleStep(state);
+      state = nextState.copy();
+      this.totalReward.addOrReplace(state.score);
+      if (replayCounter % this.replayUpdateIndicator) {
+        this.trainingNetwork.copyWeightsToNetwork(this.predictingNetwork.model);
       }
       replayCounter++;
     }
@@ -70,52 +66,35 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
   }
 
   protected getBestAction(state: ReinforcementModel): number {
-    const prediction = this.qNetwork.model.predict(this.statesAsTensor([state.stateAsVector()])) as Tensor;
-    return prediction.argMax(-1).dataSync()[0];
+    let predictedAction = 0;
+    tidy(() => {
+      const prediction = this.predictingNetwork.model.predict(this.statesAsTensor([state.stateAsVector()])) as Tensor;
+      predictedAction = prediction.argMax(-1).dataSync()[0];
+    });
+    return predictedAction;
   }
 
-  private singleRun(): number {
-    this.player.model.reset();
-    let state = this.player.model.copy();
-    while (!state.isGameOver()) {
-      const action = this.getAction(state);
-      const nextState = this.player.controller.move(action);
-      this.replayMemory.addOrReplace([
-        state.stateAsVector(),
-        action,
-        nextState.score,
-        nextState.stateAsVector(),
-        Number(nextState.isGameOver())
-      ]);
-      state = nextState.copy();
-    }
-    return state.score;
+  private playSingleStep(state: ReinforcementModel): ReinforcementModel {
+    const action = this.getAction(state);
+    const nextState = this.player.controller.move(action);
+    this.replayMemory.addOrReplace([
+      state.stateAsVector(),
+      action,
+      nextState.score,
+      nextState.stateAsVector(),
+      Number(nextState.isGameOver())
+    ]);
+    return nextState;
   }
 
-  public trainOnReplayBatch(): void {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  private trainOnReplayBatch(): void {
     const states: Array<number[]> = [];
     const actions: number[] = [];
     const rewards: number[] = [];
     const nextStates: Array<number[]> = [];
     const dones: number[] = [];
-    console.log(
-      'MIN',
-      Math.min(
-        ...this.qNetwork.model
-          .getWeights()
-          .map((l) => Array.from(l.bufferSync().values).flat())
-          .flat()
-      )
-    );
-    console.log(
-      'MAX',
-      Math.max(
-        ...this.qNetwork.model
-          .getWeights()
-          .map((l) => Array.from(l.bufferSync().values).flat())
-          .flat()
-      )
-    );
     for (const [state, action, reward, nextState, done] of this.replayMemory.sample(this.batchSize)) {
       states.push(state);
       actions.push(action);
@@ -127,12 +106,12 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
       tidy(() => {
         const statesTensor = this.statesAsTensor(states);
         const actionTensor = tensor1d(actions, 'int32');
-        const qs = (this.qNetwork.model.apply(statesTensor, { training: true }) as Tensor)
+        const qs = (this.predictingNetwork.model.apply(statesTensor, { training: true }) as Tensor)
           .mul(oneHot(actionTensor, this.player.model.allActions.length))
           .sum(-1);
         const rewardsTensor = tensor1d(rewards);
         const nextStatesTensor = this.statesAsTensor(nextStates);
-        const nextMaxQTensor = (this.targetNetwork.model.predict(nextStatesTensor) as Tensor).max(-1);
+        const nextMaxQTensor = (this.trainingNetwork.model.predict(nextStatesTensor) as Tensor).max(-1);
         const doneMask = scalar(1).sub(tensor1d(dones).asType('float32'));
         const targetQs = rewardsTensor.add(nextMaxQTensor.mul(doneMask).mul(this.adaptation));
         return losses.meanSquaredError(targetQs, qs);
@@ -146,52 +125,16 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
     dispose(grads);
   }
 
-  public async replayExperience(): Promise<void> {
-    console.log(
-      'MIN',
-      Math.min(
-        ...this.qNetwork.model
-          .getWeights()
-          .map((l) => Array.from(l.bufferSync().values).flat())
-          .flat()
-      )
-    );
-    console.log(
-      'MAX',
-      Math.max(
-        ...this.qNetwork.model
-          .getWeights()
-          .map((l) => Array.from(l.bufferSync().values).flat())
-          .flat()
-      )
-    );
-    const states = [];
-    const nextStates = [];
-    const randomMemories = this.replayMemory.sample(this.batchSize);
-    for (const [state, _action, _reward, nextState] of randomMemories) {
-      states.push(state);
-      nextStates.push(nextState);
-    }
-    const statesTensor = this.statesAsTensor(states);
-    const nextStatesTensor = this.statesAsTensor(nextStates);
-    const stateTargets = (this.qNetwork.model.predictOnBatch(statesTensor) as Tensor).bufferSync();
-    const nextStateTargets: Array<number[]> = (
-      this.targetNetwork.model.predictOnBatch(nextStatesTensor) as Tensor
-    ).arraySync() as Array<number[]>;
-    for (let i = 0; i < stateTargets.shape[0]; i++) {
-      const [_state, action, reward, _nextState, done] = randomMemories[i];
-      if (done) {
-        stateTargets.set(reward, i, action);
-      } else {
-        const bestActionQuality = Math.max(...nextStateTargets[i]);
-        const newQValue = reward + this.adaptation * bestActionQuality;
-        stateTargets.set(newQValue, i, action);
+  private initializeReplayExperienceBuffer(): void {
+    for (let i = 0; i < this.replayMemory.size; i++) {
+      if (this.playSingleStep(this.player.model).isGameOver()) {
+        this.player.model.reset();
       }
     }
-    await this.targetNetwork.model.trainOnBatch(statesTensor, stateTargets.toTensor());
+    this.player.model.reset();
   }
 
-  public statesAsTensor(states: Array<number[]>): Tensor {
+  private statesAsTensor(states: Array<number[]>): Tensor {
     return buffer(
       [states.length, this.player.model.environmentSize.height * this.player.model.environmentSize.width],
       'int32',

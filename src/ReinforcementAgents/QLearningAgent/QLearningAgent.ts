@@ -21,6 +21,7 @@ export class QLearningAgent extends ReinforcementAgent {
       this.updateQValue(state, action, nextState.score, nextState);
       state = nextState.copy();
     }
+    this.totalReward.addOrReplace(state.score);
     return Promise.resolve();
   }
 
