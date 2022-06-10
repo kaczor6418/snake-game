@@ -20,14 +20,14 @@ export class DeepQNetwork {
     const model: Sequential = sequential();
     model.add(
       layers.dense({
-        units: 1,
+        units: this.inputSize * 3,
         inputShape: [this.inputSize],
         activation: 'relu'
       })
     );
     model.add(
       layers.dense({
-        units: 32,
+        units: 128,
         activation: 'relu'
       })
     );
@@ -37,12 +37,7 @@ export class DeepQNetwork {
         activation: 'relu'
       })
     );
-    model.add(
-      layers.dense({
-        units: 32,
-        activation: 'relu'
-      })
-    );
+    model.add(layers.dropout({ rate: 0.25 }));
     model.add(
       layers.dense({
         units: this.outputSize

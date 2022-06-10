@@ -14,7 +14,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected currentEpsilon: number;
 
   protected readonly initialEpsilon: number;
-  protected readonly adaptation: number;
+  protected readonly gamma: number;
   protected readonly getPossibleActions: () => number[];
   protected readonly player: ReinforcementPlayer;
   protected readonly totalReward: IMovingAverage;
@@ -27,7 +27,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected constructor({
     learningRate,
     initialEpsilon,
-    adaptation,
+    gamma,
     getPossibleActions,
     player,
     cumulativeRewardThreshold
@@ -35,7 +35,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
     this.learningRate = learningRate;
     this.initialEpsilon = initialEpsilon;
     this.currentEpsilon = this.initialEpsilon;
-    this.adaptation = adaptation;
+    this.gamma = gamma;
     this.getPossibleActions = getPossibleActions;
     this.player = player;
     this.totalReward = new MovingAverage(100);
@@ -69,7 +69,6 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected getAction(state: ReinforcementModel): number {
     const possibleActions = this.getPossibleActions();
     const bestAction = this.getBestAction(state);
-    console.log('BEST ACTION:', bestAction);
     let chosenAction = bestAction;
     if (possibleActions.length > 1 && MATH_UTILS.generateRandomNumber(0, 1) < this.currentEpsilon) {
       ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);

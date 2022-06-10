@@ -49,7 +49,7 @@ export class QLearningAgent extends ReinforcementAgent {
   ): number {
     return (
       (1 - this.learningRate) * this.getQValue(state, action) +
-      this.learningRate * (reward + this.adaptation * this.getMaxValue(nextState))
+      this.learningRate * (reward + this.gamma * this.getMaxValue(nextState))
     );
   }
 

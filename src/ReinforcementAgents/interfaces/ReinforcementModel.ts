@@ -9,5 +9,6 @@ export interface ReinforcementModel {
   stateAsVector(): number[];
   hash(): string;
   isGameOver(): boolean;
+  gameEndState(): 0 | 1;
   reset(): void;
 }

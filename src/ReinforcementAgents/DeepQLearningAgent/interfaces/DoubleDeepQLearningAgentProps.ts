@@ -6,6 +6,7 @@ export interface DoubleDeepQLearningAgentProps extends BaseReinforcementAgentPro
   epsilonDecay: number;
   minEpsilon: number;
   replayUpdateIndicator: number;
+  replayMemorySize: number;
 }
 
 export function isDoubleDeepQLearningAgentProps(

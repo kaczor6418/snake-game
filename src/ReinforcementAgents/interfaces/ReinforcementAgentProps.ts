@@ -5,7 +5,7 @@ import { DoubleDeepQLearningAgentProps } from '../DeepQLearningAgent/interfaces/
 export interface BaseReinforcementAgentProps {
   learningRate: number;
   initialEpsilon: number;
-  adaptation: number;
+  gamma: number;
   getPossibleActions: () => number[];
   player: ReinforcementPlayer;
 

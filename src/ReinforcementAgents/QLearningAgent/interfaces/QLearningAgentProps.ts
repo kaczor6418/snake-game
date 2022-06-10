@@ -6,7 +6,7 @@ export function isQLearningAgentProps(value: ReinforcementAgentProps): value is 
   return (
     'learningRate' in value &&
     'minEpsilon' in value &&
-    'adaptation' in value &&
+    'gamma' in value &&
     'getPossibleActions' in value &&
     'player' in value
   );

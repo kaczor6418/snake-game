@@ -228,6 +228,10 @@ export class SnakeGameModel implements ISnakeGameModel {
     return modelVector;
   }
 
+  public gameEndState(): 0 | 1 {
+    return ARRAY_UTILS.isEmpty(this.foodPositions) ? 1 : 0;
+  }
+
   protected setSnakeBodyPartsPositions(snakeBodyPartsPositions: Position[]): void {
     this.snakeBodyPartsPositions = snakeBodyPartsPositions;
   }
