@@ -7,19 +7,27 @@ export namespace UTILS {
     return value != null;
   }
 
-  export function shellCopy<T>(value: T): T {
-    return Object.assign({}, value);
+  export function shallowCopy<T>(value: T): T {
+    return { ...value };
   }
 
   export function isTruthy(value: unknown): boolean {
-    return value == true;
+    return !!value;
   }
 
   export function isFalsy(value: unknown): boolean {
-    return value == false;
+    return !value;
   }
 
   export function wait(ms: number): Promise<void> {
-    return new Promise<void>((resolve) => window.setTimeout(resolve, ms));
+    return new Promise<void>((resolve) => setTimeout(resolve, ms));
+  }
+
+  export function isObjectWithSameKeyValues<T extends Partial<Record<keyof T, unknown>>>(
+    source: T,
+    target: T,
+    keys: Array<keyof T> = Object.keys(source) as Array<keyof T>
+  ) {
+    return keys.every((key) => source[key] === target[key]);
   }
 }

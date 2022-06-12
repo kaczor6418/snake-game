@@ -1,10 +1,10 @@
 import { ReinforcementAgentsNames } from './ReinforcementAgentsNames';
-import { IReinforcementAgent } from '../ReinforcementAgents/interfaces/IReinforcementAgent';
-import { QLearningAgent } from '../ReinforcementAgents/QLearningAgent/QLearningAgent';
+import { IReinforcementAgent } from '../agents/interfaces/IReinforcementAgent';
+import { QLearningAgent } from '../agents/QLearningAgent/QLearningAgent';
 import { ThisSituationShouldNeverHappenError } from '../errors/ThisSituationShouldNeverHappenError';
-import { DoubleDeepQLearningAgent } from '../ReinforcementAgents/DeepQLearningAgent/DoubleDeepQLearningAgent';
-import { ReinforcementAgentProps } from '../ReinforcementAgents/interfaces/ReinforcementAgentProps';
-import { isDoubleDeepQLearningAgentProps } from '../ReinforcementAgents/DeepQLearningAgent/interfaces/DoubleDeepQLearningAgentProps';
+import { DoubleDeepQLearningAgent } from '../agents/DeepQLearningAgent/DoubleDeepQLearningAgent';
+import { ReinforcementAgentProps } from '../agents/interfaces/ReinforcementAgentProps';
+import { isDoubleDeepQLearningAgentProps } from '../agents/DeepQLearningAgent/interfaces/DoubleDeepQLearningAgentProps';
 
 export function createReinforcementAgent(
   agentName: ReinforcementAgentsNames,

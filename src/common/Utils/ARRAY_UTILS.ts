@@ -2,8 +2,8 @@ import { UTILS } from './UTILS';
 import { CouldNotFindValueError } from '../../errors/CouldNotFindValueError';
 
 export namespace ARRAY_UTILS {
-  export function shellCopy<T>(array: T[]): T[] {
-    return array.map((element) => UTILS.shellCopy(element));
+  export function shallowCopy<T>(array: T[]): T[] {
+    return array.map((element) => UTILS.shallowCopy(element));
   }
 
   export function isEmpty(array: Array<unknown>): boolean {
@@ -19,7 +19,7 @@ export namespace ARRAY_UTILS {
   }
 
   export function getLastElementCopy<T>(array: T[]): T {
-    return UTILS.shellCopy(array[array.length - 1]);
+    return UTILS.shallowCopy(array[array.length - 1]);
   }
 
   export function removeElement<T>(array: T[], index: number): T {
@@ -35,7 +35,7 @@ export namespace ARRAY_UTILS {
     if (indexOfValueToRemove < 0) {
       throw new CouldNotFindValueError('Could not find value in array');
     }
-    return array.splice(array.findIndex((v) => v === value) ?? array.length, 1)[0];
+    return array.splice(indexOfValueToRemove, 1)[0];
   }
 
   export function hasObjectWithSameShape<T extends Record<string, unknown>>(arr: T[], value: T): boolean {
