@@ -214,16 +214,16 @@ export class SnakeGameModel implements ISnakeGameModel {
     const modelVector = new Array<number>(this.rowsCount * this.columnsCount).fill(0);
     const snakeHeadPosition = this.snakeHeadPosition.y * this.columnsCount + this.snakeHeadPosition.x;
     for (const { x, y } of this.foodPositions) {
-      modelVector[y * this.columnsCount + x] = Number(SnakeEnvironmentElements.FOOD);
+      modelVector[y * this.columnsCount + x] = SnakeEnvironmentElements.FOOD;
     }
     for (const { x, y } of this.snakeBodyPartsPositions) {
       const bodyPartPosition = y * this.columnsCount + x;
       if (bodyPartPosition >= 0 && bodyPartPosition !== snakeHeadPosition) {
-        modelVector[bodyPartPosition] = Number(SnakeEnvironmentElements.BODY_PART);
+        modelVector[bodyPartPosition] = SnakeEnvironmentElements.BODY_PART;
       }
     }
     if (snakeHeadPosition < modelVector.length) {
-      modelVector[snakeHeadPosition] = Number(`${modelVector[snakeHeadPosition]}${this.snakeHeadDirection}`);
+      modelVector[snakeHeadPosition] = this.snakeHeadDirection;
     }
     return modelVector;
   }

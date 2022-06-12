@@ -1,4 +1,4 @@
-import { ReinforcementModel } from '../../../../ReinforcementAgents/interfaces/ReinforcementModel';
+import { ReinforcementModel } from '../../../../agents/interfaces/ReinforcementModel';
 import { Direction } from './Direction';
 import { SnakeGameModelProps } from './SnakeGameModelProps';
 import { Position } from './Position';

@@ -1,5 +1,6 @@
 import { MATH_UTILS } from '../../common/Utils/MATH_UTILS';
-import { IMovingAverage } from './interfaces/IMovingAverage';
+import { IncorrectBufferSizeError } from '../../errors/IncorrectBufferSizeError';
+import { IMovingAverage } from './IMovingAverage';
 
 export class MovingAverage implements IMovingAverage {
   private index = 0;
@@ -7,7 +8,19 @@ export class MovingAverage implements IMovingAverage {
   private readonly buffer: number[];
 
   constructor(size: number) {
+    if (size < 1) {
+      throw new IncorrectBufferSizeError('Can not create a buffer if size is less or equal 0!');
+    }
     this.buffer = new Array<number>(size).fill(0);
+  }
+
+  public size(): number {
+    return this.buffer.length;
+  }
+
+  public fillBuffer(value: number): void {
+    this.index = 0;
+    this.buffer.fill(value);
   }
 
   public addOrReplace(value: number): void {

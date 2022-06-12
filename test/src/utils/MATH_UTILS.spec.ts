@@ -88,22 +88,22 @@ describe(MATH_UTILS.average.name, () => {
     const v1 = 1;
     const v2 = 2;
     const v3 = 3;
-    const expectedSum = (v1 + v2 + v3) / 3;
-    expect(MATH_UTILS.average([v1, v2, v3])).toBe(expectedSum);
+    const expectedAvg = (v1 + v2 + v3) / 3;
+    expect(MATH_UTILS.average([v1, v2, v3])).toBe(expectedAvg);
   });
   it('should sum all floats values in array', () => {
     const v1 = 1.1;
     const v2 = 2.2;
     const v3 = 3.3;
-    const expectedSum = (v1 + v2 + v3) / 3;
-    expect(MATH_UTILS.average([v1, v2, v3])).toBe(expectedSum);
+    const expectedAvg = (v1 + v2 + v3) / 3;
+    expect(MATH_UTILS.average([v1, v2, v3])).toBe(expectedAvg);
   });
   it('should sum all floats and integers values in array', () => {
     const v1 = 1.1;
     const v2 = 2;
     const v3 = 3.3;
-    const expectedSum = (v1 + v2 + v3) / 3;
-    expect(MATH_UTILS.average([v1, v2, v3])).toBe(expectedSum);
+    const expectedAvg = (v1 + v2 + v3) / 3;
+    expect(MATH_UTILS.average([v1, v2, v3])).toBe(expectedAvg);
   });
   it('should return 0 if array contains only 0', () => {
     expect(MATH_UTILS.average([0, 0, 0])).toBe(0);

@@ -1,8 +1,23 @@
-import { buffer, dispose, losses, oneHot, scalar, Tensor, tensor1d, tidy, variableGrads } from '@tensorflow/tfjs';
+import {
+  buffer,
+  dispose,
+  losses,
+  oneHot,
+  Rank,
+  Scalar,
+  scalar,
+  Tensor,
+  Tensor1D,
+  tensor1d,
+  Tensor2D,
+  tidy,
+  variableGrads
+} from '@tensorflow/tfjs';
 import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementAgent } from '../ReinforcementAgent';
 import { DeepQNetwork } from './DeepQNetwork';
 import { DoubleDeepQLearningAgentProps } from './interfaces/DoubleDeepQLearningAgentProps';
+import { IDeepQNetwork } from './interfaces/IDeepQNetwork';
 import { ReplayMemory } from './ReplayMemory';
 
 export class DoubleDeepQLearningAgent extends ReinforcementAgent {
@@ -13,8 +28,8 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
   private readonly epsilonDecay: number;
   private readonly batchSize: number;
   private readonly replayMemory: ReplayMemory;
-  private readonly onlineNetwork: DeepQNetwork;
-  private readonly targetNetwork: DeepQNetwork;
+  private readonly onlineNetwork: IDeepQNetwork;
+  private readonly targetNetwork: IDeepQNetwork;
 
   constructor({
     batchSize,
@@ -43,13 +58,11 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
     while (!state.isGameOver()) {
       this.trainOnReplayBatch();
       state = this.playSingleStep(state);
-      if (this.replayCounter % this.replayUpdateIndicator) {
+      if (this.replayCounter % this.replayUpdateIndicator === 0) {
         this.onlineNetwork.copyWeightsToNetwork(this.targetNetwork.model);
       }
       this.replayCounter++;
     }
-    console.log('EPSILON', this.currentEpsilon);
-    console.log('SCORE', state.score);
     this.totalReward.addOrReplace(state.score);
     this.decreaseExplorationChance();
     return Promise.resolve();
@@ -92,20 +105,18 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
     }
     const lossFunction = () =>
       tidy(() => {
-        const statesTensor = this.statesAsTensor(states);
-        const actionTensor = tensor1d(actions, 'int32');
-        const qs = (this.onlineNetwork.model.apply(statesTensor, { training: true }) as Tensor)
+        const statesTensor: Tensor2D = this.statesAsTensor(states);
+        const actionTensor: Tensor1D = tensor1d(actions, 'int32');
+        const qs: Tensor1D = (this.onlineNetwork.model.apply(statesTensor, { training: true }) as Tensor)
           .mul(oneHot(actionTensor, this.player.model.allActions.length))
           .sum(-1);
-        const rewardsTensor = tensor1d(rewards);
-        const nextStatesTensor = this.statesAsTensor(nextStates);
-        const nextMaxQTensor = (this.targetNetwork.model.predict(nextStatesTensor) as Tensor).max(-1);
-        const doneMask = scalar(1).sub(tensor1d(dones).asType('float32'));
-        const targetQs = rewardsTensor.add(nextMaxQTensor.mul(doneMask).mul(this.gamma));
-        return losses.meanSquaredError(targetQs, qs);
+        const rewardsTensor: Tensor1D = tensor1d(rewards);
+        const nextStatesTensor: Tensor2D = this.statesAsTensor(nextStates);
+        const nextMaxQTensor: Tensor1D = (this.targetNetwork.model.predict(nextStatesTensor) as Tensor).max(-1);
+        const doneMask: Scalar = scalar(1).sub(tensor1d(dones).asType('float32'));
+        const targetQs: Tensor1D = rewardsTensor.add(nextMaxQTensor.mul(doneMask).mul(this.gamma));
+        return losses.meanSquaredError(targetQs, qs).asScalar();
       });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const grads = variableGrads(lossFunction);
     this.onlineNetwork.model.optimizer.applyGradients(grads.grads);
     dispose(grads);
@@ -113,15 +124,17 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
 
   private initializeReplayExperienceBuffer(): void {
     for (let i = 0; i < this.replayMemory.size; i++) {
-      if (this.playSingleStep(this.player.model).isGameOver()) {
+      this.playSingleStep(this.player.model);
+      if (this.player.model.isGameOver()) {
+        this.totalReward.addOrReplace(this.player.model.score);
         this.player.model.reset();
       }
     }
     this.player.model.reset();
   }
 
-  private statesAsTensor(states: Array<number[]>): Tensor {
-    return buffer(
+  private statesAsTensor(states: Array<number[]>): Tensor2D {
+    return buffer<Rank.R2, 'int32'>(
       [states.length, this.player.model.environmentSize.height * this.player.model.environmentSize.width],
       'int32',
       new Int32Array(states.flat())
@@ -129,7 +142,8 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
   }
 
   private decreaseExplorationChance(): void {
-    const newEpsilon = this.currentEpsilon * this.epsilonDecay;
+    const decreaseEpsilonBy = this.currentEpsilon * this.epsilonDecay;
+    const newEpsilon = this.currentEpsilon - decreaseEpsilonBy;
     if (newEpsilon >= this.minEpsilon) {
       this.currentEpsilon = newEpsilon;
     }

@@ -1,4 +1,4 @@
-import { ReinforcementPlayer } from '../../../ReinforcementAgents/interfaces/ReinforcementPlayer';
+import { ReinforcementPlayer } from '../../../agents/interfaces/ReinforcementPlayer';
 
 export interface ISnakeGame extends ReinforcementPlayer {
   fullScreen(): void;

@@ -1,8 +1,8 @@
 import { AdamOptimizer, layers, LayersModel, sequential, Sequential, train } from '@tensorflow/tfjs';
 import { UTILS } from '../../common/Utils/UTILS';
-import { CanNotCopyWeights } from '../../errors/CanNotCopyWeights';
+import { IDeepQNetwork } from './interfaces/IDeepQNetwork';
 
-export class DeepQNetwork {
+export class DeepQNetwork implements IDeepQNetwork {
   public readonly model: LayersModel;
 
   private readonly outputSize: number;
@@ -15,12 +15,24 @@ export class DeepQNetwork {
     this.model.trainable = trainable;
   }
 
-  public createNetwork(learningRate: number): LayersModel {
+  public copyWeightsToNetwork(targetModel: LayersModel): void {
+    let originalTargetTrainableState: boolean | null = null;
+    if (this.model.trainable !== targetModel.trainable) {
+      originalTargetTrainableState = targetModel.trainable;
+      targetModel.trainable = this.model.trainable;
+    }
+    targetModel.setWeights(this.model.getWeights());
+    if (UTILS.isDefined<boolean>(originalTargetTrainableState)) {
+      targetModel.trainable = originalTargetTrainableState;
+    }
+  }
+
+  private createNetwork(learningRate: number): LayersModel {
     const adamOptimizer: AdamOptimizer = train.adam(learningRate);
     const model: Sequential = sequential();
     model.add(
       layers.dense({
-        units: this.inputSize * 3,
+        units: 1,
         inputShape: [this.inputSize],
         activation: 'relu'
       })
@@ -48,20 +60,5 @@ export class DeepQNetwork {
       loss: 'meanSquaredError'
     });
     return model;
-  }
-
-  public copyWeightsToNetwork(targetModel: LayersModel): void {
-    if (UTILS.isNullOrUndefined(this.model)) {
-      throw new CanNotCopyWeights();
-    }
-    let originalTargetTrainableState: boolean | null = null;
-    if (this.model.trainable !== targetModel.trainable) {
-      originalTargetTrainableState = targetModel.trainable;
-      targetModel.trainable = this.model.trainable;
-    }
-    targetModel.setWeights(this.model.getWeights());
-    if (UTILS.isDefined<boolean>(originalTargetTrainableState)) {
-      targetModel.trainable = originalTargetTrainableState;
-    }
   }
 }

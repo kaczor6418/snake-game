@@ -11,8 +11,8 @@ import { SnakeGameView } from './View/SnakeGameView';
 import { KeyName } from '../../common/Enums/KeyName';
 import { MoveDirection } from './Controller/interfaces/MoveDirection';
 import { UTILS } from '../../common/Utils/UTILS';
-import { ReinforcementPlayer } from '../../ReinforcementAgents/interfaces/ReinforcementPlayer';
-import { IReinforcementAgent } from '../../ReinforcementAgents/interfaces/IReinforcementAgent';
+import { ReinforcementPlayer } from '../../agents/interfaces/ReinforcementPlayer';
+import { IReinforcementAgent } from '../../agents/interfaces/IReinforcementAgent';
 
 export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
   public readonly model: ISnakeGameModel;

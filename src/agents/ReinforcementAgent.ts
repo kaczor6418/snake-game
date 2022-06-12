@@ -1,8 +1,8 @@
 import { ARRAY_UTILS } from '../common/Utils/ARRAY_UTILS';
 import { MATH_UTILS } from '../common/Utils/MATH_UTILS';
 import { VariableDoesntExistsError } from '../errors/VariableDoesntExistsError';
-import { IMovingAverage } from './DeepQLearningAgent/interfaces/IMovingAverage';
-import { MovingAverage } from './DeepQLearningAgent/MovingAverage';
+import { IMovingAverage } from '../structures/MovingAverage/IMovingAverage';
+import { MovingAverage } from '../structures/MovingAverage/MovingAverage';
 import { IReinforcementAgent } from './interfaces/IReinforcementAgent';
 import { ReinforcementPlayer } from './interfaces/ReinforcementPlayer';
 import { UTILS } from '../common/Utils/UTILS';
@@ -59,7 +59,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
 
   public async learn(epochs: number): Promise<void> {
     if (this.cumulativeRewardThreshold) {
-      await this.learnWithEarlyStopping(epochs);
+      await this.learnUntilReachStopCondition(epochs);
     } else {
       await this.learnUntilFinishAllEpochs(epochs);
     }
@@ -74,16 +74,17 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
       ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);
       chosenAction = ARRAY_UTILS.getRandomValue(possibleActions);
     }
-    console.log('CHOSEN ACTION:', chosenAction);
+    console.log('CHOSEN ACTION: ', chosenAction);
     return chosenAction;
   }
 
-  private async learnWithEarlyStopping(epochs: number): Promise<void> {
+  private async learnUntilReachStopCondition(epochs: number): Promise<void> {
     if (UTILS.isNullOrUndefined(this.cumulativeRewardThreshold)) {
       throw new VariableDoesntExistsError('cumulativeRewardThreshold');
     }
     let epoch = 0;
     while (this.totalReward.average() < this.cumulativeRewardThreshold && epoch !== epochs) {
+      console.log(`Epoch: ${epoch} ## Score: ${this.totalReward.average()} ## Epsilon: ${this.currentEpsilon}`);
       await this.runSingleEpoch();
       epoch++;
     }

@@ -38,7 +38,11 @@ export class ReplayMemory {
       throw new BufferOverSize(batchSize, this.bufferMaxSize);
     }
     util.shuffle(this.bufferIndexesMap);
-    return this.bufferIndexesMap.map((mappedIndex) => this.buffer[mappedIndex]);
+    const memoryItems: MemoryItem[] = [];
+    for (let i = 0; i < batchSize; i++) {
+      memoryItems.push(this.buffer[this.bufferIndexesMap[i]]);
+    }
+    return memoryItems;
   }
 
   public reset(): void {
