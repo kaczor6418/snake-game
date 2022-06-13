@@ -32,20 +32,14 @@ export class DeepQNetwork implements IDeepQNetwork {
     const model: Sequential = sequential();
     model.add(
       layers.dense({
-        units: 1,
+        units: this.inputSize,
         inputShape: [this.inputSize],
         activation: 'relu'
       })
     );
     model.add(
       layers.dense({
-        units: 128,
-        activation: 'relu'
-      })
-    );
-    model.add(
-      layers.dense({
-        units: 64,
+        units: 16,
         activation: 'relu'
       })
     );

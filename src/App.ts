@@ -56,7 +56,7 @@ export class App extends KKWebComponent {
     });
     const ddqnAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
       gamma: 0.99,
-      initialEpsilon: 0.5,
+      initialEpsilon: 0.7,
       getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.RIGHT, MoveDirection.STRAIGHT],
       learningRate: 0.001,
       player: snakeGame,

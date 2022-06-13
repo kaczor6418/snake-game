@@ -74,7 +74,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
       ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);
       chosenAction = ARRAY_UTILS.getRandomValue(possibleActions);
     }
-    console.log('CHOSEN ACTION: ', chosenAction);
+    console.log(`${performance.now()}: `, chosenAction);
     return chosenAction;
   }
 
