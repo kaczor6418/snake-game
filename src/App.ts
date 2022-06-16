@@ -52,7 +52,7 @@ export class App extends KKWebComponent {
   public async runSnakeGameWithDDQLearningAgent(): Promise<void> {
     await tf.setBackend('webgpu');
     const snakeGame: ISnakeGame = new SnakeGame({
-      boardConfiguration: { columnsCount: 3, rowsCount: 3, foodCount: 3 },
+      boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 16 },
       canvas: this.canvas
     });
     const ddqnAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
@@ -66,7 +66,7 @@ export class App extends KKWebComponent {
       replayUpdateIndicator: 25,
       replayMemorySize: 1000,
       minEpsilon: 0.01,
-      cumulativeRewardThreshold: 150
+      cumulativeRewardThreshold: 1000
     });
     await ddqnAgent.learn(10000);
     for (let i = 0; i < 5; i++) {
