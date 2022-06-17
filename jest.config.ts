@@ -81,7 +81,7 @@ export default {
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
     '^.+\\.(scss)$': 'babel-jest',
-    '^.+\\.(vert|frag)$': '<rootDir>/__mocks__/shaderMock.js'
+    '^.+\\.(vert|frag)$': '<rootDir>/__mocks__/shaderMock.js',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -169,8 +169,8 @@ export default {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.ts$': 'ts-jest'
-  }
+    '^.+\\.ts$': 'ts-jest',
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

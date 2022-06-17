@@ -5,7 +5,7 @@ describe(ARRAY_UTILS.shallowCopy.name, () => {
   it('should make a shell copy of every element', () => {
     const arr = [
       { x: 0, y: 1 },
-      { x: 1, y: 1 }
+      { x: 1, y: 1 },
     ];
     const arrCopy = ARRAY_UTILS.shallowCopy(arr);
     ++arrCopy[0].x;
@@ -38,7 +38,7 @@ describe(ARRAY_UTILS.getLastElementReference.name, () => {
   it('should return mutable element reference', () => {
     const arr = [
       { x: 0, y: 0 },
-      { x: 1, y: 1 }
+      { x: 1, y: 1 },
     ];
     const element = ARRAY_UTILS.getLastElementReference(arr);
     ++element.x;
@@ -50,7 +50,7 @@ describe(ARRAY_UTILS.getLastElementCopy.name, () => {
   it('should return mutable element reference', () => {
     const arr = [
       { x: 0, y: 0 },
-      { x: 1, y: 1 }
+      { x: 1, y: 1 },
     ];
     const element = ARRAY_UTILS.getLastElementCopy(arr);
     ++element.x;

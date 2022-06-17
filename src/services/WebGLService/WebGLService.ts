@@ -51,12 +51,7 @@ export class WebGLService implements IWebGLService {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
   }
 
-  public drawRectangle(
-    [x, y]: [number, number],
-    width: number,
-    height: number,
-    [r, g, b, a]: [number, number, number, number]
-  ): void {
+  public drawRectangle([x, y]: [number, number], width: number, height: number, [r, g, b, a]: [number, number, number, number]): void {
     this.gl.bindVertexArray(this.vao);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
     const topLeft = [x, y, 0];
@@ -65,14 +60,7 @@ export class WebGLService implements IWebGLService {
     const leftBottomB = [x, y + height, 0];
     const rightTopB = [x + width, y, 0];
     const bottomRight = [x + width, y + height, 0];
-    const positions = new Float32Array([
-      ...topLeft,
-      ...topRightA,
-      ...leftBottomA,
-      ...leftBottomB,
-      ...rightTopB,
-      ...bottomRight
-    ]);
+    const positions = new Float32Array([...topLeft, ...topRightA, ...leftBottomA, ...leftBottomB, ...rightTopB, ...bottomRight]);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
     this.gl.uniform4f(this.colorUniformLocation, r, g, b, a);
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 6); // count → rectangle points numbers 6 because of 2 triangles

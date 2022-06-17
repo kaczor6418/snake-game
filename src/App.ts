@@ -26,21 +26,21 @@ export class App extends KKWebComponent {
     //   canvas: this.canvas
     // });
     // snakeGame.start();
-    // void this.runSnakeGameWithQLearningAgent();
-    void this.runSnakeGameWithDDQLearningAgent();
+    void this.runSnakeGameWithQLearningAgent();
+    // void this.runSnakeGameWithDDQLearningAgent();
   }
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
     const snakeGame: ISnakeGame = new SnakeGame({
       boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 10 },
-      canvas: this.canvas
+      canvas: this.canvas,
     });
     const qAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
       gamma: 0.5,
       initialEpsilon: 0.1,
       getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.RIGHT, MoveDirection.STRAIGHT],
       player: snakeGame,
-      learningRate: 0.1
+      learningRate: 0.1,
     });
     await qAgent.learn(10000);
     for (let i = 0; i < 5; i++) {
@@ -53,7 +53,7 @@ export class App extends KKWebComponent {
     await tf.setBackend('webgpu');
     const snakeGame: ISnakeGame = new SnakeGame({
       boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 16 },
-      canvas: this.canvas
+      canvas: this.canvas,
     });
     const ddqnAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
       gamma: 0.99,
@@ -66,9 +66,9 @@ export class App extends KKWebComponent {
       replayUpdateIndicator: 25,
       replayMemorySize: 1000,
       minEpsilon: 0.01,
-      cumulativeRewardThreshold: 1000
+      cumulativeRewardThreshold: 1000,
     });
-    await ddqnAgent.learn(10000);
+    await ddqnAgent.learn(10);
     for (let i = 0; i < 5; i++) {
       snakeGame.model.reset();
       await snakeGame.runSnakeWithAgent(ddqnAgent);
@@ -77,3 +77,4 @@ export class App extends KKWebComponent {
 }
 
 customElements.define(App.TAG, App);
+console.log(12);

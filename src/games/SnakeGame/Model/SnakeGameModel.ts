@@ -50,7 +50,7 @@ export class SnakeGameModel implements ISnakeGameModel {
   get environmentSize(): EnvironmentSize {
     return {
       width: this.columnsCount,
-      height: this.rowsCount
+      height: this.rowsCount,
     };
   }
 
@@ -70,13 +70,9 @@ export class SnakeGameModel implements ISnakeGameModel {
         }) or y is bigger than total columns count(${this.columnsCount - 1})`
       );
     }
-    const hasFoodUnderNewPosition = this.foodPositions.some((foodPosition) =>
-      UTILS.isObjectWithSameKeyValues(position, foodPosition)
-    );
+    const hasFoodUnderNewPosition = this.foodPositions.some((foodPosition) => UTILS.isObjectWithSameKeyValues(position, foodPosition));
     if (hasFoodUnderNewPosition) {
-      throw new InvalidPositionError(
-        `Can not add food under: ${JSON.stringify(position)} if there is already food under this position`
-      );
+      throw new InvalidPositionError(`Can not add food under: ${JSON.stringify(position)} if there is already food under this position`);
     }
     this.foodPositions.push(position);
   }
@@ -89,7 +85,7 @@ export class SnakeGameModel implements ISnakeGameModel {
     const gameModelCopy = new SnakeGameModel({
       columnsCount: this.columnsCount,
       rowsCount: this.rowsCount,
-      foodCount: 0
+      foodCount: 0,
     });
     gameModelCopy.score = this.score;
     gameModelCopy.shouldFinish = this.shouldFinish;
@@ -137,9 +133,7 @@ export class SnakeGameModel implements ISnakeGameModel {
   }
 
   public isNotSnakeBodyPosition({ x, y }: Position): boolean {
-    return this.snakeBodyPartsPositions.every(
-      (snakeBodyPosition) => snakeBodyPosition.x !== x && snakeBodyPosition.y !== y
-    );
+    return this.snakeBodyPartsPositions.every((snakeBodyPosition) => snakeBodyPosition.x !== x && snakeBodyPosition.y !== y);
   }
 
   public isNotTopWall(y: number): boolean {
@@ -151,9 +145,7 @@ export class SnakeGameModel implements ISnakeGameModel {
   }
 
   public isSnakeBodyPartPosition({ x, y }: Position): boolean {
-    return this.snakeBodyPartsPositions.some(
-      (snakeBodyPosition) => snakeBodyPosition.x === x && snakeBodyPosition.y === y
-    );
+    return this.snakeBodyPartsPositions.some((snakeBodyPosition) => snakeBodyPosition.x === x && snakeBodyPosition.y === y);
   }
 
   public isTopWall(y: number): boolean {
@@ -171,18 +163,14 @@ export class SnakeGameModel implements ISnakeGameModel {
   public removeFood({ x, y }: Position): Position {
     return ARRAY_UTILS.removeElement(
       this.foodPositions,
-      this.foodPositions.findIndex(
-        ({ x: foodXPosition, y: foodYPosition }) => x === foodXPosition && y === foodYPosition
-      )
+      this.foodPositions.findIndex(({ x: foodXPosition, y: foodYPosition }) => x === foodXPosition && y === foodYPosition)
     );
   }
 
   public removeSnakeBodyPart(position: number | Position): Position {
     const indexOfPartToRemove: number = isNumber(position)
       ? position
-      : this.foodPositions.findIndex(
-          ({ x: snakeXPosition, y: snakeYPosition }) => position.x === snakeXPosition && position.y === snakeYPosition
-        );
+      : this.foodPositions.findIndex(({ x: snakeXPosition, y: snakeYPosition }) => position.x === snakeXPosition && position.y === snakeYPosition);
     return ARRAY_UTILS.removeElement(this.snakeBodyPartsPositions, indexOfPartToRemove);
   }
 
@@ -249,15 +237,12 @@ export class SnakeGameModel implements ISnakeGameModel {
     for (let i = 0; i < foodCount; i++) {
       let uniqueFoodPosition = {
         x: MATH_UTILS.generateRandomInteger(0, this.columnsCount),
-        y: MATH_UTILS.generateRandomInteger(0, this.rowsCount)
+        y: MATH_UTILS.generateRandomInteger(0, this.rowsCount),
       };
-      while (
-        ARRAY_UTILS.hasObjectWithSameShape(foodPositions, uniqueFoodPosition) ||
-        (uniqueFoodPosition.x === 0 && uniqueFoodPosition.y === 0)
-      ) {
+      while (ARRAY_UTILS.hasObjectWithSameShape(foodPositions, uniqueFoodPosition) || (uniqueFoodPosition.x === 0 && uniqueFoodPosition.y === 0)) {
         uniqueFoodPosition = {
           x: MATH_UTILS.generateRandomInteger(0, this.columnsCount),
-          y: MATH_UTILS.generateRandomInteger(0, this.rowsCount)
+          y: MATH_UTILS.generateRandomInteger(0, this.rowsCount),
         };
       }
       foodPositions.push(uniqueFoodPosition);

@@ -10,16 +10,16 @@ describe(SnakeGameView.name, () => {
   const webGLServiceMock = createManualMock<IWebGLService>({
     clearCanvas: jest.fn(),
     drawRectangle: jest.fn(),
-    drawTriangle: jest.fn()
+    drawTriangle: jest.fn(),
   });
   const gameModelMock = createManualMock<ISnakeGameModel>({
     allFoods: [],
-    allSnakeBodyParts: []
+    allSnakeBodyParts: [],
   });
   const gameView: ISnakeGameView = new SnakeGameView({
     gameModel: gameModelMock,
     webGLService: webGLServiceMock,
-    fieldSize: { width: fieldWidth, height: fieldHeight }
+    fieldSize: { width: fieldWidth, height: fieldHeight },
   });
   describe(SnakeGameView.prototype.render.name, () => {
     it('should clear canvas before render', () => {
@@ -42,7 +42,7 @@ describe(SnakeGameView.name, () => {
         gameModelMock.allSnakeBodyParts = [
           { x: 0, y: 0 },
           { x: 1, y: 1 },
-          { x: 2, y: 2 }
+          { x: 2, y: 2 },
         ];
         gameView.render();
         expect(drawRectangleSpy).toBeCalledTimes(gameModelMock.allSnakeBodyParts.length);
@@ -67,7 +67,7 @@ describe(SnakeGameView.name, () => {
         gameModelMock.allFoods = [
           { x: 0, y: 0 },
           { x: 1, y: 1 },
-          { x: 2, y: 2 }
+          { x: 2, y: 2 },
         ];
         gameView.render();
         expect(drawTriangleSpy).toBeCalledTimes(gameModelMock.allSnakeBodyParts.length);

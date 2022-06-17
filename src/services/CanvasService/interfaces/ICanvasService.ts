@@ -9,8 +9,4 @@ export interface ICanvasService {
   getContext(contextType: CanvasContextType.WEBGL2): WebGL2RenderingContext;
 }
 
-export type CanvasServiceContext =
-  | CanvasRenderingContext2D
-  | ImageBitmapRenderingContext
-  | WebGLRenderingContext
-  | WebGL2RenderingContext;
+export type CanvasServiceContext = CanvasRenderingContext2D | ImageBitmapRenderingContext | WebGLRenderingContext | WebGL2RenderingContext;

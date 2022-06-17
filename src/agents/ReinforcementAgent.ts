@@ -19,19 +19,12 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected readonly player: ReinforcementPlayer;
   protected readonly totalReward: IMovingAverage;
 
-  private readonly cumulativeRewardThreshold?: number;
+  private readonly cumulativeRewardThreshold: number | undefined;
 
   protected abstract runSingleEpoch(): Promise<void>;
   protected abstract getBestAction(state: ReinforcementModel): number;
 
-  protected constructor({
-    learningRate,
-    initialEpsilon,
-    gamma,
-    getPossibleActions,
-    player,
-    cumulativeRewardThreshold
-  }: BaseReinforcementAgentProps) {
+  protected constructor({ learningRate, initialEpsilon, gamma, getPossibleActions, player, cumulativeRewardThreshold }: BaseReinforcementAgentProps) {
     this.learningRate = learningRate;
     this.initialEpsilon = initialEpsilon;
     this.currentEpsilon = this.initialEpsilon;

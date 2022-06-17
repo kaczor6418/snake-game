@@ -1,18 +1,4 @@
-import {
-  buffer,
-  dispose,
-  losses,
-  oneHot,
-  Rank,
-  Scalar,
-  scalar,
-  Tensor,
-  Tensor1D,
-  tensor1d,
-  Tensor2D,
-  tidy,
-  variableGrads
-} from '@tensorflow/tfjs';
+import { buffer, dispose, losses, oneHot, Rank, Scalar, scalar, Tensor, Tensor1D, tensor1d, Tensor2D, tidy, variableGrads } from '@tensorflow/tfjs';
 import { ReinforcementModel } from '../interfaces/ReinforcementModel';
 import { ReinforcementAgent } from '../ReinforcementAgent';
 import { DeepQNetwork } from './DeepQNetwork';
@@ -31,14 +17,7 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
   private readonly onlineNetwork: IDeepQNetwork;
   private readonly targetNetwork: IDeepQNetwork;
 
-  constructor({
-    batchSize,
-    epsilonDecay,
-    minEpsilon,
-    replayUpdateIndicator,
-    replayMemorySize,
-    ...baseAgentProps
-  }: DoubleDeepQLearningAgentProps) {
+  constructor({ batchSize, epsilonDecay, minEpsilon, replayUpdateIndicator, replayMemorySize, ...baseAgentProps }: DoubleDeepQLearningAgentProps) {
     super(baseAgentProps);
     this.replayCounter = 1;
     this.batchSize = batchSize;
@@ -80,13 +59,7 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
   private playSingleStep(state: ReinforcementModel): ReinforcementModel {
     const action = this.getAction(state);
     const nextState = this.player.controller.move(action);
-    this.replayMemory.addOrReplace([
-      state.stateAsVector(),
-      action,
-      nextState.score,
-      nextState.stateAsVector(),
-      nextState.gameEndState()
-    ]);
+    this.replayMemory.addOrReplace([state.stateAsVector(), action, nextState.score, nextState.stateAsVector(), nextState.gameEndState()]);
     return nextState;
   }
 

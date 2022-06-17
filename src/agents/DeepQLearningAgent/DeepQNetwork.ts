@@ -34,24 +34,24 @@ export class DeepQNetwork implements IDeepQNetwork {
       layers.dense({
         units: this.inputSize,
         inputShape: [this.inputSize],
-        activation: 'relu'
+        activation: 'relu',
       })
     );
     model.add(
       layers.dense({
         units: 16,
-        activation: 'relu'
+        activation: 'relu',
       })
     );
     model.add(layers.dropout({ rate: 0.25 }));
     model.add(
       layers.dense({
-        units: this.outputSize
+        units: this.outputSize,
       })
     );
     model.compile({
       optimizer: adamOptimizer,
-      loss: 'meanSquaredError'
+      loss: 'meanSquaredError',
     });
     return model;
   }

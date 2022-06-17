@@ -41,16 +41,8 @@ export class QLearningAgent extends ReinforcementAgent {
     return ARRAY_UTILS.getRandomValue(bestActions);
   }
 
-  private calculateQValue(
-    state: ReinforcementModel,
-    action: number,
-    reward: number,
-    nextState: ReinforcementModel
-  ): number {
-    return (
-      (1 - this.learningRate) * this.getQValue(state, action) +
-      this.learningRate * (reward + this.gamma * this.getMaxValue(nextState))
-    );
+  private calculateQValue(state: ReinforcementModel, action: number, reward: number, nextState: ReinforcementModel): number {
+    return (1 - this.learningRate) * this.getQValue(state, action) + this.learningRate * (reward + this.gamma * this.getMaxValue(nextState));
   }
 
   private getMaxValue(state: ReinforcementModel): number {

@@ -3,7 +3,7 @@ import { EnumKeyOrValueNotFound } from '../../../src/errors/EnumKeyOrValueNotFou
 
 enum TestEnum {
   TEST_1 = 'TEST_1',
-  TEST_2 = 'TEST_2'
+  TEST_2 = 'TEST_2',
 }
 
 describe(EnumValueEnumConverter.name, () => {
@@ -20,9 +20,7 @@ describe(EnumValueEnumConverter.name, () => {
       expect(EnumValueEnumConverter.toEnumFromValue(TestEnum.TEST_2, TestEnum)).toBe(TestEnum.TEST_2);
     });
     it('should throw an error for not existing enum value', () => {
-      expect(() => EnumValueEnumConverter.toEnumFromValue('TestEnum.NOT_EXISTING', TestEnum)).toThrowError(
-        EnumKeyOrValueNotFound
-      );
+      expect(() => EnumValueEnumConverter.toEnumFromValue('TestEnum.NOT_EXISTING', TestEnum)).toThrowError(EnumKeyOrValueNotFound);
     });
   });
 });

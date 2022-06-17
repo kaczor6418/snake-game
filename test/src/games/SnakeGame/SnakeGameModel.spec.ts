@@ -42,12 +42,10 @@ describe(SnakeGameModel.name, () => {
   describe(SnakeGameModel.prototype.addFood.name, () => {
     it('should add food under given position if doesnt exists yet', () => {
       let newFoodPosition: Position = { x: 0, y: 0 };
-      while (
-        gameModel.allFoods.some((foodPosition) => UTILS.isObjectWithSameKeyValues(newFoodPosition, foodPosition))
-      ) {
+      while (gameModel.allFoods.some((foodPosition) => UTILS.isObjectWithSameKeyValues(newFoodPosition, foodPosition))) {
         newFoodPosition = {
           x: MATH_UTILS.generateRandomInteger(0, columnsCount),
-          y: MATH_UTILS.generateRandomInteger(0, rowsCount)
+          y: MATH_UTILS.generateRandomInteger(0, rowsCount),
         };
       }
       gameModel.addFood(newFoodPosition);
@@ -251,9 +249,7 @@ describe(SnakeGameModel.name, () => {
       const foodPositionToRemove: Position = gameModel.allFoods[0];
       gameModel.removeFood(foodPositionToRemove);
       expect(gameModel.allFoods.length).toEqual(foodsCountBeforeRemove - 1);
-      expect(
-        gameModel.allFoods.some((foodPosition) => UTILS.isObjectWithSameKeyValues(foodPositionToRemove, foodPosition))
-      ).toBeFalsy();
+      expect(gameModel.allFoods.some((foodPosition) => UTILS.isObjectWithSameKeyValues(foodPositionToRemove, foodPosition))).toBeFalsy();
     });
     it('should remove all food from foods list', () => {
       for (const foodPosition of structuredClone(gameModel.allFoods)) {

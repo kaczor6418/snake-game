@@ -6,10 +6,7 @@ import { DoubleDeepQLearningAgent } from '../agents/DeepQLearningAgent/DoubleDee
 import { ReinforcementAgentProps } from '../agents/interfaces/ReinforcementAgentProps';
 import { isDoubleDeepQLearningAgentProps } from '../agents/DeepQLearningAgent/interfaces/DoubleDeepQLearningAgentProps';
 
-export function createReinforcementAgent(
-  agentName: ReinforcementAgentsNames,
-  props: ReinforcementAgentProps
-): IReinforcementAgent {
+export function createReinforcementAgent(agentName: ReinforcementAgentsNames, props: ReinforcementAgentProps): IReinforcementAgent {
   let agent: IReinforcementAgent;
   switch (agentName) {
     case ReinforcementAgentsNames.Q_LEARNING:
