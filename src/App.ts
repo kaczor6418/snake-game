@@ -7,6 +7,7 @@ import { createReinforcementAgent } from './factories/ReinforcementAgentsFactory
 import { ReinforcementAgentsNames } from './factories/ReinforcementAgentsNames';
 import { IReinforcementAgent } from './agents/interfaces/IReinforcementAgent';
 import * as tf from '@tensorflow/tfjs';
+import '@tensorflow/tfjs-backend-webgpu';
 
 const template = `
   <h1>Snake Game</h1>
@@ -49,7 +50,7 @@ export class App extends KKWebComponent {
   }
 
   public async runSnakeGameWithDDQLearningAgent(): Promise<void> {
-    await tf.setBackend('webgl');
+    await tf.setBackend('webgpu');
     const snakeGame: ISnakeGame = new SnakeGame({
       boardConfiguration: { columnsCount: 3, rowsCount: 3, foodCount: 3 },
       canvas: this.canvas

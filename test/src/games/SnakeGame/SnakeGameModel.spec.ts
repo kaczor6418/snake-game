@@ -50,7 +50,7 @@ describe(SnakeGameModel.name, () => {
           y: MATH_UTILS.generateRandomInteger(0, rowsCount)
         };
       }
-      gameModel.addFood({ x: 1, y: 2 });
+      gameModel.addFood(newFoodPosition);
       expect(gameModel.hash().length).toBe(gridSize());
     });
     it('should NOT add food under given position if there is already food', () => {
