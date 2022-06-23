@@ -21,13 +21,14 @@ export class App extends KKWebComponent {
 
   constructor() {
     super(template);
+    void this.runSnakeGameWithQLearningAgent();
     // const snakeGame: ISnakeGame = new SnakeGame({
     //   boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 10 },
     //   canvas: this.canvas
     // });
     // snakeGame.start();
-    void this.runSnakeGameWithQLearningAgent();
-    // void this.runSnakeGameWithDDQLearningAgent();
+    // void this.runSnakeGameWithDDQLearningAgent('webgl');
+    // void this.runSnakeGameWithDDQLearningAgent('webgpu');
   }
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
@@ -49,8 +50,8 @@ export class App extends KKWebComponent {
     }
   }
 
-  public async runSnakeGameWithDDQLearningAgent(): Promise<void> {
-    await tf.setBackend('webgpu');
+  public async runSnakeGameWithDDQLearningAgent(backend: string): Promise<void> {
+    await tf.setBackend(backend);
     const snakeGame: ISnakeGame = new SnakeGame({
       boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 16 },
       canvas: this.canvas,
@@ -77,4 +78,3 @@ export class App extends KKWebComponent {
 }
 
 customElements.define(App.TAG, App);
-console.log(12);
