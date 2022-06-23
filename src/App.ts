@@ -22,13 +22,17 @@ export class App extends KKWebComponent {
   constructor() {
     super(template);
     void this.runSnakeGameWithQLearningAgent();
-    // const snakeGame: ISnakeGame = new SnakeGame({
-    //   boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 10 },
-    //   canvas: this.canvas
-    // });
-    // snakeGame.start();
+    // createFreeGame();
     // void this.runSnakeGameWithDDQLearningAgent('webgl');
     // void this.runSnakeGameWithDDQLearningAgent('webgpu');
+  }
+
+  public createFreeGame(): void {
+    const snakeGame: ISnakeGame = new SnakeGame({
+      boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 10 },
+      canvas: this.canvas,
+    });
+    snakeGame.start();
   }
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
