@@ -1,13 +1,14 @@
-import { CONSTANTS } from './common/CONSTANTS';
-import { KKWebComponent } from './components/KKWebComponent/KKWebComponent';
-import { MoveDirection } from './games/SnakeGame/Controller/interfaces/MoveDirection';
-import { ISnakeGame } from './games/SnakeGame/interfaces/ISnakeGame';
-import { SnakeGame } from './games/SnakeGame/SnakeGame';
-import { createReinforcementAgent } from './factories/ReinforcementAgentsFactory';
-import { ReinforcementAgentsNames } from './factories/ReinforcementAgentsNames';
-import { IReinforcementAgent } from './agents/interfaces/IReinforcementAgent';
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgpu';
+import { IReinforcementAgent } from './agents/interfaces/IReinforcementAgent';
+import { CONSTANTS } from './common/CONSTANTS';
+import { KKWebComponent } from './components/KKWebComponent/KKWebComponent';
+import { createGame } from './factories/GamesFactory/GamesFactory';
+import { GameType } from './factories/GamesFactory/GameType';
+import { createReinforcementAgent } from './factories/ReinforcementAgentsFactory/ReinforcementAgentsFactory';
+import { ReinforcementAgentType } from './factories/ReinforcementAgentsFactory/ReinforcementAgentType';
+import { MoveDirection } from './games/SnakeGame/Controller/interfaces/MoveDirection';
+import { ISnakeGame } from './games/SnakeGame/interfaces/ISnakeGame';
 
 const template = `
   <h1>Snake Game</h1>
@@ -28,7 +29,7 @@ export class App extends KKWebComponent {
   }
 
   public createFreeGame(): void {
-    const snakeGame: ISnakeGame = new SnakeGame({
+    const snakeGame: ISnakeGame = createGame(GameType.SNAKE, {
       boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 10 },
       canvas: this.canvas,
     });
@@ -36,11 +37,11 @@ export class App extends KKWebComponent {
   }
 
   public async runSnakeGameWithQLearningAgent(): Promise<void> {
-    const snakeGame: ISnakeGame = new SnakeGame({
+    const snakeGame: ISnakeGame = createGame(GameType.SNAKE, {
       boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 10 },
       canvas: this.canvas,
     });
-    const qAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.Q_LEARNING, {
+    const qAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentType.Q_LEARNING, {
       gamma: 0.5,
       initialEpsilon: 0.1,
       getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.RIGHT, MoveDirection.STRAIGHT],
@@ -56,11 +57,11 @@ export class App extends KKWebComponent {
 
   public async runSnakeGameWithDDQLearningAgent(backend: string): Promise<void> {
     await tf.setBackend(backend);
-    const snakeGame: ISnakeGame = new SnakeGame({
+    const snakeGame: ISnakeGame = createGame(GameType.SNAKE, {
       boardConfiguration: { columnsCount: 6, rowsCount: 6, foodCount: 16 },
       canvas: this.canvas,
     });
-    const ddqnAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentsNames.DOUBLE_DEEP_Q_LEARNING, {
+    const ddqnAgent: IReinforcementAgent = createReinforcementAgent(ReinforcementAgentType.DOUBLE_DEEP_Q_LEARNING, {
       gamma: 0.99,
       initialEpsilon: 0.7,
       getPossibleActions: () => [MoveDirection.LEFT, MoveDirection.RIGHT, MoveDirection.STRAIGHT],
