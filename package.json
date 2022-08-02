@@ -17,15 +17,15 @@
   },
   "homepage": "https://github.com/kaczor6418/snake-game#readme",
   "scripts": {
+    "postinstall": "git config core.hooksPath ./git-hooks",
     "serve": "webpack serve",
     "build": "webpack",
-    "postinstall": "git config core.hooksPath ./git-hooks",
     "test": "jest --passWithNoTests",
-    "test-watch": "jest --passWithNoTests --watch",
-    "test-coverage": "jest --passWithNoTests --coverage",
-    "lint-ts": "eslint . --ext .ts --quiet",
-    "lint-scss": "stylelint **/*.scss",
-    "lint-and-fix": "eslint . --ext .ts --quiet --fix && stylelint **/*.scss --fix"
+    "test:watch": "jest --passWithNoTests --watch",
+    "test:coverage": "jest --passWithNoTests --coverage",
+    "lint:ts": "eslint . --ext .ts --quiet",
+    "lint:scss": "stylelint **/*.scss",
+    "lint:fix": "eslint . --ext .ts --quiet --fix && stylelint **/*.scss --fix"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^3.18.0",
