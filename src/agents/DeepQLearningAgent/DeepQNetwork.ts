@@ -39,7 +39,7 @@ export class DeepQNetwork implements IDeepQNetwork {
     );
     model.add(
       layers.dense({
-        units: 16,
+        units: Math.round(Math.sqrt(this.inputSize * this.outputSize)),
         activation: 'relu',
       })
     );
