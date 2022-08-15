@@ -51,7 +51,7 @@ export class App extends KKWebComponent {
     await qAgent.learn(10000);
     for (let i = 0; i < 5; i++) {
       snakeGame.model.reset();
-      await snakeGame.runSnakeWithAgent(qAgent);
+      await snakeGame.runGameWithAgent(qAgent);
     }
   }
 
@@ -77,7 +77,7 @@ export class App extends KKWebComponent {
     await ddqnAgent.learn(10);
     for (let i = 0; i < 5; i++) {
       snakeGame.model.reset();
-      await snakeGame.runSnakeWithAgent(ddqnAgent);
+      await snakeGame.runGameWithAgent(ddqnAgent);
     }
   }
 }
