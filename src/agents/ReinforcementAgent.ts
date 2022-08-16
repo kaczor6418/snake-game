@@ -14,6 +14,8 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected currentEpsilon: number;
 
   protected readonly initialEpsilon: number;
+  private readonly minEpsilon: number;
+  private readonly epsilonDecay: number;
   protected readonly gamma: number;
   protected readonly getPossibleActions: () => number[];
   protected readonly player: ReinforcementPlayer;
@@ -24,10 +26,21 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   protected abstract runSingleEpoch(): Promise<void>;
   protected abstract getBestAction(state: ReinforcementModel): number;
 
-  protected constructor({ learningRate, initialEpsilon, gamma, getPossibleActions, player, cumulativeRewardThreshold }: BaseReinforcementAgentProps) {
+  protected constructor({
+    learningRate,
+    initialEpsilon,
+    gamma,
+    getPossibleActions,
+    player,
+    minEpsilon,
+    epsilonDecay,
+    cumulativeRewardThreshold,
+  }: BaseReinforcementAgentProps) {
     this.learningRate = learningRate;
     this.initialEpsilon = initialEpsilon;
     this.currentEpsilon = this.initialEpsilon;
+    this.minEpsilon = minEpsilon ?? this.initialEpsilon;
+    this.epsilonDecay = epsilonDecay ?? 0;
     this.gamma = gamma;
     this.getPossibleActions = getPossibleActions;
     this.player = player;
@@ -67,8 +80,15 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
       ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);
       chosenAction = ARRAY_UTILS.getRandomValue(possibleActions);
     }
-    console.log(`${performance.now().toFixed()}: `, chosenAction);
     return chosenAction;
+  }
+
+  protected decreaseExplorationChance(): void {
+    const decreaseEpsilonBy = this.currentEpsilon * this.epsilonDecay;
+    const newEpsilon = this.currentEpsilon - decreaseEpsilonBy;
+    if (newEpsilon >= this.minEpsilon) {
+      this.currentEpsilon = newEpsilon;
+    }
   }
 
   private async learnUntilReachStopCondition(epochs: number): Promise<void> {
@@ -77,8 +97,8 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
     }
     let epoch = 0;
     while (this.totalReward.average() < this.cumulativeRewardThreshold && epoch !== epochs) {
-      console.log(`Epoch: ${epoch} ## Score: ${this.totalReward.average()} ## Epsilon: ${this.currentEpsilon}`);
       await this.runSingleEpoch();
+      this.decreaseExplorationChance();
       epoch++;
     }
   }
@@ -86,6 +106,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   private async learnUntilFinishAllEpochs(epochs: number): Promise<void> {
     for (let i = 0; i < epochs; i++) {
       await this.runSingleEpoch();
+      this.decreaseExplorationChance();
     }
   }
 

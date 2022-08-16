@@ -9,6 +9,8 @@ export interface BaseReinforcementAgentProps {
   getPossibleActions: () => number[];
   player: ReinforcementPlayer;
 
+  minEpsilon?: number;
+  epsilonDecay?: number;
   cumulativeRewardThreshold?: number;
 }
 

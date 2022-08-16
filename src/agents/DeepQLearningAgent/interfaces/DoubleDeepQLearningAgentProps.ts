@@ -3,8 +3,6 @@ import { isQLearningAgentProps } from '../../QLearningAgent/interfaces/QLearning
 
 export interface DoubleDeepQLearningAgentProps extends BaseReinforcementAgentProps {
   batchSize: number;
-  epsilonDecay: number;
-  minEpsilon: number;
   replayUpdateIndicator: number;
   replayMemorySize: number;
 }

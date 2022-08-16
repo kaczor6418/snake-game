@@ -10,20 +10,16 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
   private replayCounter: number;
 
   private readonly replayUpdateIndicator: number;
-  private readonly minEpsilon: number;
-  private readonly epsilonDecay: number;
   private readonly batchSize: number;
   private readonly replayMemory: ReplayMemory;
   private readonly onlineNetwork: IDeepQNetwork;
   private readonly targetNetwork: IDeepQNetwork;
 
-  constructor({ batchSize, epsilonDecay, minEpsilon, replayUpdateIndicator, replayMemorySize, ...baseAgentProps }: DoubleDeepQLearningAgentProps) {
+  constructor({ batchSize, replayUpdateIndicator, replayMemorySize, ...baseAgentProps }: DoubleDeepQLearningAgentProps) {
     super(baseAgentProps);
     this.replayCounter = 1;
     this.batchSize = batchSize;
     this.replayUpdateIndicator = replayUpdateIndicator;
-    this.minEpsilon = minEpsilon;
-    this.epsilonDecay = epsilonDecay;
     this.replayMemory = new ReplayMemory(replayMemorySize);
     const inputSize = this.player.model.environmentSize.width * this.player.model.environmentSize.height;
     this.onlineNetwork = new DeepQNetwork(inputSize, this.player.model.allActions.length, this.learningRate);
@@ -112,13 +108,5 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
       'int32',
       new Int32Array(states.flat())
     ).toTensor();
-  }
-
-  private decreaseExplorationChance(): void {
-    const decreaseEpsilonBy = this.currentEpsilon * this.epsilonDecay;
-    const newEpsilon = this.currentEpsilon - decreaseEpsilonBy;
-    if (newEpsilon >= this.minEpsilon) {
-      this.currentEpsilon = newEpsilon;
-    }
   }
 }
