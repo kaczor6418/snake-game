@@ -32,7 +32,8 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
   devServer: {
-    host: 'local-ip',
+    server: 'https',
+    host: 'local-ipv6',
     port: 8080,
     hot: 'only',
     static: {
