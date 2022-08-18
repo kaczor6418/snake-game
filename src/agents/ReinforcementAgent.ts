@@ -24,7 +24,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
   private readonly cumulativeRewardThreshold: number | undefined;
 
   protected abstract runSingleEpoch(): Promise<void>;
-  protected abstract getBestAction(state: ReinforcementModel): number;
+  protected abstract getBestAction(state: ReinforcementModel): Promise<number>;
 
   protected constructor({
     learningRate,
@@ -50,7 +50,7 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
 
   public async fit(callback?: (action: number) => void, callbackDellyInMs = 500): Promise<void> {
     while (UTILS.isFalsy(this.player.model.isGameOver())) {
-      const action = this.getAction(this.player.model);
+      const action = await this.getAction(this.player.model);
       if (UTILS.isDefined(callback)) {
         callback(action);
         await UTILS.wait(callbackDellyInMs);
@@ -72,9 +72,9 @@ export abstract class ReinforcementAgent implements IReinforcementAgent {
     this.turnOfLearning();
   }
 
-  protected getAction(state: ReinforcementModel): number {
+  protected async getAction(state: ReinforcementModel): Promise<number> {
     const possibleActions = this.getPossibleActions();
-    const bestAction = this.getBestAction(state);
+    const bestAction = await this.getBestAction(state);
     let chosenAction = bestAction;
     if (possibleActions.length > 1 && MATH_UTILS.generateRandomNumber(0, 1) < this.currentEpsilon) {
       ARRAY_UTILS.removePrimitiveValue(possibleActions, bestAction);

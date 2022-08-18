@@ -14,6 +14,7 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
   private readonly replayMemory: ReplayMemory;
   private readonly onlineNetwork: IDeepQNetwork;
   private readonly targetNetwork: IDeepQNetwork;
+  private readonly isReplayMemeoryFilled: Promise<void>;
 
   constructor({ batchSize, replayUpdateIndicator, replayMemorySize, ...baseAgentProps }: DoubleDeepQLearningAgentProps) {
     super(baseAgentProps);
@@ -24,15 +25,16 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
     const inputSize = this.player.model.environmentSize.width * this.player.model.environmentSize.height;
     this.onlineNetwork = new DeepQNetwork(inputSize, this.player.model.allActions.length, this.learningRate);
     this.targetNetwork = new DeepQNetwork(inputSize, this.player.model.allActions.length, this.learningRate, false);
-    this.initializeReplayExperienceBuffer();
+    this.isReplayMemeoryFilled = this.initializeReplayExperienceBuffer();
   }
 
   protected async runSingleEpoch(): Promise<void> {
+    await this.isReplayMemeoryFilled;
     this.player.model.reset();
     let state = this.player.model.copy();
     while (!state.isGameOver()) {
       this.trainOnReplayBatch();
-      state = this.playSingleStep(state);
+      state = await this.playSingleStep(state);
       if (this.replayCounter % this.replayUpdateIndicator === 0) {
         this.onlineNetwork.copyWeightsToNetwork(this.targetNetwork.model);
       }
@@ -43,17 +45,16 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
     return Promise.resolve();
   }
 
-  protected getBestAction(state: ReinforcementModel): number {
-    let predictedAction = 0;
-    tidy(() => {
-      const prediction = this.onlineNetwork.model.predict(this.statesAsTensor([state.stateAsVector()])) as Tensor;
-      predictedAction = prediction.argMax(-1).dataSync()[0];
-    });
-    return this.getPossibleActions()[predictedAction];
+  protected async getBestAction(state: ReinforcementModel): Promise<number> {
+    const prediction = this.onlineNetwork.model.predict(this.statesAsTensor([state.stateAsVector()])) as Tensor;
+    const predictedActions = prediction.argMax(-1).data();
+    const bestAction = (await predictedActions)[0];
+    dispose(prediction);
+    return this.getPossibleActions()[bestAction];
   }
 
-  private playSingleStep(state: ReinforcementModel): ReinforcementModel {
-    const action = this.getAction(state);
+  private async playSingleStep(state: ReinforcementModel): Promise<ReinforcementModel> {
+    const action = await this.getAction(state);
     const nextState = this.player.controller.move(action);
     this.replayMemory.addOrReplace([state.stateAsVector(), action, nextState.score, nextState.stateAsVector(), nextState.gameEndState()]);
     return nextState;
@@ -91,9 +92,9 @@ export class DoubleDeepQLearningAgent extends ReinforcementAgent {
     dispose(grads);
   }
 
-  private initializeReplayExperienceBuffer(): void {
+  private async initializeReplayExperienceBuffer(): Promise<void> {
     for (let i = 0; i < this.replayMemory.size; i++) {
-      this.playSingleStep(this.player.model);
+      await this.playSingleStep(this.player.model);
       if (this.player.model.isGameOver()) {
         this.totalReward.addOrReplace(this.player.model.score);
         this.player.model.reset();

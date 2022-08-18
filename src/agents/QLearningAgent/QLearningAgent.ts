@@ -16,7 +16,7 @@ export class QLearningAgent extends ReinforcementAgent {
     this.player.model.reset();
     let state = this.player.model.copy();
     while (UTILS.isFalsy(state.isGameOver())) {
-      const action = this.getAction(state);
+      const action = await this.getAction(state);
       const nextState = this.player.controller.move(action);
       this.updateQValue(state, action, nextState.score, nextState);
       state = nextState.copy();
@@ -25,7 +25,7 @@ export class QLearningAgent extends ReinforcementAgent {
     return Promise.resolve();
   }
 
-  protected getBestAction(state: ReinforcementModel): number {
+  protected async getBestAction(state: ReinforcementModel): Promise<number> {
     const [firstAction, ...actions] = this.getPossibleActions();
     let bestActions = [firstAction];
     let bestActionValue = this.getQValue(state, firstAction);
@@ -38,7 +38,7 @@ export class QLearningAgent extends ReinforcementAgent {
         bestActions.push(action);
       }
     }
-    return ARRAY_UTILS.getRandomValue(bestActions);
+    return Promise.resolve(ARRAY_UTILS.getRandomValue(bestActions));
   }
 
   private calculateQValue(state: ReinforcementModel, action: number, reward: number, nextState: ReinforcementModel): number {
