@@ -26,7 +26,9 @@ export class App extends KKWebComponent {
   constructor() {
     super(template);
     this.game = this.createEnvironment({ columnsCount: 6, rowsCount: 6, foodCount: 10 });
-    void this.runSnakeGameWithQLearningAgent(10000, 0.0001);
+    void this.runSnakeGameWithQLearningAgent(10000, 0.0001).then(() => {
+      this.game.start();
+    });
   }
 
   createEnvironment(boardConfiguration: SnakeGameModelProps): ISnakeGame {
