@@ -45,20 +45,20 @@ export class SnakeGame implements ISnakeGame, ReinforcementPlayer {
     this.webGLService.fullScreen();
   }
 
-  public async runGameWithAgent(agent: IReinforcementAgent): Promise<void> {
+  public async runGameWithAgent(agent: IReinforcementAgent, nextMoveDelay = 100): Promise<void> {
     if (this.model.isGameOver()) {
-      this.restart();
       return void 0;
     }
     await agent.fit((action) => {
       this.controller.move(action);
       this.gameView.render();
-    }, 1000);
+    }, nextMoveDelay);
     await this.runGameWithAgent(agent);
   }
 
   public restart(): void {
     this.model.reset();
+    this.gameView.render();
   }
 
   public start(): void {

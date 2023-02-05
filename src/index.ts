@@ -1,3 +1,4 @@
+import '@tensorflow/tfjs-backend-webgpu';
 import styles from './styles/main.scss';
 export { App } from './App';
 

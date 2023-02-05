@@ -5,5 +5,8 @@ import { IReinforcementAgent } from './IReinforcementAgent';
 export interface ReinforcementPlayer {
   readonly model: ReinforcementModel;
   readonly controller: ReinforcementController;
-  runGameWithAgent(agent: IReinforcementAgent): Promise<void>;
+
+  restart(): void;
+  fullScreen(): void;
+  runGameWithAgent(agent: IReinforcementAgent, nextMoveDelay?: number): Promise<void>;
 }
