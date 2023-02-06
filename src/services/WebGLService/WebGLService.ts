@@ -1,9 +1,11 @@
 import { UTILS } from '../../common/Utils/UTILS';
-import DefaultVertexShaderSource from './Shaders/VertextShaderSource.vert';
-import DefaultFragmentShaderSource from './Shaders/FragmentShaderSource.frag';
-import { IWebGLService } from './interfaces/IWebGLService';
 import { CanvasService } from '../CanvasService/CanvasService';
 import { CanvasContextType } from '../CanvasService/interfaces/CanvasContext';
+import { IWebGLService } from './interfaces/IWebGLService';
+import DefaultFragmentShaderSource from './Shaders/FragmentShaderSource.frag';
+import DefaultVertexShaderSource from './Shaders/VertextShaderSource.vert';
+import { TEXTURES } from './textures/textures';
+import { TextureID } from './textures/textures.types';
 
 export class WebGLService implements IWebGLService {
   private readonly gl: WebGL2RenderingContext;
@@ -40,13 +42,18 @@ export class WebGLService implements IWebGLService {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ebo);
     this.gl.enableVertexAttribArray(this.positionAttributeLocation);
-    this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0); // size → how many parameters of each set should take 2 (means x and y) 3 (x y and z)
+    this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0); // size → how many parameters of each set should take 2 (means x and y) 3 (x y and z)
 
     this.resizeCanvasToDisplaySize(canvas);
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.useProgram(this.program);
     this.gl.uniform2f(this.resolutionUniformLocation, this.gl.canvas.width, this.gl.canvas.height);
     this.clearCanvas();
+
+    const texture = TEXTURES.get(TextureID.SNAKE_SKIN);
+    texture?.addEventListener('load', () => {
+      document.body.append(texture);
+    });
   }
 
   public clearCanvas(): void {
@@ -56,10 +63,10 @@ export class WebGLService implements IWebGLService {
 
   public drawRectangle([x, y]: [number, number], width: number, height: number, [r, g, b, a]: [number, number, number, number]): void {
     this.gl.bindVertexArray(this.vao);
-    const topLeft = [x, y, 0];
-    const topRight = [x + width, y, 0];
-    const bottomRight = [x + width, y + height, 0];
-    const bottomLeft = [x, y + height, 0];
+    const topLeft = [x, y];
+    const topRight = [x + width, y];
+    const bottomRight = [x + width, y + height];
+    const bottomLeft = [x, y + height];
     const positions = new Float32Array([...topLeft, ...topRight, ...bottomRight, ...bottomLeft]);
     const vertexIndices = [3, 1, 0, 3, 2, 1];
     this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
@@ -76,7 +83,7 @@ export class WebGLService implements IWebGLService {
     [r, g, b, a]: [number, number, number, number]
   ): void {
     this.gl.bindVertexArray(this.vao);
-    const positions = new Float32Array([...left, 0, ...top, 0, ...right, 0]);
+    const positions = new Float32Array([...left, ...top, ...right]);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
     this.gl.uniform4f(this.colorUniformLocation, r, g, b, a);
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);

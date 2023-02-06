@@ -2,7 +2,7 @@
 
 // an attribute is an input (in) to a vertex shader.
 // It will receive data from a buffer
-layout (location = 0) in vec3 a_position;
+layout (location = 0) in vec2 a_position;
 layout (location = 1) in vec4 a_color;
 
 // Used to pass in the resolution of the canvas
