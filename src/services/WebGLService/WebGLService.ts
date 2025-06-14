@@ -4,6 +4,8 @@ import { CanvasContextType } from '../CanvasService/interfaces/CanvasContext';
 import { IWebGLService } from './interfaces/IWebGLService';
 import DefaultFragmentShaderSource from './Shaders/FragmentShaderSource.frag';
 import DefaultVertexShaderSource from './Shaders/VertextShaderSource.vert';
+import { TEXTURES } from './textures/textures';
+import { TextureID } from './textures/textures.types';
 
 export class WebGLService implements IWebGLService {
   private readonly gl: WebGL2RenderingContext;
@@ -12,9 +14,11 @@ export class WebGLService implements IWebGLService {
   private readonly fragmentShader: WebGLShader;
   private readonly program: WebGLProgram;
   private readonly positionAttributeLocation: number;
+  private readonly textureAttributeLocation: number;
   private readonly colorUniformLocation: WebGLUniformLocation;
   private readonly resolutionUniformLocation: WebGLUniformLocation;
   private readonly positionBuffer: WebGLBuffer;
+  private readonly textureBuffer: WebGLBuffer;
   private readonly ebo: WebGLBuffer;
   private readonly vao: WebGLVertexArrayObject;
 
@@ -30,17 +34,22 @@ export class WebGLService implements IWebGLService {
     this.fragmentShader = this.createShader(this.gl.FRAGMENT_SHADER, fragmentShaderSource);
     this.program = this.createProgram(this.vertexShader, this.fragmentShader);
     this.positionAttributeLocation = this.gl.getAttribLocation(this.program, 'a_position');
+    this.textureAttributeLocation = this.gl.getAttribLocation(this.program, 'a_texCoord');
     this.resolutionUniformLocation = <WebGLUniformLocation>this.gl.getUniformLocation(this.program, 'u_resolution');
     this.colorUniformLocation = <WebGLUniformLocation>this.gl.getUniformLocation(this.program, 'u_color');
 
     this.vao = <WebGLVertexArrayObject>this.gl.createVertexArray();
     this.ebo = <WebGLBuffer>this.gl.createBuffer();
     this.positionBuffer = <WebGLBuffer>this.gl.createBuffer();
+    this.textureBuffer = <WebGLBuffer>this.gl.createBuffer();
     this.gl.bindVertexArray(this.vao);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.textureBuffer);
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.ebo);
     this.gl.enableVertexAttribArray(this.positionAttributeLocation);
-    this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0); // size → how many parameters of each set should take 2 (means x and y) 3 (x y and z)
+    this.gl.enableVertexAttribArray(this.textureAttributeLocation);
+    this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0);
+    this.gl.vertexAttribPointer(this.textureAttributeLocation, 2, this.gl.FLOAT, false, 0, 0);
 
     this.resizeCanvasToDisplaySize(canvas);
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
@@ -62,6 +71,10 @@ export class WebGLService implements IWebGLService {
     const bottomLeft = [x, y + height];
     const positions = new Float32Array([...topLeft, ...topRight, ...bottomRight, ...bottomLeft]);
     const vertexIndices = [3, 1, 0, 3, 2, 1];
+    const texture = TEXTURES.get(TextureID.SNAKE_SKIN);
+    texture?.addEventListener('load', () => {
+      document.body.append(texture);
+    });
     this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
     this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(vertexIndices), this.gl.STATIC_DRAW);
     this.gl.uniform4f(this.colorUniformLocation, r, g, b, a);
