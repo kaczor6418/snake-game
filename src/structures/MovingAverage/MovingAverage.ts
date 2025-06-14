@@ -11,7 +11,7 @@ export class MovingAverage implements IMovingAverage {
     if (size < 1) {
       throw new IncorrectBufferSizeError('Can not create a buffer if size is less or equal 0!');
     }
-    this.buffer = new Array<number>(size).fill(-Infinity);
+    this.buffer = new Array<number>(size).fill(0);
   }
 
   public size(): number {
@@ -36,6 +36,7 @@ export class MovingAverage implements IMovingAverage {
   }
 
   public reset(): void {
-    this.buffer.fill(-Infinity);
+    this.index = 0;
+    this.buffer.fill(0);
   }
 }
