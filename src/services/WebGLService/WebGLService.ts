@@ -4,8 +4,6 @@ import { CanvasContextType } from '../CanvasService/interfaces/CanvasContext';
 import { IWebGLService } from './interfaces/IWebGLService';
 import DefaultFragmentShaderSource from './Shaders/FragmentShaderSource.frag';
 import DefaultVertexShaderSource from './Shaders/VertextShaderSource.vert';
-import { TEXTURES } from './textures/textures';
-import { TextureID } from './textures/textures.types';
 
 export class WebGLService implements IWebGLService {
   private readonly gl: WebGL2RenderingContext;
@@ -49,11 +47,6 @@ export class WebGLService implements IWebGLService {
     this.gl.useProgram(this.program);
     this.gl.uniform2f(this.resolutionUniformLocation, this.gl.canvas.width, this.gl.canvas.height);
     this.clearCanvas();
-
-    const texture = TEXTURES.get(TextureID.SNAKE_SKIN);
-    texture?.addEventListener('load', () => {
-      document.body.append(texture);
-    });
   }
 
   public clearCanvas(): void {
